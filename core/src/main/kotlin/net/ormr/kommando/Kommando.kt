@@ -57,7 +57,7 @@ public class Kommando(
     public val commandPreconditions: List<CommandPrecondition>,
     public val eventListeners: List<EventListener>,
     public val messageFilters: List<MessageFilter>,
-    public val chatCommands: List<ChatCommand<*>>,
+    public val chatCommands: Map<String, ChatCommand<*>>,
     public val applicationCommands: List<ApplicationCommand<*, *>>,
     public val prefix: CommandPrefix?,
     internal val registeredApplicationCommands: Map<Snowflake, ApplicationCommand<*, *>>,
@@ -131,7 +131,14 @@ public class KommandoBuilder @PublishedApi internal constructor(
         val eventListeners = eventListeners.toList()
         val messageFilters = messageFilters.toList()
         val flattenedCommands = commands.flatMap { it.commands }
-        val chatCommands = flattenedCommands.filterIsInstance<ChatCommand<*>>()
+        val chatCommands = buildMap {
+            flattenedCommands
+                .filterIsInstance<ChatCommand<*>>()
+                .forEach {
+                    put(it.name, it)
+                    it.aliases.forEach { alias -> put(alias, it) }
+                }
+        }
         val applicationCommands = flattenedCommands.filterIsInstance<ApplicationCommand<*, *>>()
         val registeredSlashCommands = registerSlashCommands(applicationCommands)
         val kommando = Kommando(
