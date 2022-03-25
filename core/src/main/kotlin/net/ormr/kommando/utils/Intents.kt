@@ -22,35 +22,22 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.components
+package net.ormr.kommando.utils
 
+import dev.kord.core.enableEvent
 import dev.kord.core.event.Event
-import dev.kord.core.event.message.MessageCreateEvent
-import net.ormr.kommando.Kommando
-import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.utils.checkIntents
-import dev.kord.core.on as kordOn
+import dev.kord.gateway.Intents
+import net.ormr.kommando.MissingEventIntentException
+import kotlin.reflect.typeOf
 
-// entire design here is very heavily based on the Listener DSL from DiscordKt
+/**
+ * Throws an [MissingEventIntentException] if the required intents for [T] are not available in [requestedIntents].
+ */
+public inline fun <reified T : Event> checkIntents(requestedIntents: Intents) {
+    val requiredIntents = Intents { enableEvent<T>() }
 
-@KommandoDsl
-public class EventListenerBuilder internal constructor(public val kommando: Kommando) {
-    @KommandoDsl
-    public inline fun <reified T : Event> on(crossinline consumer: suspend T.() -> Unit) {
-        kommando.kord.kordOn<T> {
-            checkIntents<T>(kommando.intents)
-
-            if (this is MessageCreateEvent && kommando.messageFilters.any { !it.isOk(this) }) return@kordOn
-            consumer()
-        }
+    if (requiredIntents !in requestedIntents) {
+        throw MissingEventIntentException(typeOf<T>(), requiredIntents - requestedIntents)
     }
 }
 
-public class EventListener internal constructor(private val block: EventListenerBuilder.() -> Unit) {
-    internal fun executeBlock(kommando: Kommando) {
-        EventListenerBuilder(kommando).apply(block)
-    }
-}
-
-@KommandoDsl
-public fun eventListener(block: EventListenerBuilder.() -> Unit): EventListener = EventListener(block)
