@@ -25,6 +25,7 @@
 package net.ormr.kommando.commands
 
 import dev.kord.core.Kord
+import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.DmChannel
@@ -48,6 +49,9 @@ public data class ChatDmCommandData(
 
     public val author: User
         get() = message.author ?: error("Message author is not a user.")
+
+    public val channel: MessageChannelBehavior
+        get() = message.channel
 
     public suspend fun getChannel(): DmChannel =
         message.getChannel() as? DmChannel ?: error("Channel is not DM channel.")
