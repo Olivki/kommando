@@ -68,7 +68,7 @@ public class ChatDmCommandBuilder @PublishedApi internal constructor(
 }
 
 @KommandoDsl
-public inline fun CommandGroupBuilder.dmCommand(
+public inline fun CommandGroupBuilder.chatDmCommand(
     name: String,
     description: String,
     builder: ChatDmCommandBuilder.() -> Unit,
