@@ -49,8 +49,6 @@ import org.kodein.di.DirectDI
 import org.kodein.di.DirectDIAware
 import org.kodein.di.bindSingleton
 
-// TODO: add prefix for chat commands
-
 public class Kommando(
     public val kord: Kord,
     public val intents: Intents,
