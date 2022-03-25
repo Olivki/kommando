@@ -22,17 +22,16 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.utils
+package net.ormr.kommando.parser
 
 import com.github.h0tk3y.betterParse.lexer.TokenMatchesSequence
-import com.github.h0tk3y.betterParse.parser.ErrorResult
 import com.github.h0tk3y.betterParse.parser.ParseResult
 import com.github.h0tk3y.betterParse.parser.Parser
 
-private typealias ExceptionMapper = (exception: Exception, tokens: TokenMatchesSequence, fromPosition: Int) -> ErrorResult
+public typealias ExceptionMapper<T> = (exception: Exception, tokens: TokenMatchesSequence, fromPosition: Int) -> ParseResult<T>
 
 // TODO: better name?
-public class TryCatchCombinator<T>(public val parser: Parser<T>, public val mapper: ExceptionMapper) : Parser<T> {
+public class TryCatchCombinator<T>(public val parser: Parser<T>, public val mapper: ExceptionMapper<T>) : Parser<T> {
     override fun tryParse(tokens: TokenMatchesSequence, fromPosition: Int): ParseResult<T> = try {
         parser.tryParse(tokens, fromPosition)
     } catch (e: Exception) {
@@ -41,7 +40,7 @@ public class TryCatchCombinator<T>(public val parser: Parser<T>, public val mapp
 }
 
 /**
- * Uses [parser] and allows to map any exceptions thrown from it into an appropriate [ErrorResult] instance using
+ * Uses [parser] and allows to map any exceptions thrown from it into an appropriate [ParseResult] instance using
  * [mapper].
  */
-public fun <T> tryCatch(parser: Parser<T>, mapper: ExceptionMapper): Parser<T> = TryCatchCombinator(parser, mapper)
+public fun <T> tryCatch(parser: Parser<T>, mapper: ExceptionMapper<T>): Parser<T> = TryCatchCombinator(parser, mapper)
