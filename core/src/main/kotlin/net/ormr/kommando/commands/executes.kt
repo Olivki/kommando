@@ -25,14 +25,70 @@
 package net.ormr.kommando.commands
 
 import dev.kord.core.event.Event
+import dev.kord.core.event.message.MessageCreateEvent
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.arguments.CommandExecutorArguments.Args0
-import net.ormr.kommando.commands.arguments.CommandExecutorArguments.Args1
-import net.ormr.kommando.commands.arguments.CommandExecutorArguments.Args2
-import net.ormr.kommando.commands.arguments.CommandExecutorArguments.Args3
-import net.ormr.kommando.commands.arguments.CommandExecutorArguments.Args4
-import net.ormr.kommando.commands.arguments.CommandExecutorArguments.Args5
+import net.ormr.kommando.commands.arguments.CommandExecutorArguments.*
+import net.ormr.kommando.commands.arguments.chat.ChatArgument
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
+
+// -- CHAT COMMANDS -- \\
+@KommandoDsl
+@JvmName("chatCommandExecute")
+public fun <D : CommandData<MessageCreateEvent>> CommandBuilder<ChatCommand<D>, ChatArgument<*>, MessageCreateEvent, D>.execute(
+    execute: suspend D.(Args0) -> Unit,
+) {
+    registerExecutor(CommandExecutor(listOf(), execute))
+}
+
+@KommandoDsl
+public fun <D : CommandData<MessageCreateEvent>, N1> CommandBuilder<ChatCommand<D>, ChatArgument<*>, MessageCreateEvent, D>.execute(
+    n1: ChatArgument<N1>,
+    execute: suspend D.(Args1<N1>) -> Unit,
+) {
+    registerExecutor(CommandExecutor(listOf(n1), execute))
+}
+
+@KommandoDsl
+public fun <D : CommandData<MessageCreateEvent>, N1, N2> CommandBuilder<ChatCommand<D>, ChatArgument<*>, MessageCreateEvent, D>.execute(
+    n1: ChatArgument<N1>,
+    n2: ChatArgument<N2>,
+    execute: suspend D.(Args2<N1, N2>) -> Unit,
+) {
+    registerExecutor(CommandExecutor(listOf(n1, n2), execute))
+}
+
+@KommandoDsl
+public fun <D : CommandData<MessageCreateEvent>, N1, N2, N3> CommandBuilder<ChatCommand<D>, ChatArgument<*>, MessageCreateEvent, D>.execute(
+    n1: ChatArgument<N1>,
+    n2: ChatArgument<N2>,
+    n3: ChatArgument<N3>,
+    execute: suspend D.(Args3<N1, N2, N3>) -> Unit,
+) {
+    registerExecutor(CommandExecutor(listOf(n1, n2, n3), execute))
+}
+
+@KommandoDsl
+public fun <D : CommandData<MessageCreateEvent>, N1, N2, N3, N4> CommandBuilder<ChatCommand<D>, ChatArgument<*>, MessageCreateEvent, D>.execute(
+    n1: ChatArgument<N1>,
+    n2: ChatArgument<N2>,
+    n3: ChatArgument<N3>,
+    n4: ChatArgument<N4>,
+    execute: suspend D.(Args4<N1, N2, N3, N4>) -> Unit,
+) {
+    registerExecutor(CommandExecutor(listOf(n1, n2, n3, n4), execute))
+}
+
+@KommandoDsl
+public fun <D : CommandData<MessageCreateEvent>, N1, N2, N3, N4, N5> CommandBuilder<ChatCommand<D>, ChatArgument<*>, MessageCreateEvent, D>.execute(
+    n1: ChatArgument<N1>,
+    n2: ChatArgument<N2>,
+    n3: ChatArgument<N3>,
+    n4: ChatArgument<N4>,
+    n5: ChatArgument<N5>,
+    execute: suspend D.(Args5<N1, N2, N3, N4, N5>) -> Unit,
+) {
+    registerExecutor(CommandExecutor(listOf(n1, n2, n3, n4, n5), execute))
+}
 
 // -- SLASH COMMANDS -- \\
 // TODO: verify that non optional commands are placed before optional commands
