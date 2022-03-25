@@ -24,18 +24,39 @@
 
 package net.ormr.kommando.commands.arguments.chat
 
-import com.github.h0tk3y.betterParse.combinators.use
-import com.github.h0tk3y.betterParse.grammar.Grammar
-import com.github.h0tk3y.betterParse.lexer.regexToken
-import com.github.h0tk3y.betterParse.parser.Parser
+import com.github.h0tk3y.betterParse.grammar.parseToEnd
+import com.github.h0tk3y.betterParse.grammar.tryParseToEnd
+import com.github.h0tk3y.betterParse.parser.ErrorResult
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.byte
+import io.kotest.property.arbitrary.negativeByte
+import io.kotest.property.arbitrary.negativeShort
+import io.kotest.property.arbitrary.short
+import io.kotest.property.checkAll
 
-public class ChatIntArgument(
-    override val description: String? = null,
-    public val min: Int = Int.MIN_VALUE,
-    public val max: Int = Int.MAX_VALUE,
-) : ChatArgument<Int>(inherit()) {
-    internal companion object ArgumentGrammar : Grammar<Int>() {
-        private val num by regexToken("-?[0-9]+")
-        override val rootParser: Parser<Int> by num use { text.toInt() }
+class ChatShortArgumentGrammarTest : FunSpec({
+    val grammar = ChatShortArgument.ArgumentGrammar
+
+    test("Positive short input") {
+        checkAll(1_000, Arb.short(min = 0)) {
+            grammar.parseToEnd("$it") shouldBe it
+        }
     }
-}
+
+    test("Negative short input") {
+        checkAll(1_000, Arb.negativeShort()) {
+            grammar.parseToEnd("$it") shouldBe it
+        }
+    }
+
+    test("Decimal number input") {
+        grammar.tryParseToEnd("13.37").shouldBeInstanceOf<ErrorResult>()
+    }
+
+    test("Out-of-bounds value") {
+        testOutOfBounds(grammar, Short.MIN_VALUE, Short.MAX_VALUE)
+    }
+})

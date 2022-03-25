@@ -29,7 +29,7 @@ import com.github.h0tk3y.betterParse.combinators.or
 import com.github.h0tk3y.betterParse.grammar.Grammar
 import com.github.h0tk3y.betterParse.lexer.literalToken
 
-public class ChatBooleanArgument : ChatArgument<Boolean>(inherit()) {
+public class ChatBooleanArgument(override val description: String? = null) : ChatArgument<Boolean>(inherit()) {
     internal companion object ArgumentGrammar : Grammar<Boolean>() {
         private val `false` by literalToken("false")
         private val `true` by literalToken("true")

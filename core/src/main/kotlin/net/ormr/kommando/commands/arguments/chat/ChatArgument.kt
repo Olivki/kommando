@@ -28,5 +28,7 @@ import com.github.h0tk3y.betterParse.grammar.parseToEnd
 import net.ormr.kommando.commands.arguments.CommandArgument
 
 public abstract class ChatArgument<T>(public val grammar: ChatArgumentGrammar<T>) : CommandArgument<T> {
+    public abstract val description: String?
+
     public fun parseArgument(input: String): ChatArgumentParseResult<T> = grammar.parseToEnd(input)
 }

@@ -29,13 +29,13 @@ import com.github.h0tk3y.betterParse.grammar.Grammar
 import com.github.h0tk3y.betterParse.lexer.regexToken
 import com.github.h0tk3y.betterParse.parser.Parser
 
-public class ChatIntArgument(
+public class ChatByteArgument(
     override val description: String? = null,
-    public val min: Int = Int.MIN_VALUE,
-    public val max: Int = Int.MAX_VALUE,
-) : ChatArgument<Int>(inherit()) {
-    internal companion object ArgumentGrammar : Grammar<Int>() {
+    public val min: Byte = Byte.MIN_VALUE,
+    public val max: Byte = Byte.MAX_VALUE,
+) : ChatArgument<Byte>(inherit()) {
+    internal companion object ArgumentGrammar : Grammar<Byte>() {
         private val num by regexToken("-?[0-9]+")
-        override val rootParser: Parser<Int> by num use { text.toInt() }
+        override val rootParser: Parser<Byte> by num use { text.toByte() }
     }
 }
