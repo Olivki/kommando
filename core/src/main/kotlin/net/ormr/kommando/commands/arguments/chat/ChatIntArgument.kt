@@ -34,11 +34,11 @@ import com.github.h0tk3y.betterParse.lexer.regexToken
 import com.github.h0tk3y.betterParse.parser.Parser
 
 public class ChatIntArgument : ChatArgument<Int>(inherit()) {
-    private companion object : Grammar<Int>() {
-        val minus by literalToken("-")
-        val minusParser by optional(minus asJust Unit)
-        val num by regexToken("[0-9]+")
-        val numParser by num use { text.toInt() }
+    internal companion object : Grammar<Int>() {
+        private val minus by literalToken("-")
+        private val minusParser by optional(minus asJust Unit)
+        private val num by regexToken("[0-9]+")
+        private val numParser by num use { text.toInt() }
         override val rootParser: Parser<Int> by (minusParser and numParser) use { t1?.let { -t2 } ?: t2 }
     }
 }
