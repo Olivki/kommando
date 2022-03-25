@@ -37,7 +37,19 @@ public sealed class ChatByteArgument(
     public val max: Byte = Byte.MAX_VALUE,
     dummy: Dummy,
 ) : ChatArgument<Byte>(ArgumentGrammar.inherit()) {
-    public companion object Default : ChatByteArgument(description = null, Byte.MIN_VALUE, Byte.MAX_VALUE, Dummy)
+    public companion object Default : ChatByteArgument(description = null, Byte.MIN_VALUE, Byte.MAX_VALUE, Dummy) {
+        public fun negative(description: String? = null, min: Byte = Byte.MIN_VALUE): ChatByteArgument =
+            ChatByteArgument(description, min = min, max = -1)
+
+        public fun nonPositive(description: String? = null, min: Byte = Byte.MIN_VALUE): ChatByteArgument =
+            ChatByteArgument(description, min = min, max = 0)
+
+        public fun positive(description: String? = null, max: Byte = Byte.MAX_VALUE): ChatByteArgument =
+            ChatByteArgument(description, min = 1, max = max)
+
+        public fun nonNegative(description: String? = null, max: Byte = Byte.MAX_VALUE): ChatByteArgument =
+            ChatByteArgument(description, min = 0, max = max)
+    }
 
     internal object ArgumentGrammar : Grammar<Byte>() {
         private val num by regexToken("-?[0-9]+")

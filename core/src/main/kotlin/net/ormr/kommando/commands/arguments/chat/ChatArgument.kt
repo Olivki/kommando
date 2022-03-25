@@ -27,6 +27,9 @@ package net.ormr.kommando.commands.arguments.chat
 import com.github.h0tk3y.betterParse.grammar.parseToEnd
 import net.ormr.kommando.commands.arguments.CommandArgument
 
+// TODO: do we want to store the result of 'ArgumentGrammar.inherit()' inside of a property inside of the companion
+//       objects of the children classes of this? Might make it more efficient, but I'm not sure if the efficiency gain
+//       is that huge.
 public abstract class ChatArgument<T>(public val grammar: ChatArgumentGrammar<T>) : CommandArgument<T> {
     public abstract val description: String?
 

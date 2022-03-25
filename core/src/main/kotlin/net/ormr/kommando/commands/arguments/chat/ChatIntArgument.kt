@@ -37,7 +37,19 @@ public sealed class ChatIntArgument(
     public val max: Int,
     dummy: Dummy,
 ) : ChatArgument<Int>(ArgumentGrammar.inherit()) {
-    public companion object Default : ChatIntArgument(description = null, Int.MIN_VALUE, Int.MAX_VALUE, Dummy)
+    public companion object Default : ChatIntArgument(description = null, Int.MIN_VALUE, Int.MAX_VALUE, Dummy) {
+        public fun negative(description: String? = null, min: Int = Int.MIN_VALUE): ChatIntArgument =
+            ChatIntArgument(description, min = min, max = -1)
+
+        public fun nonPositive(description: String? = null, min: Int = Int.MIN_VALUE): ChatIntArgument =
+            ChatIntArgument(description, min = min, max = 0)
+
+        public fun positive(description: String? = null, max: Int = Int.MAX_VALUE): ChatIntArgument =
+            ChatIntArgument(description, min = 1, max = max)
+
+        public fun nonNegative(description: String? = null, max: Int = Int.MAX_VALUE): ChatIntArgument =
+            ChatIntArgument(description, min = 0, max = max)
+    }
 
     internal object ArgumentGrammar : Grammar<Int>() {
         private val num by regexToken("-?[0-9]+")
