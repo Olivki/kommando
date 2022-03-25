@@ -28,13 +28,14 @@ import com.github.h0tk3y.betterParse.combinators.use
 import com.github.h0tk3y.betterParse.grammar.Grammar
 import com.github.h0tk3y.betterParse.lexer.regexToken
 import com.github.h0tk3y.betterParse.parser.Parser
+import kotlinx.serialization.json.Json
 
 public class ChatByteArgument(
     override val description: String? = null,
     public val min: Byte = Byte.MIN_VALUE,
     public val max: Byte = Byte.MAX_VALUE,
-) : ChatArgument<Byte>(inherit()) {
-    internal companion object ArgumentGrammar : Grammar<Byte>() {
+) : ChatArgument<Byte>(ArgumentGrammar.inherit()) {
+    internal object ArgumentGrammar : Grammar<Byte>() {
         private val num by regexToken("-?[0-9]+")
         override val rootParser: Parser<Byte> by num use { text.toByte() }
     }

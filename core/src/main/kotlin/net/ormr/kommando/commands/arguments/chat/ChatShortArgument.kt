@@ -33,8 +33,8 @@ public class ChatShortArgument(
     override val description: String? = null,
     public val min: Short = Short.MIN_VALUE,
     public val max: Short = Short.MAX_VALUE,
-) : ChatArgument<Short>(inherit()) {
-    internal companion object ArgumentGrammar : Grammar<Short>() {
+) : ChatArgument<Short>(ArgumentGrammar.inherit()) {
+    internal object ArgumentGrammar : Grammar<Short>() {
         private val num by regexToken("-?[0-9]+")
         override val rootParser: Parser<Short> by num use { text.toShort() }
     }

@@ -33,8 +33,8 @@ public class ChatIntArgument(
     override val description: String? = null,
     public val min: Int = Int.MIN_VALUE,
     public val max: Int = Int.MAX_VALUE,
-) : ChatArgument<Int>(inherit()) {
-    internal companion object ArgumentGrammar : Grammar<Int>() {
+) : ChatArgument<Int>(ArgumentGrammar.inherit()) {
+    internal object ArgumentGrammar : Grammar<Int>() {
         private val num by regexToken("-?[0-9]+")
         override val rootParser: Parser<Int> by num use { text.toInt() }
     }
