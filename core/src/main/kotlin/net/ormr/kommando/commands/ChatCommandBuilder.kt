@@ -24,11 +24,12 @@
 
 package net.ormr.kommando.commands
 
-import dev.kord.core.event.message.MessageCreateEvent
-import net.ormr.kommando.commands.arguments.chat.ChatArgument
+import dev.kord.core.event.Event
+import net.ormr.kommando.KommandoDsl
+import net.ormr.kommando.commands.arguments.CommandArgument
 
-public sealed interface ChatCommand<D : CommandData<MessageCreateEvent>> : Command, DescribableCommand {
-    public val executor: CommandExecutor<ChatArgument<*>, *, MessageCreateEvent, D>
-
-    public val aliases: Set<String>
+public sealed class ChatCommandBuilder<out C : Command, A : CommandArgument<*>, E : Event, D : CommandData<E>> :
+    CommandBuilder<C, A, E, D>() {
+    @KommandoDsl
+    public var aliases: Set<String> = emptySet()
 }

@@ -38,6 +38,7 @@ public data class ChatGlobalCommand(
     override val name: String,
     override val description: String,
     override val executor: CommandExecutor<ChatArgument<*>, *, MessageCreateEvent, ChatGlobalCommandData>,
+    override val aliases: Set<String>,
 ) : ChatCommand<ChatGlobalCommandData>
 
 public data class ChatGlobalCommandData(
@@ -60,13 +61,14 @@ public data class ChatGlobalCommandData(
 public class ChatGlobalCommandBuilder @PublishedApi internal constructor(
     private val name: String,
     private val description: String,
-) : CommandBuilder<ChatGlobalCommand, ChatArgument<*>, MessageCreateEvent, ChatGlobalCommandData>() {
+) : ChatCommandBuilder<ChatGlobalCommand, ChatArgument<*>, MessageCreateEvent, ChatGlobalCommandData>() {
     @PublishedApi
     override fun build(category: String): ChatGlobalCommand = ChatGlobalCommand(
         category = category,
         name = name,
         description = description,
         executor = getExecutor(),
+        aliases = aliases.toSet(),
     )
 }
 

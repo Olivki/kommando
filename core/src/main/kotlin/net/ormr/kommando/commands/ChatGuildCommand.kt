@@ -39,6 +39,7 @@ public data class ChatGuildCommand(
     override val name: String,
     override val description: String,
     override val executor: CommandExecutor<ChatArgument<*>, *, MessageCreateEvent, ChatGuildCommandData>,
+    override val aliases: Set<String>,
 ) : ChatCommand<ChatGuildCommandData>
 
 public data class ChatGuildCommandData(
@@ -64,13 +65,14 @@ public data class ChatGuildCommandData(
 public class ChatGuildCommandBuilder @PublishedApi internal constructor(
     private val name: String,
     private val description: String,
-) : CommandBuilder<ChatGuildCommand, ChatArgument<*>, MessageCreateEvent, ChatGuildCommandData>() {
+) : ChatCommandBuilder<ChatGuildCommand, ChatArgument<*>, MessageCreateEvent, ChatGuildCommandData>() {
     @PublishedApi
     override fun build(category: String): ChatGuildCommand = ChatGuildCommand(
         category = category,
         name = name,
         description = description,
         executor = getExecutor(),
+        aliases = aliases.toSet(),
     )
 }
 
