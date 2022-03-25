@@ -26,13 +26,15 @@ package net.ormr.kommando.commands.arguments.chat
 
 import com.github.h0tk3y.betterParse.grammar.Grammar
 import com.github.h0tk3y.betterParse.grammar.parseToEnd
-import io.kotest.assertions.throwables.shouldThrow
+import com.github.h0tk3y.betterParse.grammar.tryParseToEnd
 import io.kotest.core.test.TestScope
+import io.kotest.matchers.types.shouldBeInstanceOf
+import net.ormr.kommando.parser.NumberOutOfBounds
 import java.math.BigInteger
 
 fun <T : Number> TestScope.testOutOfBounds(grammar: Grammar<T>, min: T, max: T) {
     val minOutOfBounds = BigInteger.valueOf(min.toLong()) - BigInteger.ONE
     val maxOutOfBounds = BigInteger.valueOf(max.toLong()) + BigInteger.ONE
-    shouldThrow<NumberFormatException> { grammar.parseToEnd("$minOutOfBounds") }
-    shouldThrow<NumberFormatException> { grammar.parseToEnd("$maxOutOfBounds") }
+    grammar.tryParseToEnd("$minOutOfBounds").shouldBeInstanceOf<NumberOutOfBounds>()
+    grammar.tryParseToEnd("$maxOutOfBounds").shouldBeInstanceOf<NumberOutOfBounds>()
 }

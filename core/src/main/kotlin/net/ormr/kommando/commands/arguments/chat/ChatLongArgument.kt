@@ -28,6 +28,7 @@ import com.github.h0tk3y.betterParse.combinators.use
 import com.github.h0tk3y.betterParse.grammar.Grammar
 import com.github.h0tk3y.betterParse.lexer.regexToken
 import com.github.h0tk3y.betterParse.parser.Parser
+import net.ormr.kommando.parser.outOfBounds
 import net.ormr.kommando.utils.Dummy
 
 @Suppress("UNUSED_PARAMETER")
@@ -53,7 +54,7 @@ public sealed class ChatLongArgument(
 
     internal object ArgumentGrammar : Grammar<Long>() {
         private val num by regexToken("-?[0-9]+")
-        override val rootParser: Parser<Long> by num use { text.toLong() }
+        override val rootParser: Parser<Long> by outOfBounds(num use { text.toLong() })
     }
 }
 
