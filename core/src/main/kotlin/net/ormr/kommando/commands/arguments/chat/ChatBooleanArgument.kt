@@ -28,12 +28,22 @@ import com.github.h0tk3y.betterParse.combinators.asJust
 import com.github.h0tk3y.betterParse.combinators.or
 import com.github.h0tk3y.betterParse.grammar.Grammar
 import com.github.h0tk3y.betterParse.lexer.literalToken
+import net.ormr.kommando.utils.Dummy
 
-public class ChatBooleanArgument(override val description: String? = null) :
-    ChatArgument<Boolean>(ArgumentGrammar.inherit()) {
+@Suppress("UNUSED_PARAMETER")
+public sealed class ChatBooleanArgument(
+    override val description: String? = null,
+    dummy: Dummy,
+) : ChatArgument<Boolean>(ArgumentGrammar.inherit()) {
+    public companion object Default : ChatBooleanArgument(description = null, Dummy)
+
     internal object ArgumentGrammar : Grammar<Boolean>() {
         private val `false` by literalToken("false")
         private val `true` by literalToken("true")
         override val rootParser by (`false` asJust false) or (`true` asJust true)
     }
 }
+
+private class ChatBooleanArgumentImpl(description: String?) : ChatBooleanArgument(description, Dummy)
+
+public fun ChatBooleanArgument(description: String? = null): ChatBooleanArgument = ChatBooleanArgumentImpl(description)

@@ -28,14 +28,28 @@ import com.github.h0tk3y.betterParse.combinators.use
 import com.github.h0tk3y.betterParse.grammar.Grammar
 import com.github.h0tk3y.betterParse.lexer.regexToken
 import com.github.h0tk3y.betterParse.parser.Parser
+import net.ormr.kommando.utils.Dummy
 
-public class ChatIntArgument(
-    override val description: String? = null,
-    public val min: Int = Int.MIN_VALUE,
-    public val max: Int = Int.MAX_VALUE,
+@Suppress("UNUSED_PARAMETER")
+public sealed class ChatIntArgument(
+    override val description: String?,
+    public val min: Int,
+    public val max: Int,
+    dummy: Dummy,
 ) : ChatArgument<Int>(ArgumentGrammar.inherit()) {
+    public companion object Default : ChatIntArgument(description = null, Int.MIN_VALUE, Int.MAX_VALUE, Dummy)
+
     internal object ArgumentGrammar : Grammar<Int>() {
         private val num by regexToken("-?[0-9]+")
         override val rootParser: Parser<Int> by num use { text.toInt() }
     }
 }
+
+private class ChatIntArgumentImpl(description: String?, min: Int, max: Int) :
+    ChatIntArgument(description, min, max, Dummy)
+
+public fun ChatIntArgument(
+    description: String? = null,
+    min: Int = Int.MIN_VALUE,
+    max: Int = Int.MAX_VALUE,
+): ChatIntArgument = ChatIntArgumentImpl(description, min, max)

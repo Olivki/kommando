@@ -28,15 +28,28 @@ import com.github.h0tk3y.betterParse.combinators.use
 import com.github.h0tk3y.betterParse.grammar.Grammar
 import com.github.h0tk3y.betterParse.lexer.regexToken
 import com.github.h0tk3y.betterParse.parser.Parser
-import kotlinx.serialization.json.Json
+import net.ormr.kommando.utils.Dummy
 
-public class ChatByteArgument(
+@Suppress("UNUSED_PARAMETER")
+public sealed class ChatByteArgument(
     override val description: String? = null,
     public val min: Byte = Byte.MIN_VALUE,
     public val max: Byte = Byte.MAX_VALUE,
+    dummy: Dummy,
 ) : ChatArgument<Byte>(ArgumentGrammar.inherit()) {
+    public companion object Default : ChatByteArgument(description = null, Byte.MIN_VALUE, Byte.MAX_VALUE, Dummy)
+
     internal object ArgumentGrammar : Grammar<Byte>() {
         private val num by regexToken("-?[0-9]+")
         override val rootParser: Parser<Byte> by num use { text.toByte() }
     }
 }
+
+private class ChatByteArgumentImpl(description: String?, min: Byte, max: Byte) :
+    ChatByteArgument(description, min, max, Dummy)
+
+public fun ChatByteArgument(
+    description: String? = null,
+    min: Byte = Byte.MIN_VALUE,
+    max: Byte = Byte.MAX_VALUE,
+): ChatByteArgument = ChatByteArgumentImpl(description, min, max)

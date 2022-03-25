@@ -28,14 +28,28 @@ import com.github.h0tk3y.betterParse.combinators.use
 import com.github.h0tk3y.betterParse.grammar.Grammar
 import com.github.h0tk3y.betterParse.lexer.regexToken
 import com.github.h0tk3y.betterParse.parser.Parser
+import net.ormr.kommando.utils.Dummy
 
-public class ChatShortArgument(
+@Suppress("UNUSED_PARAMETER")
+public sealed class ChatShortArgument(
     override val description: String? = null,
     public val min: Short = Short.MIN_VALUE,
     public val max: Short = Short.MAX_VALUE,
+    dummy: Dummy,
 ) : ChatArgument<Short>(ArgumentGrammar.inherit()) {
+    public companion object Default : ChatShortArgument(description = null, Short.MIN_VALUE, Short.MAX_VALUE, Dummy)
+
     internal object ArgumentGrammar : Grammar<Short>() {
         private val num by regexToken("-?[0-9]+")
         override val rootParser: Parser<Short> by num use { text.toShort() }
     }
 }
+
+private class ChatShortArgumentImpl(description: String?, min: Short, max: Short) :
+    ChatShortArgument(description, min, max, Dummy)
+
+public fun ChatShortArgument(
+    description: String? = null,
+    min: Short = Short.MIN_VALUE,
+    max: Short = Short.MAX_VALUE,
+): ChatShortArgument = ChatShortArgumentImpl(description, min, max)
