@@ -31,8 +31,12 @@ import com.github.h0tk3y.betterParse.grammar.Grammar
 import com.github.h0tk3y.betterParse.grammar.parser
 import com.github.h0tk3y.betterParse.lexer.Token
 import com.github.h0tk3y.betterParse.lexer.regexToken
+import com.github.h0tk3y.betterParse.parser.Parser
 
-public typealias ChatArgumentGrammar<T> = Grammar<ChatArgumentParseResult<T>>
+public abstract class ChatArgumentGrammar<T> @PublishedApi internal constructor() :
+    Grammar<ChatArgumentParseResult<T>>() {
+    public abstract val inheritedParser: Parser<T>
+}
 
 // this entire thing is rather scuffed, but we have to do it this way around to work around an issue wherein grammars
 // do not actually inherit tokens from others, which really fucks with inheritance (https://github.com/h0tk3y/better-parse/issues/44)
@@ -40,13 +44,13 @@ public typealias ChatArgumentGrammar<T> = Grammar<ChatArgumentParseResult<T>>
 public inline fun <reified T> Grammar<T>.inherit(): ChatArgumentGrammar<T> {
     val parser = parser { rootParser }
     return object : ChatArgumentGrammar<T>() {
-        val argumentParser by parser
+        override val inheritedParser: Parser<T> by parser
 
         val matchAll by regexToken(".*".toRegex(RegexOption.DOT_MATCHES_ALL))
         val matchRest by optional(matchAll use { text })
 
         override val rootParser: ChatArgumentParser<T> by
-        (argumentParser and matchRest) use { ChatArgumentParseResult(t1, t2) }
+        (inheritedParser and matchRest) use { ChatArgumentParseResult(t1, t2) }
 
         override val tokens: List<Token> = this@inherit.tokens + listOf(matchAll)
     }

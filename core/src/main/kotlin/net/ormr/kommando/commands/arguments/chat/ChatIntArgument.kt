@@ -33,7 +33,6 @@ import com.github.h0tk3y.betterParse.lexer.literalToken
 import com.github.h0tk3y.betterParse.lexer.regexToken
 import com.github.h0tk3y.betterParse.parser.Parser
 
-// help
 public class ChatIntArgument : ChatArgument<Int>(inherit()) {
     private companion object : Grammar<Int>() {
         val minus by literalToken("-")
