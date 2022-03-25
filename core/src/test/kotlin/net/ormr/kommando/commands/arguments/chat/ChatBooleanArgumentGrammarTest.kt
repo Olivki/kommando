@@ -24,15 +24,26 @@
 
 package net.ormr.kommando.commands.arguments.chat
 
-import com.github.h0tk3y.betterParse.combinators.asJust
-import com.github.h0tk3y.betterParse.combinators.or
-import com.github.h0tk3y.betterParse.grammar.Grammar
-import com.github.h0tk3y.betterParse.lexer.literalToken
+import com.github.h0tk3y.betterParse.grammar.parseToEnd
+import com.github.h0tk3y.betterParse.grammar.tryParseToEnd
+import com.github.h0tk3y.betterParse.parser.ErrorResult
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.types.shouldBeInstanceOf
 
-public class ChatBooleanArgument : ChatArgument<Boolean>(inherit()) {
-    internal companion object ArgumentGrammar : Grammar<Boolean>() {
-        private val `false` by literalToken("false")
-        private val `true` by literalToken("true")
-        override val rootParser by (`false` asJust false) or (`true` asJust true)
+class ChatBooleanArgumentGrammarTest : FunSpec({
+    val grammar = ChatBooleanArgument.ArgumentGrammar
+
+    test("'true' input") {
+        grammar.parseToEnd("true").shouldBeTrue()
     }
-}
+
+    test("'false' input") {
+        grammar.parseToEnd("false").shouldBeFalse()
+    }
+
+    test("Non boolean input") {
+        grammar.tryParseToEnd("not-a-boolean").shouldBeInstanceOf<ErrorResult>()
+    }
+})

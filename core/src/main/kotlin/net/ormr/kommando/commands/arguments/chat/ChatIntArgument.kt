@@ -24,21 +24,14 @@
 
 package net.ormr.kommando.commands.arguments.chat
 
-import com.github.h0tk3y.betterParse.combinators.and
-import com.github.h0tk3y.betterParse.combinators.asJust
-import com.github.h0tk3y.betterParse.combinators.optional
 import com.github.h0tk3y.betterParse.combinators.use
 import com.github.h0tk3y.betterParse.grammar.Grammar
-import com.github.h0tk3y.betterParse.lexer.literalToken
 import com.github.h0tk3y.betterParse.lexer.regexToken
 import com.github.h0tk3y.betterParse.parser.Parser
 
 public class ChatIntArgument : ChatArgument<Int>(inherit()) {
-    internal companion object : Grammar<Int>() {
-        private val minus by literalToken("-")
-        private val minusParser by optional(minus asJust Unit)
-        private val num by regexToken("[0-9]+")
-        private val numParser by num use { text.toInt() }
-        override val rootParser: Parser<Int> by (minusParser and numParser) use { t1?.let { -t2 } ?: t2 }
+    internal companion object ArgumentGrammar : Grammar<Int>() {
+        private val int by regexToken("-?[0-9]+")
+        override val rootParser: Parser<Int> by int use { text.toInt() }
     }
 }

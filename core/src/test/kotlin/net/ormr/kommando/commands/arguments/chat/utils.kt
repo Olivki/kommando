@@ -24,15 +24,15 @@
 
 package net.ormr.kommando.commands.arguments.chat
 
-import com.github.h0tk3y.betterParse.combinators.asJust
-import com.github.h0tk3y.betterParse.combinators.or
 import com.github.h0tk3y.betterParse.grammar.Grammar
-import com.github.h0tk3y.betterParse.lexer.literalToken
+import com.github.h0tk3y.betterParse.grammar.parseToEnd
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.test.TestScope
+import java.math.BigInteger
 
-public class ChatBooleanArgument : ChatArgument<Boolean>(inherit()) {
-    internal companion object ArgumentGrammar : Grammar<Boolean>() {
-        private val `false` by literalToken("false")
-        private val `true` by literalToken("true")
-        override val rootParser by (`false` asJust false) or (`true` asJust true)
-    }
+fun <T : Number> TestScope.testOutOfBounds(grammar: Grammar<T>, min: T, max: T) {
+    val minOutOfBounds = BigInteger.valueOf(min.toLong()) - BigInteger.ONE
+    val maxOutOfBounds = BigInteger.valueOf(max.toLong()) + BigInteger.ONE
+    shouldThrow<NumberFormatException> { grammar.parseToEnd("$minOutOfBounds") }
+    shouldThrow<NumberFormatException> { grammar.parseToEnd("$maxOutOfBounds") }
 }

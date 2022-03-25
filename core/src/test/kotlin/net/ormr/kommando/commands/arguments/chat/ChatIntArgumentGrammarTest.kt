@@ -24,15 +24,37 @@
 
 package net.ormr.kommando.commands.arguments.chat
 
-import com.github.h0tk3y.betterParse.combinators.asJust
-import com.github.h0tk3y.betterParse.combinators.or
-import com.github.h0tk3y.betterParse.grammar.Grammar
-import com.github.h0tk3y.betterParse.lexer.literalToken
+import com.github.h0tk3y.betterParse.grammar.parseToEnd
+import com.github.h0tk3y.betterParse.grammar.tryParseToEnd
+import com.github.h0tk3y.betterParse.parser.ErrorResult
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.negativeInt
+import io.kotest.property.arbitrary.nonNegativeInt
+import io.kotest.property.checkAll
 
-public class ChatBooleanArgument : ChatArgument<Boolean>(inherit()) {
-    internal companion object ArgumentGrammar : Grammar<Boolean>() {
-        private val `false` by literalToken("false")
-        private val `true` by literalToken("true")
-        override val rootParser by (`false` asJust false) or (`true` asJust true)
+class ChatIntArgumentGrammarTest : FunSpec({
+    val grammar = ChatIntArgument.ArgumentGrammar
+
+    test("Positive integer input") {
+        checkAll(1_000, Arb.nonNegativeInt()) {
+            grammar.parseToEnd("$it") shouldBe it
+        }
     }
-}
+
+    test("Negative integer input") {
+        checkAll(1_000, Arb.negativeInt()) {
+            grammar.parseToEnd("$it") shouldBe it
+        }
+    }
+
+    test("Decimal number input") {
+        grammar.tryParseToEnd("13.37").shouldBeInstanceOf<ErrorResult>()
+    }
+
+    test("Out-of-bounds value") {
+        testOutOfBounds(grammar, Int.MIN_VALUE, Int.MAX_VALUE)
+    }
+})
