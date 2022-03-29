@@ -28,7 +28,7 @@ import net.ormr.kommando.utils.Dummy
 
 @Suppress("UNUSED_PARAMETER")
 public sealed class ChatBooleanArgument(
-    override val description: String? = null,
+    override val description: String?,
     dummy: Dummy,
 ) : ChatArgument<Boolean>("Boolean") {
     public companion object Default : ChatBooleanArgument(description = null, Dummy)

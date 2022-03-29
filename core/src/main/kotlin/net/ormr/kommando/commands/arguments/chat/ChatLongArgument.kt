@@ -28,9 +28,9 @@ import net.ormr.kommando.utils.Dummy
 
 @Suppress("UNUSED_PARAMETER")
 public sealed class ChatLongArgument(
-    override val description: String? = null,
-    public val min: Long = Long.MIN_VALUE,
-    public val max: Long = Long.MAX_VALUE,
+    override val description: String?,
+    public val min: Long,
+    public val max: Long,
     dummy: Dummy,
 ) : ChatArgument<Long>("Long") {
     public companion object Default : ChatLongArgument(description = null, Long.MIN_VALUE, Long.MAX_VALUE, Dummy) {

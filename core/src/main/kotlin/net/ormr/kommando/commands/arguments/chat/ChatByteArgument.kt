@@ -28,9 +28,9 @@ import net.ormr.kommando.utils.Dummy
 
 @Suppress("UNUSED_PARAMETER")
 public sealed class ChatByteArgument(
-    override val description: String? = null,
-    public val min: Byte = Byte.MIN_VALUE,
-    public val max: Byte = Byte.MAX_VALUE,
+    override val description: String?,
+    public val min: Byte,
+    public val max: Byte,
     dummy: Dummy,
 ) : ChatArgument<Byte>("Byte") {
     public companion object Default : ChatByteArgument(description = null, Byte.MIN_VALUE, Byte.MAX_VALUE, Dummy) {
