@@ -26,7 +26,9 @@ package net.ormr.kommando.commands.arguments.chat
 
 import com.github.h0tk3y.betterParse.combinators.use
 import com.github.h0tk3y.betterParse.grammar.Grammar
+import com.github.h0tk3y.betterParse.grammar.tryParseToEnd
 import com.github.h0tk3y.betterParse.lexer.regexToken
+import com.github.h0tk3y.betterParse.parser.ParseResult
 import com.github.h0tk3y.betterParse.parser.Parser
 import net.ormr.kommando.parser.outOfBounds
 import net.ormr.kommando.utils.Dummy
@@ -37,7 +39,7 @@ public sealed class ChatShortArgument(
     public val min: Short = Short.MIN_VALUE,
     public val max: Short = Short.MAX_VALUE,
     dummy: Dummy,
-) : ChatArgument<Short>(ArgumentGrammar.inherit()) {
+) : ChatArgument<Short>(ArgumentGrammar.inherit(), "Short") {
     public companion object Default : ChatShortArgument(description = null, Short.MIN_VALUE, Short.MAX_VALUE, Dummy) {
         public fun negative(description: String? = null, min: Short = Short.MIN_VALUE): ChatShortArgument =
             ChatShortArgument(description, min = min, max = -1)
@@ -56,6 +58,10 @@ public sealed class ChatShortArgument(
         private val num by regexToken("-?[0-9]+")
         override val rootParser: Parser<Short> by outOfBounds(num use { text.toShort() })
     }
+
+    // TODO: make sure it's within the bounds `min` and `max`
+    override suspend fun tryParse(input: String): ParseResult<ChatArgumentParseResult<Short>> =
+        grammar.tryParseToEnd(input.trimStart())
 }
 
 private class ChatShortArgumentImpl(description: String?, min: Short, max: Short) :

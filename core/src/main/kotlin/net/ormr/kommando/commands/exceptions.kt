@@ -22,16 +22,25 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.commands
 
-import dev.kord.gateway.Intents
-import kotlin.reflect.KType
+import com.github.h0tk3y.betterParse.parser.ErrorResult
+import com.github.h0tk3y.betterParse.parser.ParseException
+import net.ormr.kommando.commands.arguments.chat.ChatArgument
+
+public open class CommandException(description: String?, cause: Throwable? = null) :
+    RuntimeException(description, cause)
+
+public class CommandParseException(public val errorResult: ErrorResult, cause: ParseException) :
+    CommandException("Command could not be parsed.", cause)
 
 /**
- * Thrown if an event registered via [Kommando] requires intents that have not been registered.
+ * Thrown if no [ChatCommand] can be found with the given [commandName].
  */
 @Suppress("CanBeParameter", "MemberVisibilityCanBePrivate")
-public class MissingEventIntentException(
-    public val eventType: KType,
-    public val missingIntents: Intents,
-) : RuntimeException("Intents for event $eventType is missing: ${missingIntents.values}.")
+public class NoSuchCommandException(public val commandName: String) :
+    CommandException("Unknown command requested: $commandName")
+
+@Suppress("CanBeParameter", "MemberVisibilityCanBePrivate")
+public class MissingCommandArgumentsException(public val missingArguments: List<ChatArgument<*>>) :
+    CommandException("Command is missing ${missingArguments.size} arguments: [${missingArguments.joinToString { it.typeName }}]")

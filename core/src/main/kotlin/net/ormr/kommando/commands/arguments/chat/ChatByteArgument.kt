@@ -26,7 +26,9 @@ package net.ormr.kommando.commands.arguments.chat
 
 import com.github.h0tk3y.betterParse.combinators.use
 import com.github.h0tk3y.betterParse.grammar.Grammar
+import com.github.h0tk3y.betterParse.grammar.tryParseToEnd
 import com.github.h0tk3y.betterParse.lexer.regexToken
+import com.github.h0tk3y.betterParse.parser.ParseResult
 import com.github.h0tk3y.betterParse.parser.Parser
 import net.ormr.kommando.parser.outOfBounds
 import net.ormr.kommando.utils.Dummy
@@ -37,7 +39,7 @@ public sealed class ChatByteArgument(
     public val min: Byte = Byte.MIN_VALUE,
     public val max: Byte = Byte.MAX_VALUE,
     dummy: Dummy,
-) : ChatArgument<Byte>(ArgumentGrammar.inherit()) {
+) : ChatArgument<Byte>(ArgumentGrammar.inherit(), "Byte") {
     public companion object Default : ChatByteArgument(description = null, Byte.MIN_VALUE, Byte.MAX_VALUE, Dummy) {
         public fun negative(description: String? = null, min: Byte = Byte.MIN_VALUE): ChatByteArgument =
             ChatByteArgument(description, min = min, max = -1)
@@ -56,6 +58,10 @@ public sealed class ChatByteArgument(
         private val num by regexToken("-?[0-9]+")
         override val rootParser: Parser<Byte> by outOfBounds(num use { text.toByte() })
     }
+
+    // TODO: make sure it's within the bounds `min` and `max`
+    override suspend fun tryParse(input: String): ParseResult<ChatArgumentParseResult<Byte>> =
+        grammar.tryParseToEnd(input.trimStart())
 }
 
 private class ChatByteArgumentImpl(description: String?, min: Byte, max: Byte) :

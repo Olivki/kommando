@@ -26,7 +26,9 @@ package net.ormr.kommando.commands.arguments.chat
 
 import com.github.h0tk3y.betterParse.combinators.use
 import com.github.h0tk3y.betterParse.grammar.Grammar
+import com.github.h0tk3y.betterParse.grammar.tryParseToEnd
 import com.github.h0tk3y.betterParse.lexer.regexToken
+import com.github.h0tk3y.betterParse.parser.ParseResult
 import com.github.h0tk3y.betterParse.parser.Parser
 import net.ormr.kommando.parser.outOfBounds
 import net.ormr.kommando.utils.Dummy
@@ -37,7 +39,7 @@ public sealed class ChatIntArgument(
     public val min: Int,
     public val max: Int,
     dummy: Dummy,
-) : ChatArgument<Int>(ArgumentGrammar.inherit()) {
+) : ChatArgument<Int>(ArgumentGrammar.inherit(), "Int") {
     public companion object Default : ChatIntArgument(description = null, Int.MIN_VALUE, Int.MAX_VALUE, Dummy) {
         public fun negative(description: String? = null, min: Int = Int.MIN_VALUE): ChatIntArgument =
             ChatIntArgument(description, min = min, max = -1)
@@ -56,6 +58,10 @@ public sealed class ChatIntArgument(
         private val num by regexToken("-?[0-9]+")
         override val rootParser: Parser<Int> by outOfBounds(num use { text.toInt() })
     }
+
+    // TODO: make sure it's within the bounds `min` and `max`
+    override suspend fun tryParse(input: String): ParseResult<ChatArgumentParseResult<Int>> =
+        grammar.tryParseToEnd(input.trimStart())
 }
 
 private class ChatIntArgumentImpl(description: String?, min: Int, max: Int) :

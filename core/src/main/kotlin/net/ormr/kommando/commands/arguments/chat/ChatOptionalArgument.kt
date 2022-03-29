@@ -24,31 +24,23 @@
 
 package net.ormr.kommando.commands.arguments.chat
 
-import com.github.h0tk3y.betterParse.combinators.asJust
-import com.github.h0tk3y.betterParse.combinators.or
-import com.github.h0tk3y.betterParse.grammar.Grammar
 import com.github.h0tk3y.betterParse.grammar.tryParseToEnd
-import com.github.h0tk3y.betterParse.lexer.literalToken
 import com.github.h0tk3y.betterParse.parser.ParseResult
-import net.ormr.kommando.utils.Dummy
+import net.ormr.kommando.parser.ParsedValue
+import net.ormr.kommando.parser.recoverWith
 
-@Suppress("UNUSED_PARAMETER")
-public sealed class ChatBooleanArgument(
-    override val description: String? = null,
-    dummy: Dummy,
-) : ChatArgument<Boolean>(ArgumentGrammar.inherit(), "Boolean") {
-    public companion object Default : ChatBooleanArgument(description = null, Dummy)
+@Suppress("UNCHECKED_CAST")
+public class ChatOptionalArgument<T> internal constructor(
+    private val argument: ChatArgument<T>,
+) : ChatArgument<T?>(argument.grammar as ChatArgumentGrammar<T?>, "${argument.typeName}?") {
+    override val description: String?
+        get() = argument.description
 
-    internal object ArgumentGrammar : Grammar<Boolean>() {
-        private val `false` by literalToken("false")
-        private val `true` by literalToken("true")
-        override val rootParser by (`false` asJust false) or (`true` asJust true)
-    }
-
-    override suspend fun tryParse(input: String): ParseResult<ChatArgumentParseResult<Boolean>> =
-        grammar.tryParseToEnd(input.trimStart())
+    override suspend fun tryParse(input: String): ParseResult<ChatArgumentParseResult<T?>> =
+        grammar.tryParseToEnd(input).recoverWith { ParsedValue(ChatArgumentParseResult(null, null), -1) }
 }
 
-private class ChatBooleanArgumentImpl(description: String?) : ChatBooleanArgument(description, Dummy)
-
-public fun ChatBooleanArgument(description: String? = null): ChatBooleanArgument = ChatBooleanArgumentImpl(description)
+public fun <T> ChatArgument<T>.optional(): ChatArgument<T?> {
+    require(this !is ChatOptionalArgument<*>) { "Nesting of optional arguments is not allowed." }
+    return ChatOptionalArgument(this)
+}

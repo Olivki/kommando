@@ -22,16 +22,33 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.parser
 
-import dev.kord.gateway.Intents
-import kotlin.reflect.KType
+import com.github.h0tk3y.betterParse.parser.ErrorResult
+import com.github.h0tk3y.betterParse.parser.ParseResult
+import com.github.h0tk3y.betterParse.parser.Parsed
 
-/**
- * Thrown if an event registered via [Kommando] requires intents that have not been registered.
- */
-@Suppress("CanBeParameter", "MemberVisibilityCanBePrivate")
-public class MissingEventIntentException(
-    public val eventType: KType,
-    public val missingIntents: Intents,
-) : RuntimeException("Intents for event $eventType is missing: ${missingIntents.values}.")
+public inline fun <T, R> ParseResult<T>.fold(
+    ifFailure: (ErrorResult) -> R,
+    ifSuccess: (Parsed<T>) -> R,
+): R = when (this) {
+    is ErrorResult -> ifFailure(this)
+    is Parsed -> ifSuccess(this)
+}
+
+public inline fun <T, R> ParseResult<T>.map(transformer: (T) -> R): ParseResult<R> = when (this) {
+    is ErrorResult -> this
+    is Parsed -> ParsedValue(transformer(value), nextPosition)
+}
+
+public inline fun <T, R> ParseResult<T>.flatMap(transformer: (value: T, nextPosition: Int) -> ParseResult<R>): ParseResult<R> =
+    when (this) {
+        is ErrorResult -> this
+        is Parsed -> transformer(value, nextPosition)
+    }
+
+public inline fun <T> ParseResult<T>.recoverWith(transformer: (ErrorResult) -> ParseResult<T>): ParseResult<T> =
+    when (this) {
+        is ErrorResult -> transformer(this)
+        is Parsed -> this
+    }

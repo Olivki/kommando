@@ -32,4 +32,7 @@ public sealed interface ChatCommand<D : CommandData<MessageCreateEvent>> : Comma
     public val executor: CommandExecutor<ChatArgument<*>, *, MessageCreateEvent, D>
 
     public val aliases: Set<String>
+
+    public val arguments: List<ChatArgument<*>>
+        get() = executor.arguments
 }

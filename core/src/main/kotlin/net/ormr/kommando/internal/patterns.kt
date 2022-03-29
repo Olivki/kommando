@@ -22,16 +22,6 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.internal
 
-import dev.kord.gateway.Intents
-import kotlin.reflect.KType
-
-/**
- * Thrown if an event registered via [Kommando] requires intents that have not been registered.
- */
-@Suppress("CanBeParameter", "MemberVisibilityCanBePrivate")
-public class MissingEventIntentException(
-    public val eventType: KType,
-    public val missingIntents: Intents,
-) : RuntimeException("Intents for event $eventType is missing: ${missingIntents.values}.")
+internal val WHITESPACE_REGEX = """\s""".toRegex()
