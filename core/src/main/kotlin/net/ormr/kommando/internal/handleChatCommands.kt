@@ -24,14 +24,9 @@
 
 package net.ormr.kommando.internal
 
-import com.github.h0tk3y.betterParse.parser.ParseException
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import net.ormr.kommando.Kommando
-import net.ormr.kommando.commands.CommandParseException
-import net.ormr.kommando.commands.NoSuchCommandException
-import net.ormr.kommando.commands.arguments.chat.ChatArgument
-import net.ormr.kommando.commands.arguments.chat.ChatOptionalArgument
 import net.ormr.kommando.utils.checkIntents
 
 // TODO: do we want to throw an error at creation if chat commands have been created but no intent for MessageContent
@@ -47,36 +42,5 @@ internal suspend fun Kommando.handleChatCommands() {
         val commandContent = content.substringAfter(parsedPrefix)
         // TODO: should we throw an exception for empty command content?
         if (commandContent.isEmpty()) return@on
-        val commandName = commandContent.splitToSequence(WHITESPACE_REGEX).first()
-        val command = chatCommands[commandName] ?: throw NoSuchCommandException(commandName)
-        val argumentContent = commandContent.substringAfter(commandName)
-        val thing = try {
-            gamer(command.arguments, argumentContent)
-        } catch (e: ParseException) {
-            throw CommandParseException(e.errorResult, e)
-        }
-        println(thing)
-    }
-}
-
-// TODO: we gotta handle a case where `rest` is null before end of arguments
-// TODO: we gotta handle when `rest` is empty
-// TODO: handle when 'rest' is empty before arguments are over
-private suspend fun gamer(arguments: List<ChatArgument<*>>, argumentContent: String): List<Any?> {
-    var currentInput: String? = argumentContent
-    return buildList {
-        for (argument in arguments) {
-            val input = when {
-                currentInput == null -> when (argument) {
-                    is ChatOptionalArgument -> TODO()
-                    else -> TODO()
-                }
-                else -> TODO()
-            }
-            argument.parse(input)
-            /*val (value, rest) = argument.parse(input ?: break)
-            input = rest
-            add(value)*/
-        }
     }
 }

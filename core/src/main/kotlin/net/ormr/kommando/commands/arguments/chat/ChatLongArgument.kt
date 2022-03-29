@@ -24,13 +24,6 @@
 
 package net.ormr.kommando.commands.arguments.chat
 
-import com.github.h0tk3y.betterParse.combinators.use
-import com.github.h0tk3y.betterParse.grammar.Grammar
-import com.github.h0tk3y.betterParse.grammar.tryParseToEnd
-import com.github.h0tk3y.betterParse.lexer.regexToken
-import com.github.h0tk3y.betterParse.parser.ParseResult
-import com.github.h0tk3y.betterParse.parser.Parser
-import net.ormr.kommando.parser.outOfBounds
 import net.ormr.kommando.utils.Dummy
 
 @Suppress("UNUSED_PARAMETER")
@@ -39,7 +32,7 @@ public sealed class ChatLongArgument(
     public val min: Long = Long.MIN_VALUE,
     public val max: Long = Long.MAX_VALUE,
     dummy: Dummy,
-) : ChatArgument<Long>(ArgumentGrammar.inherit(), "Long") {
+) : ChatArgument<Long>("Long") {
     public companion object Default : ChatLongArgument(description = null, Long.MIN_VALUE, Long.MAX_VALUE, Dummy) {
         public fun negative(description: String? = null, min: Long = Long.MIN_VALUE): ChatLongArgument =
             ChatLongArgument(description, min = min, max = -1)
@@ -53,15 +46,6 @@ public sealed class ChatLongArgument(
         public fun nonNegative(description: String? = null, max: Long = Long.MAX_VALUE): ChatLongArgument =
             ChatLongArgument(description, min = 0, max = max)
     }
-
-    internal object ArgumentGrammar : Grammar<Long>() {
-        private val num by regexToken("-?[0-9]+")
-        override val rootParser: Parser<Long> by outOfBounds(num use { text.toLong() })
-    }
-
-    // TODO: make sure it's within the bounds `min` and `max`
-    override suspend fun tryParse(input: String): ParseResult<ChatArgumentParseResult<Long>> =
-        grammar.tryParseToEnd(input.trimStart())
 }
 
 private class ChatLongArgumentImpl(description: String?, min: Long, max: Long) :

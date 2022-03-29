@@ -24,20 +24,12 @@
 
 package net.ormr.kommando.commands.arguments.chat
 
-import com.github.h0tk3y.betterParse.grammar.tryParseToEnd
-import com.github.h0tk3y.betterParse.parser.ParseResult
-import net.ormr.kommando.parser.ParsedValue
-import net.ormr.kommando.parser.recoverWith
-
 @Suppress("UNCHECKED_CAST")
 public class ChatOptionalArgument<T> internal constructor(
     private val argument: ChatArgument<T>,
-) : ChatArgument<T?>(argument.grammar as ChatArgumentGrammar<T?>, "${argument.typeName}?") {
+) : ChatArgument<T?>("${argument.typeName}?") {
     override val description: String?
         get() = argument.description
-
-    override suspend fun tryParse(input: String): ParseResult<ChatArgumentParseResult<T?>> =
-        grammar.tryParseToEnd(input).recoverWith { ParsedValue(ChatArgumentParseResult(null, null), -1) }
 }
 
 public fun <T> ChatArgument<T>.optional(): ChatArgument<T?> {

@@ -24,21 +24,12 @@
 
 package net.ormr.kommando.commands.arguments.chat
 
-import com.github.h0tk3y.betterParse.parser.ParseResult
-import com.github.h0tk3y.betterParse.parser.toParsedOrThrow
 import net.ormr.kommando.commands.arguments.CommandArgument
 
 // TODO: do we want to store the result of 'ArgumentGrammar.inherit()' inside of a property inside of the companion
 //       objects of the children classes of this? Might make it more efficient, but I'm not sure if the efficiency gain
 //       is that huge.
 // TODO: add 'suspend fun getExamples()' function
-public abstract class ChatArgument<T>(
-    public val grammar: ChatArgumentGrammar<T>,
-    public val typeName: String,
-) : CommandArgument<T> {
+public abstract class ChatArgument<T>(public val typeName: String) : CommandArgument<T> {
     public abstract val description: String?
-
-    public abstract suspend fun tryParse(input: String): ParseResult<ChatArgumentParseResult<T>>
-
-    public suspend fun parse(input: String): ChatArgumentParseResult<T> = tryParse(input).toParsedOrThrow().value
 }
