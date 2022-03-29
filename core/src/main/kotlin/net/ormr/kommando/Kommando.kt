@@ -26,6 +26,7 @@
 
 package net.ormr.kommando
 
+import com.github.michaelbull.logging.InlineLogger
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.gateway.Intent
@@ -48,6 +49,8 @@ import org.kodein.di.DI
 import org.kodein.di.DirectDI
 import org.kodein.di.DirectDIAware
 import org.kodein.di.bindSingleton
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 public class Kommando(
     public val kord: Kord,
@@ -62,6 +65,10 @@ public class Kommando(
     public val prefix: CommandPrefix?,
     internal val registeredApplicationCommands: Map<Snowflake, ApplicationCommand<*, *>>,
 ) : DirectDIAware {
+    private companion object {
+        private val logger = InlineLogger()
+    }
+
     internal suspend fun initialize() {
         handleSlashCommands()
         handleChatCommands()
@@ -74,6 +81,10 @@ public class KommandoBuilder @PublishedApi internal constructor(
     public val intents: Intents,
     override val directDI: DirectDI,
 ) : DirectDIAware {
+    private companion object {
+        private val logger = InlineLogger()
+    }
+
     public val commands: MutableList<CommandGroup> = mutableListOf()
 
     public val commandPreconditions: MutableList<CommandPrecondition> = mutableListOf()
@@ -125,6 +136,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
 
     // TODO: throw exception if chatCommands are registered but no 'prefix' has been set
     @PublishedApi
+    @OptIn(ExperimentalTime::class)
     internal suspend fun build(): Kommando {
         val commands = commands.toList()
         val commandPreconditions = commandPreconditions.toList()
@@ -140,7 +152,9 @@ public class KommandoBuilder @PublishedApi internal constructor(
                 }
         }
         val applicationCommands = flattenedCommands.filterIsInstance<ApplicationCommand<*, *>>()
-        val registeredSlashCommands = registerSlashCommands(applicationCommands)
+        logger.info { "Registering ${applicationCommands.size} application commands." }
+        val (registeredApplicationCommands, duration) = measureTimedValue { registerSlashCommands(applicationCommands) }
+        logger.info { "Registration of all ${applicationCommands.size} application commands took $duration." }
         val kommando = Kommando(
             kord = kord,
             intents = intents,
@@ -152,7 +166,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
             chatCommands = chatCommands,
             applicationCommands = applicationCommands,
             prefix = prefix,
-            registeredApplicationCommands = registeredSlashCommands,
+            registeredApplicationCommands = registeredApplicationCommands,
         )
 
         kommando.initialize()
