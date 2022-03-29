@@ -32,6 +32,7 @@ public data class SlashCommandGroup<S : SlashSubCommand<*, *>>(
     public val subCommands: Map<String, S>,
 )
 
+@KommandoDsl
 public class SlashCommandGroupBuilder<S : SlashSubCommand<*, *>> @PublishedApi internal constructor(
     private val name: String,
     private val description: String,

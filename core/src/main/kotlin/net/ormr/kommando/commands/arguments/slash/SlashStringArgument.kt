@@ -30,12 +30,14 @@ import dev.kord.rest.builder.interaction.string
 public class SlashStringArgument(
     override val name: String,
     override val description: String,
+    override val autoComplete: AutoCompleteAction? = null,
 ) : SlashArgumentWithChoice<String> {
     override val type: SlashArgumentType.STRING
         get() = SlashArgumentType.STRING
 
     override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
         string(name, description) {
+            this.autocomplete = autoComplete != null
             this.required = required
         }
     }

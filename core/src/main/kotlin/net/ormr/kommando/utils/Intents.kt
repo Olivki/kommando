@@ -41,3 +41,9 @@ public inline fun <reified T : Event> checkIntents(requestedIntents: Intents) {
     }
 }
 
+/**
+ * Throws an [MissingEventIntentException] if the required intents for [T] are not available in [requestedIntents].
+ */
+public inline fun <reified T : Event> T.checkEventIntents(requestedIntents: Intents) {
+    checkIntents<T>(requestedIntents)
+}

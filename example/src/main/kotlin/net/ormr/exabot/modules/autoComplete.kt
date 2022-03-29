@@ -24,35 +24,38 @@
 
 package net.ormr.exabot.modules
 
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.interaction.respondPublic
+import dev.kord.core.behavior.interaction.suggestString
 import net.ormr.kommando.commands.*
-import net.ormr.kommando.commands.arguments.slash.SlashDoubleArgument
-import net.ormr.kommando.commands.arguments.slash.SlashLongArgument
 import net.ormr.kommando.commands.arguments.slash.SlashStringArgument
+import net.ormr.kommando.processor.Tag
 
-fun advancedSlash() = commands("Baby!") {
-    globalSlashCommand("advanced", "Some more complex/advanced slash commands!") {
-        group("type", "Basic group") {
-            subCommand("int", "Accepts integers") {
-                execute(SlashLongArgument("value", "It's an integer!")) { (value) ->
-                    interaction.respondPublic { content = "It's $value" }
-                }
-            }
-            subCommand("double", "Accepts doubles!") {
-                execute(SlashDoubleArgument("value", "It's a double!")) { (value) ->
-                    interaction.respondPublic { content = "It's $value" }
-                }
-            }
-            subCommand("string", "Accepts strings!") {
-                execute(SlashStringArgument("value", "It's a string!")) { (value) ->
-                    interaction.respondPublic { content = "It's '$value'" }
+fun autoComplete(@Tag guildId: Snowflake) = commands("Auto Completes!") {
+    guildSlashCommand("autocomplete", "It auto completes! Wow!", guildId) {
+        group("grouped", "It's grouped wow!") {
+            subCommand("auto", "auto") {
+                execute(
+                    SlashStringArgument("slash", "slash") { suggestString { choice("dab", "dab") } },
+                ) { (value) ->
+                    interaction.respondPublic { content = "Wow! $value" }
                 }
             }
         }
-        subCommand("steven", "It's Steve!") {
-            execute {
-                interaction.respondPublic { content = "'ello there!" }
+        subCommand("dabbers", "Dddd") {
+            execute(
+                SlashStringArgument("slash", "slash") { suggestString { choice("dab", "dab") } },
+            ) { (value) ->
+                interaction.respondPublic { content = "Wow! $value" }
             }
+        }
+    }
+
+    guildSlashCommand("autodab", "it dabs", guildId) {
+        execute(
+            SlashStringArgument("slash", "slash") { suggestString { choice("dab", "dab") } },
+        ) { (value) ->
+            interaction.respondPublic { content = "Wow! $value" }
         }
     }
 }

@@ -45,6 +45,7 @@ public data class GuildSlashSubCommandData(
         get() = event.interaction
 }
 
+@KommandoDsl
 public class GuildSlashSubCommandBuilder @PublishedApi internal constructor(
     private val name: String,
     private val description: String,

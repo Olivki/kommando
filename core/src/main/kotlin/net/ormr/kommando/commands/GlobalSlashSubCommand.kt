@@ -43,6 +43,7 @@ public data class GlobalSlashSubCommandData(
         get() = event.interaction
 }
 
+@KommandoDsl
 public class GlobalSlashSubCommandBuilder @PublishedApi internal constructor(
     private val name: String,
     private val description: String,

@@ -32,12 +32,14 @@ import dev.kord.rest.builder.interaction.number
 public class SlashDoubleArgument(
     override val name: String,
     override val description: String,
+    override val autoComplete: AutoCompleteAction? = null,
 ) : SlashArgumentWithChoice<Double> {
     override val type: SlashArgumentType.DOUBLE
         get() = SlashArgumentType.DOUBLE
 
     override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
         number(name, description) {
+            this.autocomplete = autoComplete != null
             this.required = required
         }
     }

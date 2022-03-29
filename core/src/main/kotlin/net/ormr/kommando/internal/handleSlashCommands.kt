@@ -36,11 +36,13 @@ import net.ormr.kommando.Kommando
 import net.ormr.kommando.commands.*
 import net.ormr.kommando.commands.arguments.CommandExecutorArguments
 import net.ormr.kommando.commands.arguments.CommandExecutorArguments.*
+import net.ormr.kommando.commands.arguments.slash.AutoCompleteAction
+import net.ormr.kommando.commands.arguments.slash.SlashArgument
+import net.ormr.kommando.commands.arguments.slash.SlashArgumentWithChoice
 import net.ormr.kommando.commands.arguments.slash.SlashDefaultArgument
 
-// our way of handling the commands might be a bit naive, but w/e
-internal suspend fun Kommando.handleSlashCommands() {
-    // TODO: make this code cleaner and more modular, we can most likely cut down a lot of LOC here
+internal suspend fun Kommando.handleApplicationCommands() {
+    // TODO: clean up this code, there's a lot of just the same stuff repeated over and over again
     kord.on<ApplicationCommandInteractionCreateEvent> {
         when (this) {
             is GlobalUserCommandInteractionCreateEvent -> {
@@ -122,16 +124,13 @@ internal suspend fun Kommando.handleSlashCommands() {
                             command.executor!!.execute(GlobalSlashCommandData(kord, this), args)
                         }
                         is SubCommand -> {
-                            val subCommand = command.subCommands[interaction.name]
-                                ?: noSuchSubCommand(interaction.name, commandId)
+                            val subCommand = command.getSubCommand(interaction.name, commandId)
                             val args = subCommand.getArgs(interaction, this)
                             subCommand.executor.execute(GlobalSlashSubCommandData(kord, this), args)
                         }
                         is GroupCommand -> {
-                            val group = command.groups[interaction.groupName]
-                                ?: noSuchCommandGroup(interaction.groupName, commandId)
-                            val subCommand = group.subCommands[interaction.name]
-                                ?: noSuchSubCommand(interaction.name, commandId)
+                            val group = command.getGroup(interaction.groupName, commandId)
+                            val subCommand = group.getSubCommand(interaction.name, commandId)
                             val args = subCommand.getArgs(interaction, this)
                             subCommand.executor.execute(GlobalSlashSubCommandData(kord, this), args)
                         }
@@ -142,16 +141,13 @@ internal suspend fun Kommando.handleSlashCommands() {
                             command.executor!!.execute(GuildSlashCommandData(kord, this), args)
                         }
                         is SubCommand -> {
-                            val subCommand = command.subCommands[interaction.name]
-                                ?: noSuchSubCommand(interaction.name, commandId)
+                            val subCommand = command.getSubCommand(interaction.name, commandId)
                             val args = subCommand.getArgs(interaction, this)
                             subCommand.executor.execute(GuildSlashSubCommandData(kord, this), args)
                         }
                         is GroupCommand -> {
-                            val group = command.groups[interaction.groupName]
-                                ?: noSuchCommandGroup(interaction.groupName, commandId)
-                            val subCommand = group.subCommands[interaction.name]
-                                ?: noSuchSubCommand(interaction.name, commandId)
+                            val group = command.getGroup(interaction.groupName, commandId)
+                            val subCommand = group.getSubCommand(interaction.name, commandId)
                             val args = subCommand.getArgs(interaction, this)
                             subCommand.executor.execute(GuildSlashSubCommandData(kord, this), args)
                         }
@@ -162,7 +158,65 @@ internal suspend fun Kommando.handleSlashCommands() {
             }
         }
     }
+    kord.on<AutoCompleteInteractionCreateEvent> {
+        val focusedCommandName = interaction.command.options.entries.single { it.value.focused }.key
+        val commandId = interaction.command.rootId
+        val command = getCommand(commandId)
+        // TODO: throw exception?
+        if (command !is SlashCommand<*, *, *>) return@on
+        when (val interactionCommand = interaction.command) {
+            is RootCommand -> {
+                val argument = command.executor!!.getArgument(focusedCommandName)
+                if (argument !is SlashArgumentWithChoice) invalidArgumentForAutoComplete()
+                val autoComplete = argument.getAutoComplete()
+                autoComplete(interaction, this)
+            }
+            is SubCommand -> {
+                val subCommand = command.getSubCommand(interactionCommand.name, commandId)
+                val argument = subCommand.executor.getArgument(focusedCommandName)
+                if (argument !is SlashArgumentWithChoice) invalidArgumentForAutoComplete()
+                val autoComplete = argument.getAutoComplete()
+                autoComplete(interaction, this)
+            }
+            is GroupCommand -> {
+                val group = command.getGroup(interactionCommand.groupName, commandId)
+                val subCommand = group.getSubCommand(interactionCommand.name, commandId)
+                val argument = subCommand.executor.getArgument(focusedCommandName)
+                if (argument !is SlashArgumentWithChoice) invalidArgumentForAutoComplete()
+                val autoComplete = argument.getAutoComplete()
+                autoComplete(interaction, this)
+            }
+        }
+    }
 }
+
+// TODO: custom exception
+private fun invalidArgumentForAutoComplete(): Nothing = error("Found argument does not have auto complete support.")
+
+// TODO: make into a normal function?
+private fun <S : SlashSubCommand<*, *>> SlashCommand<*, *, S>.getGroup(
+    name: String,
+    id: Snowflake,
+): SlashCommandGroup<S> = groups[name] ?: noSuchCommandGroup(name, id)
+
+// TODO: make into a normal function?
+private fun <S : SlashSubCommand<*, *>> SlashCommand<*, *, S>.getSubCommand(
+    name: String,
+    id: Snowflake,
+): S = subCommands[name] ?: noSuchSubCommand(name, id)
+
+// TODO: make into a normal function?
+private fun <S : SlashSubCommand<*, *>> SlashCommandGroup<S>.getSubCommand(
+    name: String,
+    id: Snowflake,
+): S = subCommands[name] ?: noSuchSubCommand(name, id)
+
+// TODO: custom exception
+private fun SlashArgumentWithChoice<*>.getAutoComplete(): AutoCompleteAction =
+    autoComplete ?: error("Auto complete was requested but autoComplete action is 'null' on argument.")
+
+private fun CommandExecutor<SlashArgument<*>, *, *, *>.getArgument(name: String): SlashArgument<*> =
+    arguments.single { it.name == name }
 
 private fun Kommando.getCommand(id: Snowflake): ApplicationCommand<*, *> =
     registeredApplicationCommands[id] ?: noCommandFound(id)

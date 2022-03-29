@@ -22,23 +22,9 @@
  * SOFTWARE.
  */
 
-package net.ormr.exabot.modules
+package net.ormr.kommando.commands.arguments.slash
 
-import dev.kord.core.behavior.interaction.respondEphemeral
-import net.ormr.kommando.commands.*
+import dev.kord.core.entity.interaction.AutoCompleteInteraction
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 
-fun globals() = commands("Globals") {
-    globalSlashCommand("global", "It's global baby!") {
-        execute {
-            interaction.respondEphemeral { content = "Now you've done it lad." }
-        }
-    }
-
-    globalMessageCommand("Global Mesage!!") { (message) ->
-        interaction.respondEphemeral { content = "Stinky message ${message.id}" }
-    }
-
-    globalUserCommand("Global User!!") { (user) ->
-        interaction.respondEphemeral { content = "Stinky user ${user.username}" }
-    }
-}
+public typealias AutoCompleteAction = (suspend AutoCompleteInteraction.(AutoCompleteInteractionCreateEvent) -> Unit)

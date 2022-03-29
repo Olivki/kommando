@@ -38,8 +38,8 @@ import net.ormr.kommando.commands.ChatCommand
 import net.ormr.kommando.commands.CommandGroup
 import net.ormr.kommando.commands.prefix.CommandPrefix
 import net.ormr.kommando.commands.prefix.CommandPrefixBuilder
+import net.ormr.kommando.internal.handleApplicationCommands
 import net.ormr.kommando.internal.handleChatCommands
-import net.ormr.kommando.internal.handleSlashCommands
 import net.ormr.kommando.internal.registerSlashCommands
 import net.ormr.kommando.structures.CommandPrecondition
 import net.ormr.kommando.structures.EventListener
@@ -70,7 +70,7 @@ public class Kommando(
     }
 
     internal suspend fun initialize() {
-        handleSlashCommands()
+        handleApplicationCommands()
         handleChatCommands()
         eventListeners.forEach { it.executeBlock(this) }
     }
