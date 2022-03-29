@@ -27,10 +27,11 @@ package net.ormr.kommando.commands
 import dev.kord.core.event.Event
 import net.ormr.kommando.commands.arguments.CommandArgument
 
+// TODO: make custom builder exceptions
 public sealed class CommandBuilder<out C : Command, A : CommandArgument<*>, E : Event, D : CommandData<E>> {
-    private var executor: CommandExecutor<A, *, E, D>? = null
+    protected var executor: CommandExecutor<A, *, E, D>? = null
 
-    protected fun getExecutor(): CommandExecutor<A, *, E, D> =
+    protected fun getNonNullExecutor(): CommandExecutor<A, *, E, D> =
         executor ?: throw IllegalArgumentException("Missing required 'execute' block.")
 
     internal fun registerExecutor(executor: CommandExecutor<A, *, E, D>) {

@@ -24,13 +24,13 @@
 
 package net.ormr.kommando.commands.arguments.slash
 
-import dev.kord.rest.builder.interaction.RootInputChatBuilder
+import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 
 public class SlashChoiceArgument<T> internal constructor(
     private val argument: SlashArgumentWithChoice<T>,
     private val choices: List<SlashChoice<T>>,
 ) : SlashArgument<T> by argument {
-    override fun RootInputChatBuilder.buildArgument(required: Boolean) {
+    override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
         with(argument) {
             buildArgumentWithChoices(choices, required)
         }

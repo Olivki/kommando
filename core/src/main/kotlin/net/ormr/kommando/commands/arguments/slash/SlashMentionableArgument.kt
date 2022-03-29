@@ -25,7 +25,7 @@
 package net.ormr.kommando.commands.arguments.slash
 
 import dev.kord.core.entity.Entity
-import dev.kord.rest.builder.interaction.RootInputChatBuilder
+import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.mentionable
 
 public class SlashMentionableArgument(
@@ -35,7 +35,7 @@ public class SlashMentionableArgument(
     override val type: SlashArgumentType.MENTIONABLE
         get() = SlashArgumentType.MENTIONABLE
 
-    override fun RootInputChatBuilder.buildArgument(required: Boolean) {
+    override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
         mentionable(name, description) {
             this.required = true
         }

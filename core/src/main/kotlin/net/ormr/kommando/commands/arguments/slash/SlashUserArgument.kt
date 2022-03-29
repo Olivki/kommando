@@ -25,7 +25,7 @@
 package net.ormr.kommando.commands.arguments.slash
 
 import dev.kord.core.entity.User
-import dev.kord.rest.builder.interaction.RootInputChatBuilder
+import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.user
 
 public class SlashUserArgument(
@@ -35,7 +35,7 @@ public class SlashUserArgument(
     override val type: SlashArgumentType.USER
         get() = SlashArgumentType.USER
 
-    override fun RootInputChatBuilder.buildArgument(required: Boolean) {
+    override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
         user(name, description) {
             this.required = required
         }

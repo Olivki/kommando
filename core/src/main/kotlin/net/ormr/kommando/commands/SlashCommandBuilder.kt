@@ -24,8 +24,28 @@
 
 package net.ormr.kommando.commands
 
-public sealed interface Command {
-    // TODO: do we want to actually force category for application commands?
-    public val category: String
-    public val name: String
+import net.ormr.kommando.commands.arguments.slash.SlashArgument
+
+// TODO: make custom builder exceptions
+public sealed class SlashCommandBuilder<out C : SlashCommand<E, D, S>, S : SlashSubCommand<*, *>, E : SlashEvent, D : CommandData<E>> :
+    CommandBuilder<C, SlashArgument<*>, E, D>() {
+    protected val groups: MutableMap<String, SlashCommandGroup<S>> = hashMapOf()
+    protected val subCommands: MutableMap<String, S> = hashMapOf()
+
+    protected fun getExecutorSafe(): CommandExecutor<SlashArgument<*>, *, E, D>? {
+        if (executor == null && (groups.isEmpty() && subCommands.isEmpty())) error("No groups, sub-commands nor executor has been defined.")
+        // TODO: throw an exception or log if executor isn't null and groups or sub-commands contains anything, as
+        //       having any groups / sub-commands makes the root executor useless.
+        return executor
+    }
+
+    @PublishedApi
+    internal fun addGroup(group: SlashCommandGroup<S>) {
+        groups[group.name] = group
+    }
+
+    @PublishedApi
+    internal fun addSubCommand(subCommand: S) {
+        subCommands[subCommand.name] = subCommand
+    }
 }

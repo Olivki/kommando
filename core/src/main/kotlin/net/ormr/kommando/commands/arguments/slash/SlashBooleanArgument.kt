@@ -24,7 +24,7 @@
 
 package net.ormr.kommando.commands.arguments.slash
 
-import dev.kord.rest.builder.interaction.RootInputChatBuilder
+import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.boolean
 
 public class SlashBooleanArgument(
@@ -34,7 +34,7 @@ public class SlashBooleanArgument(
     override val type: SlashArgumentType.BOOLEAN
         get() = SlashArgumentType.BOOLEAN
 
-    override fun RootInputChatBuilder.buildArgument(required: Boolean) {
+    override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
         boolean(name, description) {
             this.required = true
         }

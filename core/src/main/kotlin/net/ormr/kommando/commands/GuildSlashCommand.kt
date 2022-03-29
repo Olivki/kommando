@@ -33,43 +33,51 @@ import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEve
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
 
-private typealias GuildSlashEvent = GuildChatInputCommandInteractionCreateEvent
+internal typealias GuildSlashEvent = GuildChatInputCommandInteractionCreateEvent
+internal typealias GuildSlashInteraction = GuildChatInputCommandInteraction
 
 public data class GuildSlashCommand(
     override val category: String,
     override val name: String,
     override val description: String,
-    override val executor: CommandExecutor<SlashArgument<*>, *, GuildSlashEvent, GuildSlashCommandData>,
+    override val executor: CommandExecutor<SlashArgument<*>, *, GuildSlashEvent, GuildSlashCommandData>?,
+    override val groups: Map<String, SlashCommandGroup<GuildSlashSubCommand>>,
+    override val subCommands: Map<String, GuildSlashSubCommand>,
     public val guildId: Snowflake,
-) : SlashCommand<GuildSlashEvent, GuildSlashCommandData>
+) : SlashCommand<GuildSlashEvent, GuildSlashCommandData, GuildSlashSubCommand>
 
 public data class GuildSlashCommandData(
     override val kord: Kord,
     override val event: GuildSlashEvent,
-) : SlashCommandData<GuildSlashEvent, GuildChatInputCommandInteraction> {
-    override val interaction: GuildChatInputCommandInteraction
+) : SlashCommandData<GuildSlashEvent, GuildSlashInteraction> {
+    override val interaction: GuildSlashInteraction
         get() = event.interaction
 
+    // TODO: move to extension function
     public val user: User
         get() = interaction.user
 
+    // TODO: move to extension function
     public suspend fun getGuild(): Guild = interaction.getGuild()
 }
 
-@KommandoDsl
 public class GuildSlashCommandBuilder @PublishedApi internal constructor(
     private val name: String,
     private val description: String,
-    private val guildId: Snowflake,
-) : CommandBuilder<GuildSlashCommand, SlashArgument<*>, GuildSlashEvent, GuildSlashCommandData>() {
+    @PublishedApi internal val guildId: Snowflake,
+) : SlashCommandBuilder<GuildSlashCommand, GuildSlashSubCommand, GuildSlashEvent, GuildSlashCommandData>() {
     @PublishedApi
-    override fun build(category: String): GuildSlashCommand = GuildSlashCommand(
-        category = category,
-        name = name,
-        description = description,
-        executor = getExecutor(),
-        guildId = guildId,
-    )
+    override fun build(category: String): GuildSlashCommand {
+        return GuildSlashCommand(
+            category = category,
+            name = name,
+            description = description,
+            executor = getExecutorSafe(),
+            groups = groups,
+            subCommands = subCommands,
+            guildId = guildId,
+        )
+    }
 }
 
 @KommandoDsl

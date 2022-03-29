@@ -25,67 +25,53 @@
 package net.ormr.kommando.commands
 
 import dev.kord.core.Kord
-import dev.kord.core.behavior.channel.MessageChannelBehavior
-import dev.kord.core.entity.Message
-import dev.kord.core.entity.User
-import dev.kord.core.entity.channel.MessageChannel
-import dev.kord.core.event.message.MessageCreateEvent
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.arguments.chat.ChatArgument
+import net.ormr.kommando.commands.arguments.slash.SlashArgument
 
-public data class ChatGlobalCommand(
+public data class GlobalSlashSubCommand(
     override val category: String,
     override val name: String,
     override val description: String,
-    override val executor: CommandExecutor<ChatArgument<*>, *, MessageCreateEvent, ChatGlobalCommandData>,
-    override val aliases: Set<String>,
-) : ChatCommand<ChatGlobalCommandData>
+    override val executor: CommandExecutor<SlashArgument<*>, *, GlobalSlashEvent, GlobalSlashSubCommandData>,
+) : SlashSubCommand<GlobalSlashEvent, GlobalSlashSubCommandData>
 
-public data class ChatGlobalCommandData(
+public data class GlobalSlashSubCommandData(
     override val kord: Kord,
-    override val event: MessageCreateEvent,
-) : CommandData<MessageCreateEvent> {
-    public val message: Message
-        get() = event.message
-
-    public val author: User
-        get() = message.author ?: error("Message author is not a user.")
-
-    public val channel: MessageChannelBehavior
-        get() = message.channel
-
-    public suspend fun getChannel(): MessageChannel = message.getChannel()
+    override val event: GlobalSlashEvent,
+) : SlashSubCommandData<GlobalSlashEvent> {
+    override val interaction: GlobalSlashInteraction
+        get() = event.interaction
 }
 
-@KommandoDsl
-public class ChatGlobalCommandBuilder @PublishedApi internal constructor(
+public class GlobalSlashSubCommandBuilder @PublishedApi internal constructor(
     private val name: String,
     private val description: String,
-) : ChatCommandBuilder<ChatGlobalCommand, ChatArgument<*>, MessageCreateEvent, ChatGlobalCommandData>() {
+) : CommandBuilder<GlobalSlashSubCommand, SlashArgument<*>, GlobalSlashEvent, GlobalSlashSubCommandData>() {
     @PublishedApi
-    override fun build(category: String): ChatGlobalCommand = ChatGlobalCommand(
+    override fun build(category: String): GlobalSlashSubCommand = GlobalSlashSubCommand(
         category = category,
         name = name,
         description = description,
         executor = getNonNullExecutor(),
-        aliases = aliases.toSet(),
     )
 }
 
 @KommandoDsl
-public inline fun CommandGroupBuilder.chatGlobalCommand(
+public inline fun GlobalSlashCommandBuilder.subCommand(
     name: String,
     description: String,
-    builder: ChatGlobalCommandBuilder.() -> Unit,
+    builder: GlobalSlashSubCommandBuilder.() -> Unit,
 ) {
-    addCommand(ChatGlobalCommandBuilder(name, description).apply(builder).build(category))
+    // TODO: we can access category easily once we got context receivers
+    addSubCommand(GlobalSlashSubCommandBuilder(name, description).apply(builder).build(category = ""))
 }
 
 @KommandoDsl
-public inline fun CommandGroupBuilder.chatCommand(
+public inline fun SlashCommandGroupBuilder<GlobalSlashSubCommand>.subCommand(
     name: String,
     description: String,
-    builder: ChatGlobalCommandBuilder.() -> Unit,
+    builder: GlobalSlashSubCommandBuilder.() -> Unit,
 ) {
-    chatGlobalCommand(name, description, builder)
+    // TODO: we can access category easily once we got context receivers
+    addSubCommand(GlobalSlashSubCommandBuilder(name, description).apply(builder).build(category = ""))
 }

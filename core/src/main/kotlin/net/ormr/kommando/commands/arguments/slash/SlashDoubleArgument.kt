@@ -24,7 +24,7 @@
 
 package net.ormr.kommando.commands.arguments.slash
 
-import dev.kord.rest.builder.interaction.RootInputChatBuilder
+import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.number
 
 // TODO: kord doesn't actually allow us to set min/max values for integers and doubles yet, at least not via the api
@@ -36,13 +36,13 @@ public class SlashDoubleArgument(
     override val type: SlashArgumentType.DOUBLE
         get() = SlashArgumentType.DOUBLE
 
-    override fun RootInputChatBuilder.buildArgument(required: Boolean) {
+    override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
         number(name, description) {
             this.required = required
         }
     }
 
-    override fun RootInputChatBuilder.buildArgumentWithChoices(
+    override fun BaseInputChatBuilder.buildArgumentWithChoices(
         choices: List<SlashChoice<Double>>,
         required: Boolean,
     ) {

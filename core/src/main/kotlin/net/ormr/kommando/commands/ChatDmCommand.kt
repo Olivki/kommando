@@ -68,7 +68,7 @@ public class ChatDmCommandBuilder @PublishedApi internal constructor(
         category = category,
         name = name,
         description = description,
-        executor = getExecutor(),
+        executor = getNonNullExecutor(),
         aliases = aliases.toSet(),
     )
 }

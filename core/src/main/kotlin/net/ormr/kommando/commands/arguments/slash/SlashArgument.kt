@@ -25,7 +25,7 @@
 package net.ormr.kommando.commands.arguments.slash
 
 import dev.kord.core.entity.interaction.InteractionCommand
-import dev.kord.rest.builder.interaction.RootInputChatBuilder
+import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import net.ormr.kommando.commands.arguments.CommandArgument
 
 public sealed interface SlashArgument<T> : CommandArgument<T> {
@@ -39,5 +39,5 @@ public sealed interface SlashArgument<T> : CommandArgument<T> {
     @Suppress("UNCHECKED_CAST")
     public fun getValueOrNull(command: InteractionCommand): T? = type.getValueOrNull(command, name) as T?
 
-    public fun RootInputChatBuilder.buildArgument(required: Boolean)
+    public fun BaseInputChatBuilder.buildArgument(required: Boolean)
 }

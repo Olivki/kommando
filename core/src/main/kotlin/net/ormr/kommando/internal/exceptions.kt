@@ -22,22 +22,20 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.commands.arguments.slash
+package net.ormr.kommando.internal
 
-import dev.kord.core.entity.Role
-import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import dev.kord.rest.builder.interaction.role
+import dev.kord.common.entity.Snowflake
 
-public class SlashRoleArgument(
-    override val name: String,
-    override val description: String,
-) : SlashArgument<Role> {
-    override val type: SlashArgumentType.ROLE
-        get() = SlashArgumentType.ROLE
+public open class ApplicationCommandException(public val id: Snowflake, message: String?) : RuntimeException(message)
 
-    override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
-        role(name, description) {
-            this.required = true
-        }
-    }
-}
+@Suppress("CanBeParameter", "MemberVisibilityCanBePrivate")
+public class NoSuchCommandGroupException(public val name: String, id: Snowflake) :
+    ApplicationCommandException(id, "Unknown command group '$name' for command with id $id.")
+
+@Suppress("CanBeParameter", "MemberVisibilityCanBePrivate")
+public class NoSuchSubCommandException(public val name: String, id: Snowflake) :
+    ApplicationCommandException(id, "Unknown sub-command '$name' for command with id $id.")
+
+@Suppress("CanBeParameter", "MemberVisibilityCanBePrivate")
+public class UnknownCommandException(id: Snowflake) :
+    ApplicationCommandException(id, "Received event for command with id '$id', which is an unknown command id.")

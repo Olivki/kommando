@@ -25,7 +25,7 @@
 package net.ormr.kommando.commands.arguments.slash
 
 import dev.kord.core.entity.interaction.InteractionCommand
-import dev.kord.rest.builder.interaction.RootInputChatBuilder
+import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.string
 import net.ormr.kommando.commands.arguments.ChoiceAdapter
 import kotlin.reflect.KClass
@@ -48,7 +48,7 @@ public class SlashEnumArgument<T> @PublishedApi internal constructor(
     override fun getValueOrNull(command: InteractionCommand): T? =
         SlashArgumentType.STRING.getValueOrNull(command, name)?.let(nameToConstant::getValue)
 
-    override fun RootInputChatBuilder.buildArgument(required: Boolean) {
+    override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
         string(name, description) {
             this.required = required
             for (constant in enumValues) choice(constant.choiceName, constant.name)

@@ -24,10 +24,10 @@
 
 package net.ormr.kommando.commands.arguments.slash
 
-import dev.kord.rest.builder.interaction.RootInputChatBuilder
+import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 
 // TODO: better name?
 // TODO: add ability for these arguments to define their own auto-complete, probably via a lambda
 public sealed interface SlashArgumentWithChoice<T> : SlashArgument<T> {
-    public fun RootInputChatBuilder.buildArgumentWithChoices(choices: List<SlashChoice<T>>, required: Boolean)
+    public fun BaseInputChatBuilder.buildArgumentWithChoices(choices: List<SlashChoice<T>>, required: Boolean)
 }

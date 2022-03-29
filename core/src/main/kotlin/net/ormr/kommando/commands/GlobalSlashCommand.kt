@@ -30,20 +30,23 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
 
-private typealias GlobalSlashEvent = ChatInputCommandInteractionCreateEvent
+internal typealias GlobalSlashEvent = ChatInputCommandInteractionCreateEvent
+internal typealias GlobalSlashInteraction = ChatInputCommandInteraction
 
 public data class GlobalSlashCommand(
     override val category: String,
     override val name: String,
     override val description: String,
-    override val executor: CommandExecutor<SlashArgument<*>, *, GlobalSlashEvent, GlobalSlashCommandData>,
-) : SlashCommand<GlobalSlashEvent, GlobalSlashCommandData>, DescribableCommand
+    override val executor: CommandExecutor<SlashArgument<*>, *, GlobalSlashEvent, GlobalSlashCommandData>?,
+    override val groups: Map<String, SlashCommandGroup<GlobalSlashSubCommand>>,
+    override val subCommands: Map<String, GlobalSlashSubCommand>,
+) : SlashCommand<GlobalSlashEvent, GlobalSlashCommandData, GlobalSlashSubCommand>
 
 public data class GlobalSlashCommandData(
     override val kord: Kord,
     override val event: GlobalSlashEvent,
-) : SlashCommandData<GlobalSlashEvent, ChatInputCommandInteraction> {
-    override val interaction: ChatInputCommandInteraction
+) : SlashCommandData<GlobalSlashEvent, GlobalSlashInteraction> {
+    override val interaction: GlobalSlashInteraction
         get() = event.interaction
 }
 
@@ -51,13 +54,15 @@ public data class GlobalSlashCommandData(
 public class GlobalSlashCommandBuilder @PublishedApi internal constructor(
     private val name: String,
     private val description: String,
-) : CommandBuilder<GlobalSlashCommand, SlashArgument<*>, GlobalSlashEvent, GlobalSlashCommandData>() {
+) : SlashCommandBuilder<GlobalSlashCommand, GlobalSlashSubCommand, GlobalSlashEvent, GlobalSlashCommandData>() {
     @PublishedApi
     override fun build(category: String): GlobalSlashCommand = GlobalSlashCommand(
         category = category,
         name = name,
         description = description,
-        executor = getExecutor(),
+        executor = getExecutorSafe(),
+        groups = groups.toMap(),
+        subCommands = subCommands.toMap(),
     )
 }
 

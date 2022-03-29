@@ -26,7 +26,7 @@ package net.ormr.kommando.commands.arguments.slash
 
 import dev.kord.core.entity.interaction.InteractionCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
-import dev.kord.rest.builder.interaction.RootInputChatBuilder
+import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 
 private typealias SlashDefaultValueSupplier<T> = suspend ChatInputCommandInteractionCreateEvent.() -> T
 
@@ -44,7 +44,7 @@ public class SlashDefaultArgument<T> internal constructor(
     override fun getValueOrNull(command: InteractionCommand): Nothing =
         throw NotImplementedError("Use 'getValueOrCreate'.")
 
-    override fun RootInputChatBuilder.buildArgument(required: Boolean) {
+    override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
         with(argument) {
             buildArgument(required = false)
         }

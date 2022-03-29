@@ -22,22 +22,36 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.commands.arguments.slash
+package net.ormr.kommando.commands
 
-import dev.kord.core.entity.Role
-import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import dev.kord.rest.builder.interaction.role
+import net.ormr.kommando.KommandoDsl
 
-public class SlashRoleArgument(
-    override val name: String,
-    override val description: String,
-) : SlashArgument<Role> {
-    override val type: SlashArgumentType.ROLE
-        get() = SlashArgumentType.ROLE
+public data class SlashCommandGroup<S : SlashSubCommand<*, *>>(
+    public val name: String,
+    public val description: String,
+    public val subCommands: Map<String, S>,
+)
 
-    override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
-        role(name, description) {
-            this.required = true
-        }
+public class SlashCommandGroupBuilder<S : SlashSubCommand<*, *>> @PublishedApi internal constructor(
+    private val name: String,
+    private val description: String,
+) {
+    private val subCommands: MutableMap<String, S> = hashMapOf()
+
+    @PublishedApi
+    internal fun addSubCommand(subCommand: S) {
+        subCommands[subCommand.name] = subCommand
     }
+
+    @PublishedApi
+    internal fun build(): SlashCommandGroup<S> = SlashCommandGroup(name, description, subCommands.toMap())
+}
+
+@KommandoDsl
+public inline fun <S : SlashSubCommand<*, *>> SlashCommandBuilder<*, S, *, *>.group(
+    name: String,
+    description: String,
+    builder: SlashCommandGroupBuilder<S>.() -> Unit,
+) {
+    addGroup(SlashCommandGroupBuilder<S>(name, description).apply(builder).build())
 }

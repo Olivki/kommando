@@ -22,22 +22,6 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.commands.arguments.slash
+package net.ormr.kommando.commands
 
-import dev.kord.core.entity.Role
-import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import dev.kord.rest.builder.interaction.role
-
-public class SlashRoleArgument(
-    override val name: String,
-    override val description: String,
-) : SlashArgument<Role> {
-    override val type: SlashArgumentType.ROLE
-        get() = SlashArgumentType.ROLE
-
-    override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
-        role(name, description) {
-            this.required = true
-        }
-    }
-}
+public sealed interface SlashSubCommandData<E : SlashEvent> : SlashCommandData<E, SlashInteraction>

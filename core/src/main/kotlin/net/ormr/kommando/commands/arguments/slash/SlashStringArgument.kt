@@ -24,7 +24,7 @@
 
 package net.ormr.kommando.commands.arguments.slash
 
-import dev.kord.rest.builder.interaction.RootInputChatBuilder
+import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.string
 
 public class SlashStringArgument(
@@ -34,13 +34,13 @@ public class SlashStringArgument(
     override val type: SlashArgumentType.STRING
         get() = SlashArgumentType.STRING
 
-    override fun RootInputChatBuilder.buildArgument(required: Boolean) {
+    override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
         string(name, description) {
             this.required = required
         }
     }
 
-    override fun RootInputChatBuilder.buildArgumentWithChoices(
+    override fun BaseInputChatBuilder.buildArgumentWithChoices(
         choices: List<SlashChoice<String>>,
         required: Boolean,
     ) {

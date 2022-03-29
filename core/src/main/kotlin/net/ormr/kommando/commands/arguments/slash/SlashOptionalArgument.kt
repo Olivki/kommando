@@ -25,7 +25,7 @@
 package net.ormr.kommando.commands.arguments.slash
 
 import dev.kord.core.entity.interaction.InteractionCommand
-import dev.kord.rest.builder.interaction.RootInputChatBuilder
+import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 
 public class SlashOptionalArgument<T> internal constructor(
     private val argument: SlashArgument<T>,
@@ -41,7 +41,7 @@ public class SlashOptionalArgument<T> internal constructor(
 
     override fun getValue(command: InteractionCommand): T? = argument.getValueOrNull(command)
 
-    override fun RootInputChatBuilder.buildArgument(required: Boolean) {
+    override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
         with(argument) {
             buildArgument(required = false)
         }

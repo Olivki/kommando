@@ -25,7 +25,7 @@
 package net.ormr.kommando.commands.arguments.slash
 
 import dev.kord.core.entity.Attachment
-import dev.kord.rest.builder.interaction.RootInputChatBuilder
+import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.attachment
 
 public class SlashAttachmentArgument(
@@ -35,7 +35,7 @@ public class SlashAttachmentArgument(
     override val type: SlashArgumentType.ATTACHMENT
         get() = SlashArgumentType.ATTACHMENT
 
-    override fun RootInputChatBuilder.buildArgument(required: Boolean) {
+    override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
         attachment(name, description) {
             this.required = true
         }

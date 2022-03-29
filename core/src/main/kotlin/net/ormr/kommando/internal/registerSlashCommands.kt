@@ -25,7 +25,10 @@
 package net.ormr.kommando.internal
 
 import dev.kord.common.entity.Snowflake
+import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.RootInputChatBuilder
+import dev.kord.rest.builder.interaction.group
+import dev.kord.rest.builder.interaction.subCommand
 import net.ormr.kommando.KommandoBuilder
 import net.ormr.kommando.commands.*
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
@@ -34,15 +37,15 @@ internal suspend fun KommandoBuilder.registerSlashCommands(
     applicationCommands: List<ApplicationCommand<*, *>>,
 ): Map<Snowflake, ApplicationCommand<*, *>> = buildMap {
     for (command in applicationCommands) {
-        val arguments = command.executor.arguments
         when (command) {
             is GlobalSlashCommand -> {
                 val registeredCommand = kord.createGlobalChatInputCommand(
                     command.name,
                     command.description,
-                ) { buildArguments(arguments) }
+                ) { buildCommand(command) }
                 put(registeredCommand.id, command)
             }
+            is GlobalSlashSubCommand -> error("GlobalSlashSubCommand found at root level")
             is GlobalUserCommand -> {
                 val registeredCommand = kord.createGlobalUserCommand(command.name)
                 put(registeredCommand.id, command)
@@ -56,9 +59,10 @@ internal suspend fun KommandoBuilder.registerSlashCommands(
                     command.guildId,
                     command.name,
                     command.description,
-                ) { buildArguments(arguments) }
+                ) { buildCommand(command) }
                 put(registeredCommand.id, command)
             }
+            is GuildSlashSubCommand -> error("GuildSlashSubCommand found at root level")
             is GuildUserCommand -> {
                 val registeredCommand = kord.createGuildUserCommand(command.guildId, command.name)
                 put(registeredCommand.id, command)
@@ -71,10 +75,30 @@ internal suspend fun KommandoBuilder.registerSlashCommands(
     }
 }
 
-private fun RootInputChatBuilder.buildArguments(arguments: List<SlashArgument<*>>) {
+private fun RootInputChatBuilder.buildCommand(command: SlashCommand<*, *, *>) {
+    buildArguments(command.executor?.arguments ?: emptyList())
+
+    for ((_, group) in command.groups) {
+        group(group.name, group.description) {
+            for ((_, subCommand) in group.subCommands) {
+                subCommand(subCommand.name, subCommand.description) {
+                    buildArguments(subCommand.executor.arguments)
+                }
+            }
+        }
+    }
+
+    for ((_, subCommand) in command.subCommands) {
+        subCommand(subCommand.name, subCommand.description) {
+            buildArguments(subCommand.executor.arguments)
+        }
+    }
+}
+
+private fun BaseInputChatBuilder.buildArguments(arguments: List<SlashArgument<*>>) {
     for (argument in arguments) {
         with(argument) {
-            buildArgument(true)
+            buildArgument(required = true)
         }
     }
 }
