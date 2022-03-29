@@ -176,7 +176,7 @@ internal class KommandoProcessor(
                 .mapToTypedNodes()
                 .filter { (type, _) -> type.isKommandoType() }
                 .filter { (_, node) -> node.accept(BindingsSanityVerifier, logger) }
-                .onEach { (_, node) -> logger.info("Found node $node via auto search.") }
+                .onEach { (_, node) -> logger.info("Found node via auto-search.", node) }
                 .toList()
             ModuleFile(file, nodes)
         }
