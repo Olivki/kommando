@@ -54,6 +54,7 @@ internal suspend fun Kommando.handleSlashCommands() {
                 command.executor.execute(GlobalMessageCommandData(kord, this), Args1(messageArg))
             }
             is GlobalChatInputCommandInteractionCreateEvent -> {
+                // TODO: handle groups and sub-commands
                 val interactionCommand = interaction.command
                 val command = getCommand(interactionCommand.rootId)
                 if (command !is GlobalSlashCommand) return@on
@@ -87,6 +88,7 @@ internal suspend fun Kommando.handleSlashCommands() {
                 }
             }
             is GuildChatInputCommandInteractionCreateEvent -> {
+                // TODO: handle groups and sub-commands
                 val interactionCommand = interaction.command
                 when (val command = getCommand(interactionCommand.rootId)) {
                     is GlobalSlashCommand -> {

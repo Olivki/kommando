@@ -37,7 +37,7 @@ public data class GlobalSlashCommand(
     override val name: String,
     override val description: String,
     override val executor: CommandExecutor<SlashArgument<*>, *, GlobalSlashEvent, GlobalSlashCommandData>,
-) : ApplicationCommand<GlobalSlashEvent, GlobalSlashCommandData>, DescribableCommand
+) : SlashCommand<GlobalSlashEvent, GlobalSlashCommandData>, DescribableCommand
 
 public data class GlobalSlashCommandData(
     override val kord: Kord,
