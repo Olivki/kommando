@@ -39,7 +39,7 @@ public data class GlobalUserCommand(
     override val category: String,
     override val name: String,
     override val executor: CommandExecutor<SlashArgument<*>, CommandExecutorArguments.Args1<User>, GlobalUserEvent, GlobalUserCommandData>,
-) : ApplicationCommand<GlobalUserEvent, GlobalUserCommandData>
+) : ApplicationCommand<GlobalUserEvent, GlobalUserCommandData>, GlobalApplicationCommand
 
 public data class GlobalUserCommandData(
     override val kord: Kord,

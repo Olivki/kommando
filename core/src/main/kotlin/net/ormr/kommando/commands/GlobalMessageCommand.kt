@@ -39,7 +39,7 @@ public data class GlobalMessageCommand(
     override val category: String,
     override val name: String,
     override val executor: CommandExecutor<SlashArgument<*>, CommandExecutorArguments.Args1<Message>, GlobalMessageEvent, GlobalMessageCommandData>,
-) : ApplicationCommand<GlobalMessageEvent, GlobalMessageCommandData>
+) : ApplicationCommand<GlobalMessageEvent, GlobalMessageCommandData>, GlobalApplicationCommand
 
 public data class GlobalMessageCommandData(
     override val kord: Kord,

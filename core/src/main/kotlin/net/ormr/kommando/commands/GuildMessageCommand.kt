@@ -41,7 +41,7 @@ public data class GuildMessageCommand(
     override val name: String,
     override val executor: CommandExecutor<SlashArgument<*>, Args1<Message>, GuildMessageEvent, GuildMessageCommandData>,
     public val guildId: Snowflake,
-) : ApplicationCommand<GuildMessageEvent, GuildMessageCommandData>
+) : ApplicationCommand<GuildMessageEvent, GuildMessageCommandData>, GuildApplicationCommand
 
 public data class GuildMessageCommandData(
     override val kord: Kord,

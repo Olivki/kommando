@@ -40,7 +40,7 @@ public data class GlobalSlashCommand(
     override val executor: CommandExecutor<SlashArgument<*>, *, GlobalSlashEvent, GlobalSlashCommandData>?,
     override val groups: Map<String, SlashCommandGroup<GlobalSlashSubCommand>>,
     override val subCommands: Map<String, GlobalSlashSubCommand>,
-) : SlashCommand<GlobalSlashEvent, GlobalSlashCommandData, GlobalSlashSubCommand>
+) : SlashCommand<GlobalSlashEvent, GlobalSlashCommandData, GlobalSlashSubCommand>, GlobalApplicationCommand
 
 public data class GlobalSlashCommandData(
     override val kord: Kord,

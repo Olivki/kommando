@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.commands
 
-// TODO: we probably need multiple different annotations, as only having one causes some weird behaviors
-@DslMarker
-public annotation class KommandoDsl
+/**
+ * Marker interface for any guild application commands.
+ */
+public sealed interface GuildApplicationCommand
