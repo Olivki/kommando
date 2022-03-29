@@ -37,13 +37,13 @@ import net.ormr.kommando.commands.ChatCommand
 import net.ormr.kommando.commands.CommandGroup
 import net.ormr.kommando.commands.prefix.CommandPrefix
 import net.ormr.kommando.commands.prefix.CommandPrefixBuilder
-import net.ormr.kommando.components.CommandPrecondition
-import net.ormr.kommando.components.EventListener
-import net.ormr.kommando.components.MessageFilter
-import net.ormr.kommando.components.messageFilter
 import net.ormr.kommando.internal.handleChatCommands
 import net.ormr.kommando.internal.handleSlashCommands
 import net.ormr.kommando.internal.registerSlashCommands
+import net.ormr.kommando.structures.CommandPrecondition
+import net.ormr.kommando.structures.EventListener
+import net.ormr.kommando.structures.MessageFilter
+import net.ormr.kommando.structures.messageFilter
 import org.kodein.di.DI
 import org.kodein.di.DirectDI
 import org.kodein.di.DirectDIAware

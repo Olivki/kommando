@@ -25,8 +25,8 @@
 package net.ormr.exabot.modules
 
 import dev.kord.core.event.message.MessageCreateEvent
-import net.ormr.kommando.components.eventListener
-import net.ormr.kommando.components.messageFilter
+import net.ormr.kommando.structures.eventListener
+import net.ormr.kommando.structures.messageFilter
 
 fun basicFilter() = messageFilter { !message.content.startsWith("stink") }
 

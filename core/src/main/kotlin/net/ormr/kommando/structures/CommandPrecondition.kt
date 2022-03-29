@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.components
+package net.ormr.kommando.structures
 
 public class CommandPrecondition {
 }

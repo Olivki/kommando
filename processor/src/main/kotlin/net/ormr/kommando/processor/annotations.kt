@@ -26,7 +26,7 @@ package net.ormr.kommando.processor
 
 import net.ormr.kommando.KommandoBuilder
 import net.ormr.kommando.commands.CommandGroup
-import net.ormr.kommando.components.EventListener
+import net.ormr.kommando.structures.EventListener
 
 internal const val INCLUDE = "net.ormr.kommando.processor.Include"
 

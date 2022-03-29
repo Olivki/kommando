@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.components
+package net.ormr.kommando.structures
 
 import dev.kord.core.event.message.MessageCreateEvent
 import net.ormr.kommando.KommandoDsl

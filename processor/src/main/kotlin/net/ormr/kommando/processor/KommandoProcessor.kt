@@ -33,9 +33,9 @@ import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
 import com.squareup.kotlinpoet.ksp.writeTo
 import net.ormr.kommando.KommandoBuilder
 import net.ormr.kommando.commands.CommandGroup
-import net.ormr.kommando.components.CommandPrecondition
-import net.ormr.kommando.components.EventListener
-import net.ormr.kommando.components.MessageFilter
+import net.ormr.kommando.structures.CommandPrecondition
+import net.ormr.kommando.structures.EventListener
+import net.ormr.kommando.structures.MessageFilter
 import org.kodein.di.DI
 import kotlin.reflect.KClass
 
