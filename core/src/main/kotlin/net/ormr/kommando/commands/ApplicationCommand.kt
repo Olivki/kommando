@@ -29,5 +29,5 @@ import net.ormr.kommando.commands.arguments.slash.SlashArgument
 
 // TODO: handle being able to set permissions for commands
 public sealed interface ApplicationCommand<E : Event, D : CommandData<E>> : Command {
-    public val executor: CommandExecutor<SlashArgument<*>, *, E, D>
+    public val executor: CommandExecutor<SlashArgument<*>, *, E, D>?
 }
