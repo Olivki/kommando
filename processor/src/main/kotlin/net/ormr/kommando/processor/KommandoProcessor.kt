@@ -214,8 +214,11 @@ private fun KSFile.isModuleFile(): Boolean = isAnnotationPresent(Module::class)
 
 private fun KSDeclaration.isInModuleFile(): Boolean = containingFile?.isModuleFile() ?: false
 
-private fun KSDeclaration.isBindingsNode(): Boolean =
-    this is KSFunctionDeclaration || (this is KSPropertyDeclaration && setter == null)
+private fun KSDeclaration.isBindingsNode(): Boolean = when (this) {
+    is KSFunctionDeclaration -> extensionReceiver == null
+    is KSPropertyDeclaration -> setter == null && extensionReceiver == null
+    else -> false
+}
 
 private fun KSDeclaration.isVisibleForInjection(): Boolean = isPublic() || isInternal()
 
@@ -287,6 +290,11 @@ private object StandaloneBindingsVerifier : KSDefaultVisitor<KSPLogger, Boolean>
             data.error("Function bindings must be public or internal.", function)
             isValid = false
         }
+        // TODO: handle context receivers whenever we can do that
+        if (function.extensionReceiver != null) {
+            data.error("Function bindings can not have receivers.", function)
+            isValid = false
+        }
         return isValid
     }
 
@@ -298,6 +306,11 @@ private object StandaloneBindingsVerifier : KSDefaultVisitor<KSPLogger, Boolean>
         }
         if (!property.isVisibleForInjection()) {
             data.error("Property bindings must be public or internal.", property)
+            isValid = false
+        }
+        // TODO: handle context receivers whenever we can do that
+        if (property.extensionReceiver != null) {
+            data.error("Property bindings can not have receivers.", property)
             isValid = false
         }
         return isValid
