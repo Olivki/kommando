@@ -24,12 +24,12 @@
 
 package net.ormr.kommando.commands
 
-import dev.kord.core.Kord
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.event.message.MessageCreateEvent
+import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.chat.ChatArgument
 
@@ -42,7 +42,7 @@ public data class ChatGlobalCommand(
 ) : ChatCommand<ChatGlobalCommandData>
 
 public data class ChatGlobalCommandData(
-    override val kord: Kord,
+    override val kommando: Kommando,
     override val event: MessageCreateEvent,
 ) : CommandData<MessageCreateEvent> {
     public val message: Message

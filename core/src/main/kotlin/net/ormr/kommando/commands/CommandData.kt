@@ -25,13 +25,12 @@
 package net.ormr.kommando.commands
 
 import dev.kord.core.Kord
-import dev.kord.core.entity.Guild
-import dev.kord.core.entity.User
-import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.core.event.Event
-import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
+import net.ormr.kommando.Kommando
 
 public sealed interface CommandData<E : Event> {
+    public val kommando: Kommando
     public val kord: Kord
+        get() = kommando.kord
     public val event: E
 }

@@ -25,7 +25,7 @@
 package net.ormr.kommando.commands
 
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.Kord
+import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
 
@@ -38,7 +38,7 @@ public data class GuildSlashSubCommand(
 ) : SlashSubCommand<GuildSlashEvent, GuildSlashSubCommandData>, GuildApplicationCommand
 
 public data class GuildSlashSubCommandData(
-    override val kord: Kord,
+    override val kommando: Kommando,
     override val event: GuildSlashEvent,
 ) : SlashSubCommandData<GuildSlashEvent> {
     override val interaction: GuildSlashInteraction

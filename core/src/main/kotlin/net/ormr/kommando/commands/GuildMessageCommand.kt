@@ -25,10 +25,10 @@
 package net.ormr.kommando.commands
 
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.Kord
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.GuildMessageCommandInteraction
 import dev.kord.core.event.interaction.GuildMessageCommandInteractionCreateEvent
+import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.CommandExecutorArguments.Args1
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
@@ -44,7 +44,7 @@ public data class GuildMessageCommand(
 ) : ApplicationCommand<GuildMessageEvent, GuildMessageCommandData>, GuildApplicationCommand
 
 public data class GuildMessageCommandData(
-    override val kord: Kord,
+    override val kommando: Kommando,
     override val event: GuildMessageEvent,
 ) : SlashCommandData<GuildMessageEvent, GuildMessageCommandInteraction> {
     override val interaction: GuildMessageCommandInteraction

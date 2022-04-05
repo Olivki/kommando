@@ -42,6 +42,7 @@ import net.ormr.kommando.commands.arguments.slash.SlashArgumentWithChoice
 import net.ormr.kommando.commands.arguments.slash.SlashDefaultArgument
 
 internal suspend fun Kommando.handleApplicationCommands() {
+    val kommando = this@handleApplicationCommands
     // TODO: clean up this code, there's a lot of just the same stuff repeated over and over again
     kord.on<ApplicationCommandInteractionCreateEvent> {
         when (this) {
@@ -50,14 +51,14 @@ internal suspend fun Kommando.handleApplicationCommands() {
                 // TODO: throw exception?
                 if (command !is GlobalUserCommand) return@on
                 val userArg = interaction.getTarget()
-                command.executor.execute(GlobalUserCommandData(kord, this), Args1(userArg))
+                command.executor.execute(GlobalUserCommandData(kommando, this), Args1(userArg))
             }
             is GlobalMessageCommandInteractionCreateEvent -> {
                 val command = getCommand(interaction.invokedCommandId)
                 // TODO: throw exception?
                 if (command !is GlobalMessageCommand) return@on
                 val messageArg = interaction.getTarget()
-                command.executor.execute(GlobalMessageCommandData(kord, this), Args1(messageArg))
+                command.executor.execute(GlobalMessageCommandData(kommando, this), Args1(messageArg))
             }
             is GlobalChatInputCommandInteractionCreateEvent -> {
                 val interaction = interaction.command
@@ -68,13 +69,13 @@ internal suspend fun Kommando.handleApplicationCommands() {
                 when (interaction) {
                     is RootCommand -> {
                         val args = command.getArgs(interaction, this)
-                        command.executor!!.execute(GlobalSlashCommandData(kord, this), args)
+                        command.executor!!.execute(GlobalSlashCommandData(kommando, this), args)
                     }
                     is SubCommand -> {
                         val subCommand = command.subCommands[interaction.name]
                             ?: noSuchSubCommand(interaction.name, commandId)
                         val args = subCommand.getArgs(interaction, this)
-                        subCommand.executor.execute(GlobalSlashSubCommandData(kord, this), args)
+                        subCommand.executor.execute(GlobalSlashSubCommandData(kommando, this), args)
                     }
                     is GroupCommand -> {
                         val group = command.groups[interaction.groupName]
@@ -82,7 +83,7 @@ internal suspend fun Kommando.handleApplicationCommands() {
                         val subCommand = group.subCommands[interaction.name]
                             ?: noSuchSubCommand(interaction.name, commandId)
                         val args = subCommand.getArgs(interaction, this)
-                        subCommand.executor.execute(GlobalSlashSubCommandData(kord, this), args)
+                        subCommand.executor.execute(GlobalSlashSubCommandData(kommando, this), args)
                     }
                 }
             }
@@ -90,11 +91,11 @@ internal suspend fun Kommando.handleApplicationCommands() {
                 when (val command = getCommand(interaction.invokedCommandId)) {
                     is GlobalUserCommand -> {
                         val userArg = interaction.getTarget()
-                        command.executor.execute(GlobalUserCommandData(kord, this), Args1(userArg))
+                        command.executor.execute(GlobalUserCommandData(kommando, this), Args1(userArg))
                     }
                     is GuildUserCommand -> {
                         val userArg = interaction.getTarget()
-                        command.executor.execute(GuildUserCommandData(kord, this), Args1(userArg))
+                        command.executor.execute(GuildUserCommandData(kommando, this), Args1(userArg))
                     }
                     // TODO: throw exception?
                     else -> return@on
@@ -104,11 +105,11 @@ internal suspend fun Kommando.handleApplicationCommands() {
                 when (val command = getCommand(interaction.invokedCommandId)) {
                     is GlobalMessageCommand -> {
                         val messageArg = interaction.getTarget()
-                        command.executor.execute(GlobalMessageCommandData(kord, this), Args1(messageArg))
+                        command.executor.execute(GlobalMessageCommandData(kommando, this), Args1(messageArg))
                     }
                     is GuildMessageCommand -> {
                         val messageArg = interaction.getTarget()
-                        command.executor.execute(GuildMessageCommandData(kord, this), Args1(messageArg))
+                        command.executor.execute(GuildMessageCommandData(kommando, this), Args1(messageArg))
                     }
                     // TODO: throw exception?
                     else -> return@on
@@ -121,35 +122,35 @@ internal suspend fun Kommando.handleApplicationCommands() {
                     is GlobalSlashCommand -> when (interaction) {
                         is RootCommand -> {
                             val args = command.getArgs(interaction, this)
-                            command.executor!!.execute(GlobalSlashCommandData(kord, this), args)
+                            command.executor!!.execute(GlobalSlashCommandData(kommando, this), args)
                         }
                         is SubCommand -> {
                             val subCommand = command.getSubCommand(interaction.name, commandId)
                             val args = subCommand.getArgs(interaction, this)
-                            subCommand.executor.execute(GlobalSlashSubCommandData(kord, this), args)
+                            subCommand.executor.execute(GlobalSlashSubCommandData(kommando, this), args)
                         }
                         is GroupCommand -> {
                             val group = command.getGroup(interaction.groupName, commandId)
                             val subCommand = group.getSubCommand(interaction.name, commandId)
                             val args = subCommand.getArgs(interaction, this)
-                            subCommand.executor.execute(GlobalSlashSubCommandData(kord, this), args)
+                            subCommand.executor.execute(GlobalSlashSubCommandData(kommando, this), args)
                         }
                     }
                     is GuildSlashCommand -> when (interaction) {
                         is RootCommand -> {
                             val args = command.getArgs(interaction, this)
-                            command.executor!!.execute(GuildSlashCommandData(kord, this), args)
+                            command.executor!!.execute(GuildSlashCommandData(kommando, this), args)
                         }
                         is SubCommand -> {
                             val subCommand = command.getSubCommand(interaction.name, commandId)
                             val args = subCommand.getArgs(interaction, this)
-                            subCommand.executor.execute(GuildSlashSubCommandData(kord, this), args)
+                            subCommand.executor.execute(GuildSlashSubCommandData(kommando, this), args)
                         }
                         is GroupCommand -> {
                             val group = command.getGroup(interaction.groupName, commandId)
                             val subCommand = group.getSubCommand(interaction.name, commandId)
                             val args = subCommand.getArgs(interaction, this)
-                            subCommand.executor.execute(GuildSlashSubCommandData(kord, this), args)
+                            subCommand.executor.execute(GuildSlashSubCommandData(kommando, this), args)
                         }
                     }
                     // TODO: throw exception?

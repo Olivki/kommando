@@ -24,7 +24,7 @@
 
 package net.ormr.kommando.commands
 
-import dev.kord.core.Kord
+import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
 
@@ -36,7 +36,7 @@ public data class GlobalSlashSubCommand(
 ) : SlashSubCommand<GlobalSlashEvent, GlobalSlashSubCommandData>, GlobalApplicationCommand
 
 public data class GlobalSlashSubCommandData(
-    override val kord: Kord,
+    override val kommando: Kommando,
     override val event: GlobalSlashEvent,
 ) : SlashSubCommandData<GlobalSlashEvent> {
     override val interaction: GlobalSlashInteraction
