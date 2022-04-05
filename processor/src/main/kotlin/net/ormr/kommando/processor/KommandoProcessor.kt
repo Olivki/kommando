@@ -189,6 +189,48 @@ internal class KommandoProcessor(
     private data class TypedNode(val returnType: KSType, val node: KSDeclaration)
 }
 
+private fun FunSpec.Builder.addInstanceParameters(parameters: List<KSValueParameter>) {
+    for (parameter in parameters) {
+        when (val tag = parameter.getTagOrSubstituteOrNull()) {
+            null -> addCode("instance(),")
+            else -> addCode("instance(tag = %S),", tag)
+        }
+    }
+}
+
+private fun KSDeclaration.asClassName(): ClassName = ClassName(packageName.asString(), simpleName.asString())
+
+@OptIn(KspExperimental::class)
+private fun KSAnnotated.getBindingTagOrNull(): String? = getAnnotationsByType(Tag::class).firstOrNull()?.value
+
+@OptIn(KspExperimental::class)
+private fun KSAnnotated.getTagOrNull(): String? = getAnnotationsByType(Tag::class).firstOrNull()?.value
+
+// we verify that only sound elements are let through at earlier points, so this *should* be a safe operation
+private fun KSValueParameter.getTagOrSubstituteOrNull(): String? = getTagOrNull()?.ifEmpty { name!!.asString() }
+
+@OptIn(KspExperimental::class)
+private fun KSFile.isModuleFile(): Boolean = isAnnotationPresent(Module::class)
+
+private fun KSDeclaration.isInModuleFile(): Boolean = containingFile?.isModuleFile() ?: false
+
+private fun KSDeclaration.isBindingsNode(): Boolean =
+    this is KSFunctionDeclaration || (this is KSPropertyDeclaration && setter == null)
+
+private fun KSDeclaration.isVisibleForInjection(): Boolean = isPublic() || isInternal()
+
+@OptIn(KspExperimental::class)
+private fun KSDeclaration.isMarkedForInclusion(): Boolean = isAnnotationPresent(Include::class)
+
+@OptIn(KspExperimental::class)
+private fun KSDeclaration.shouldBeExcluded(): Boolean = isAnnotationPresent(Exclude::class)
+
+private fun KSType.isKommandoType(): Boolean =
+    declaration.qualifiedName?.asString()?.let { KommandoType.isKnownType(it) } ?: false
+
+private fun KSType.toKommandoTypeOrNull(): KommandoType? =
+    declaration.qualifiedName?.asString()?.let { KommandoType.getTypeOrNull(it) }
+
 private object KodeinSingletonStatementBuilder : KSDefaultVisitor<FunSpec.Builder, Unit>() {
     override fun defaultHandler(node: KSNode, data: FunSpec.Builder) {
         error("Can't build kodein statement for node $node (${node::class}).")
@@ -235,48 +277,6 @@ private object KommandoStatementBuilder : KSDefaultVisitor<FunSpec.Builder, Unit
         data.addCode("%T,", propertyType)
     }
 }
-
-private fun FunSpec.Builder.addInstanceParameters(parameters: List<KSValueParameter>) {
-    for (parameter in parameters) {
-        when (val tag = parameter.getTagOrSubstituteOrNull()) {
-            null -> addCode("instance(),")
-            else -> addCode("instance(tag = %S),", tag)
-        }
-    }
-}
-
-private fun KSDeclaration.asClassName(): ClassName = ClassName(packageName.asString(), simpleName.asString())
-
-@OptIn(KspExperimental::class)
-private fun KSAnnotated.getBindingTagOrNull(): String? = getAnnotationsByType(Tag::class).firstOrNull()?.value
-
-@OptIn(KspExperimental::class)
-private fun KSAnnotated.getTagOrNull(): String? = getAnnotationsByType(Tag::class).firstOrNull()?.value
-
-// we verify that only sound elements are let through at earlier points, so this *should* be a safe operation
-private fun KSValueParameter.getTagOrSubstituteOrNull(): String? = getTagOrNull()?.ifEmpty { name!!.asString() }
-
-@OptIn(KspExperimental::class)
-private fun KSFile.isModuleFile(): Boolean = isAnnotationPresent(Module::class)
-
-private fun KSDeclaration.isInModuleFile(): Boolean = containingFile?.isModuleFile() ?: false
-
-private fun KSDeclaration.isBindingsNode(): Boolean =
-    this is KSFunctionDeclaration || (this is KSPropertyDeclaration && setter == null)
-
-private fun KSDeclaration.isVisibleForInjection(): Boolean = isPublic() || isInternal()
-
-@OptIn(KspExperimental::class)
-private fun KSDeclaration.isMarkedForInclusion(): Boolean = isAnnotationPresent(Include::class)
-
-@OptIn(KspExperimental::class)
-private fun KSDeclaration.shouldBeExcluded(): Boolean = isAnnotationPresent(Exclude::class)
-
-private fun KSType.isKommandoType(): Boolean =
-    declaration.qualifiedName?.asString()?.let { KommandoType.isKnownType(it) } ?: false
-
-private fun KSType.toKommandoTypeOrNull(): KommandoType? =
-    declaration.qualifiedName?.asString()?.let { KommandoType.getTypeOrNull(it) }
 
 private object StandaloneBindingsVerifier : KSDefaultVisitor<KSPLogger, Boolean>() {
     override fun defaultHandler(node: KSNode, data: KSPLogger): Boolean = false

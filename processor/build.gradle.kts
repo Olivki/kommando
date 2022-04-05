@@ -32,7 +32,6 @@ dependencies {
     implementation("com.squareup:kotlinpoet-ksp:1.11.0")
     implementation("com.google.devtools.ksp:symbol-processing-api:1.6.10-1.0.4")
     implementation(project(":core"))
-
     kapt("com.google.auto.service:auto-service:1.0.1")
     compileOnly("com.google.auto.service:auto-service:1.0.1")
 }
