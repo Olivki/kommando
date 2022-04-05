@@ -59,4 +59,8 @@ public class SlashEnumArgument<T> @PublishedApi internal constructor(
 @Suppress("FunctionName")
 public inline fun <reified T> SlashEnumArgument(name: String, description: String): SlashEnumArgument<T>
         where T : Enum<T>,
-              T : ChoiceAdapter = SlashEnumArgument(name, description, T::class, enumValues<T>().toList())
+              T : ChoiceAdapter {
+    val enumValues = enumValues<T>().toList()
+    require(enumValues.size <= 25) { "Commands can only have 25 choices max, was given ${enumValues.size} choices." }
+    return SlashEnumArgument(name, description, T::class, enumValues<T>().toList())
+}
