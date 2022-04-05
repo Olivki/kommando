@@ -30,4 +30,5 @@ dependencies {
     api("dev.kord:kord-core:0.8.0-M12")
     api("com.github.h0tk3y.betterParse:better-parse:0.4.3")
     implementation("com.michael-bull.kotlin-inline-logger:kotlin-inline-logger:1.0.4")
+    implementation("com.google.guava:guava:31.1-jre")
 }
