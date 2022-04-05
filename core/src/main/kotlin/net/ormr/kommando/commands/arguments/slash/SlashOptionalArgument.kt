@@ -54,4 +54,18 @@ public fun <T> SlashArgument<T>.optional(): SlashOptionalArgument<T> {
     return SlashOptionalArgument(this)
 }
 
-// TODO: do not allow nested optional arguments
+@Suppress("unused")
+@Deprecated(
+    message = "Nesting of optional arguments is not allowed.",
+    replaceWith = ReplaceWith(""),
+    level = DeprecationLevel.ERROR,
+)
+public fun SlashOptionalArgument<*>.optional(): Nothing = error("Nesting of optional arguments is not allowed.")
+
+@Suppress("unused")
+@Deprecated(
+    message = "Default arguments can't be made optional.",
+    replaceWith = ReplaceWith(""),
+    level = DeprecationLevel.ERROR,
+)
+public fun SlashDefaultArgument<*>.optional(): Nothing = error("Default arguments can't be made optional.")

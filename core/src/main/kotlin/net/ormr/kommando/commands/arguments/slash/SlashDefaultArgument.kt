@@ -56,3 +56,21 @@ public infix fun <T> SlashArgument<T>.default(supplier: SlashDefaultValueSupplie
     require(this !is SlashOptionalArgument<*>) { "Optional arguments can't be made default." }
     return SlashDefaultArgument(this, supplier)
 }
+
+@Suppress("unused", "UNUSED_PARAMETER")
+@Deprecated(
+    message = "Nesting of default arguments is not allowed.",
+    replaceWith = ReplaceWith(""),
+    level = DeprecationLevel.ERROR,
+)
+public fun <T> SlashDefaultArgument<T>.default(supplier: SlashDefaultValueSupplier<T>): Nothing =
+    error("Nesting of default arguments is not allowed.")
+
+@Suppress("unused", "UNUSED_PARAMETER")
+@Deprecated(
+    message = "Optional arguments can't be made default.",
+    replaceWith = ReplaceWith(""),
+    level = DeprecationLevel.ERROR,
+)
+public fun <T> SlashOptionalArgument<T>.default(supplier: SlashDefaultValueSupplier<T>): Nothing =
+    error("Optional arguments can't be made default.")
