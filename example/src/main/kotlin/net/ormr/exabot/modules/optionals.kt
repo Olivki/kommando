@@ -33,7 +33,6 @@ import net.ormr.kommando.commands.arguments.slash.optional
 import net.ormr.kommando.commands.commands
 import net.ormr.kommando.commands.execute
 import net.ormr.kommando.commands.guildSlashCommand
-import net.ormr.kommando.processor.Module
 import net.ormr.kommando.processor.Tag
 
 fun optionalCommand(@Tag guildId: Snowflake) = commands("Optionals") {
