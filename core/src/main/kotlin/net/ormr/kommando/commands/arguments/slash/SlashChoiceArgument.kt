@@ -39,6 +39,18 @@ public class SlashChoiceArgument<T> internal constructor(
 
 public typealias SlashChoice<T> = Pair<String, T>
 
+public fun <T> SlashArgumentWithChoice<T>.choices(
+    first: SlashChoice<T>,
+    vararg rest: SlashChoice<T>,
+): SlashChoiceArgument<T> {
+    require(rest.size <= 24) { "Commands can only have 25 choices max, was given ${rest.size} choices." }
+    val choices = buildList(rest.size + 1) {
+        add(first)
+        addAll(rest)
+    }
+    return SlashChoiceArgument(this, choices)
+}
+
 public infix fun <T> SlashArgumentWithChoice<T>.choices(choices: List<SlashChoice<T>>): SlashChoiceArgument<T> {
     require(choices.size <= 25) { "Commands can only have 25 choices max, was given ${choices.size} choices." }
     return SlashChoiceArgument(this, choices.toList())
