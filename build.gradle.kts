@@ -64,7 +64,7 @@ subprojects {
         compileKotlin {
             kotlinOptions {
                 jvmTarget = "17"
-                freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
+                freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn", "-Xcontext-receivers")
             }
         }
         test {
