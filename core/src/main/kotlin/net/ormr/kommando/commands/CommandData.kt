@@ -26,10 +26,9 @@ package net.ormr.kommando.commands
 
 import dev.kord.core.Kord
 import dev.kord.core.event.Event
-import net.ormr.kommando.Kommando
+import net.ormr.kommando.KommandoAware
 
-public sealed interface CommandData<E : Event> {
-    public val kommando: Kommando
+public sealed interface CommandData<E : Event> : KommandoAware {
     public val kord: Kord
         get() = kommando.kord
     public val event: E
