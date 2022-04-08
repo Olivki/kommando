@@ -33,7 +33,7 @@ import net.ormr.kommando.KommandoBuilder
 import net.ormr.kommando.commands.*
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
 
-// TODO: this gets relatively slow
+// TODO: this gets relatively slow, but only for guild commands?
 internal suspend fun KommandoBuilder.registerSlashCommands(
     applicationCommands: List<ApplicationCommand<*, *>>,
 ): Map<Snowflake, ApplicationCommand<*, *>> = buildMap {
