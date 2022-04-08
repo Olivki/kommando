@@ -24,11 +24,32 @@
 
 package net.ormr.kommando.commands
 
-import dev.kord.core.event.Event
-import net.ormr.kommando.commands.arguments.slash.SlashArgument
+import net.ormr.kommando.KommandoDsl
 
-public sealed interface ApplicationCommand<E : Event, D : CommandData<E>> : Command {
-    public val permissions: ApplicationCommandPermissions?
+public data class ApplicationCommandPermissions(public val guildPermissions: List<GuildApplicationCommandPermissions>)
 
-    public val executor: CommandExecutor<SlashArgument<*>, *, E, D>?
+@KommandoDsl
+public class ApplicationCommandPermissionsBuilder @PublishedApi internal constructor() {
+    private val permissions = mutableListOf<GuildApplicationCommandPermissions>()
+
+    @PublishedApi
+    internal fun addPermission(permission: GuildApplicationCommandPermissions) {
+        permissions += permission
+    }
+
+    @PublishedApi
+    internal fun build(): ApplicationCommandPermissions = ApplicationCommandPermissions(permissions.toList())
+}
+
+@KommandoDsl
+public inline fun commandPermissions(builder: ApplicationCommandPermissionsBuilder.() -> Unit): ApplicationCommandPermissions =
+    ApplicationCommandPermissionsBuilder().apply(builder).build()
+
+@KommandoDsl
+public inline fun SlashCommandBuilder<*, *, *, *>.permissions(
+    builder: ApplicationCommandPermissionsBuilder.() -> Unit,
+): ApplicationCommandPermissions {
+    val perms = ApplicationCommandPermissionsBuilder().apply(builder).build()
+    setPermissions(perms)
+    return perms
 }

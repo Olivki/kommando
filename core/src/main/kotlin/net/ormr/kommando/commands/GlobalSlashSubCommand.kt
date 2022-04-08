@@ -33,7 +33,10 @@ public data class GlobalSlashSubCommand(
     override val name: String,
     override val description: String,
     override val executor: CommandExecutor<SlashArgument<*>, *, GlobalSlashEvent, GlobalSlashSubCommandData>,
-) : SlashSubCommand<GlobalSlashEvent, GlobalSlashSubCommandData>, GlobalApplicationCommand
+) : SlashSubCommand<GlobalSlashEvent, GlobalSlashSubCommandData>, GlobalApplicationCommand {
+    override val permissions: ApplicationCommandPermissions?
+        get() = null
+}
 
 public data class GlobalSlashSubCommandData(
     override val kommando: Kommando,

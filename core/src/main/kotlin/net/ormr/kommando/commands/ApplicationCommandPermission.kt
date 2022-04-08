@@ -24,11 +24,19 @@
 
 package net.ormr.kommando.commands
 
-import dev.kord.core.event.Event
-import net.ormr.kommando.commands.arguments.slash.SlashArgument
+import dev.kord.common.entity.Snowflake
 
-public sealed interface ApplicationCommand<E : Event, D : CommandData<E>> : Command {
-    public val permissions: ApplicationCommandPermissions?
+public sealed class ApplicationCommandPermission {
+    public abstract val id: Snowflake
+    public abstract val mode: PermissionMode
 
-    public val executor: CommandExecutor<SlashArgument<*>, *, E, D>?
+    public data class Role(
+        override val id: Snowflake,
+        override val mode: PermissionMode,
+    ) : ApplicationCommandPermission()
+
+    public data class User(
+        override val id: Snowflake,
+        override val mode: PermissionMode,
+    ) : ApplicationCommandPermission()
 }

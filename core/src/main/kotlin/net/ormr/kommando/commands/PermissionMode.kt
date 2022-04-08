@@ -24,11 +24,17 @@
 
 package net.ormr.kommando.commands
 
-import dev.kord.core.event.Event
-import net.ormr.kommando.commands.arguments.slash.SlashArgument
+/**
+ * The mode of a permission.
+ */
+public enum class PermissionMode {
+    /**
+     * Allows access to the command.
+     */
+    ALLOW,
 
-public sealed interface ApplicationCommand<E : Event, D : CommandData<E>> : Command {
-    public val permissions: ApplicationCommandPermissions?
-
-    public val executor: CommandExecutor<SlashArgument<*>, *, E, D>?
+    /**
+     * Denies access to the command.
+     */
+    DENY,
 }

@@ -38,6 +38,7 @@ private typealias GlobalUserEvent = UserCommandInteractionCreateEvent
 public data class GlobalUserCommand(
     override val category: String,
     override val name: String,
+    override val permissions: ApplicationCommandPermissions?,
     override val executor: CommandExecutor<SlashArgument<*>, CommandExecutorArguments.Args1<User>, GlobalUserEvent, GlobalUserCommandData>,
 ) : ApplicationCommand<GlobalUserEvent, GlobalUserCommandData>, GlobalApplicationCommand
 
@@ -52,8 +53,9 @@ public data class GlobalUserCommandData(
 @KommandoDsl
 public fun CommandGroupBuilder.globalUserCommand(
     name: String,
+    permissions: ApplicationCommandPermissions? = null,
     execute: suspend GlobalUserCommandData.(CommandExecutorArguments.Args1<User>) -> Unit,
 ) {
     val executor = CommandExecutor(listOf(SlashUserArgument("", "")), execute)
-    addCommand(GlobalUserCommand(category, name, executor))
+    addCommand(GlobalUserCommand(category, name, permissions, executor))
 }
