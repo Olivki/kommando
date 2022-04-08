@@ -36,6 +36,9 @@ public data class GlobalSlashSubCommand(
 ) : SlashSubCommand<GlobalSlashEvent, GlobalSlashSubCommandData>, GlobalApplicationCommand {
     override val permissions: ApplicationCommandPermissions?
         get() = null
+
+    override val defaultPermission: Boolean
+        get() = true
 }
 
 public data class GlobalSlashSubCommandData(

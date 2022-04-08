@@ -38,6 +38,9 @@ public data class GuildSlashSubCommand(
 ) : SlashSubCommand<GuildSlashEvent, GuildSlashSubCommandData>, GuildApplicationCommand {
     override val permissions: ApplicationCommandPermissions?
         get() = null
+
+    override val defaultPermission: Boolean
+        get() = true
 }
 
 public data class GuildSlashSubCommandData(

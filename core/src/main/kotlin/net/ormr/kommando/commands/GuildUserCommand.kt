@@ -39,6 +39,7 @@ private typealias GuildUserEvent = GuildUserCommandInteractionCreateEvent
 public data class GuildUserCommand(
     override val category: String,
     override val name: String,
+    override val defaultPermission: Boolean,
     override val permissions: ApplicationCommandPermissions?,
     override val executor: CommandExecutor<SlashArgument<*>, Args1<User>, GuildUserEvent, GuildUserCommandData>,
     public val guildId: Snowflake,
@@ -56,9 +57,10 @@ public data class GuildUserCommandData(
 public fun CommandGroupBuilder.guildUserCommand(
     name: String,
     guildId: Snowflake,
+    defaultPermission: Boolean = true,
     permissions: ApplicationCommandPermissions? = null,
     execute: suspend GuildUserCommandData.(Args1<User>) -> Unit,
 ) {
     val executor = CommandExecutor(listOf(SlashUserArgument("", "")), execute)
-    addCommand(GuildUserCommand(category, name, permissions, executor, guildId))
+    addCommand(GuildUserCommand(category, name, defaultPermission, permissions, executor, guildId))
 }

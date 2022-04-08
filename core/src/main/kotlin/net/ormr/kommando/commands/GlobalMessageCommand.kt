@@ -38,6 +38,7 @@ private typealias GlobalMessageEvent = MessageCommandInteractionCreateEvent
 public data class GlobalMessageCommand(
     override val category: String,
     override val name: String,
+    override val defaultPermission: Boolean,
     override val permissions: ApplicationCommandPermissions?,
     override val executor: CommandExecutor<SlashArgument<*>, CommandExecutorArguments.Args1<Message>, GlobalMessageEvent, GlobalMessageCommandData>,
 ) : ApplicationCommand<GlobalMessageEvent, GlobalMessageCommandData>, GlobalApplicationCommand
@@ -53,9 +54,10 @@ public data class GlobalMessageCommandData(
 @KommandoDsl
 public fun CommandGroupBuilder.globalMessageCommand(
     name: String,
+    defaultPermission: Boolean = true,
     permissions: ApplicationCommandPermissions? = null,
     execute: suspend GlobalMessageCommandData.(CommandExecutorArguments.Args1<Message>) -> Unit,
 ) {
     val executor = CommandExecutor(listOf(SlashMentionableArgument("", "")), execute)
-    addCommand(GlobalMessageCommand(category, name, permissions, executor))
+    addCommand(GlobalMessageCommand(category, name, defaultPermission, permissions, executor))
 }

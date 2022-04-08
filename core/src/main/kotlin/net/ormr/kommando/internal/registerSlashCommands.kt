@@ -43,16 +43,23 @@ internal suspend fun KommandoBuilder.registerSlashCommands(
                 val registeredCommand = kord.createGlobalChatInputCommand(
                     command.name,
                     command.description,
-                ) { buildCommand(command) }
+                ) {
+                    defaultPermission = command.defaultPermission
+                    buildCommand(command)
+                }
                 put(registeredCommand.id, command)
             }
             is GlobalSlashSubCommand -> error("GlobalSlashSubCommand found at root level")
             is GlobalUserCommand -> {
-                val registeredCommand = kord.createGlobalUserCommand(command.name)
+                val registeredCommand = kord.createGlobalUserCommand(command.name) {
+                    defaultPermission = command.defaultPermission
+                }
                 put(registeredCommand.id, command)
             }
             is GlobalMessageCommand -> {
-                val registeredCommand = kord.createGlobalMessageCommand(command.name)
+                val registeredCommand = kord.createGlobalMessageCommand(command.name) {
+                    defaultPermission = command.defaultPermission
+                }
                 put(registeredCommand.id, command)
             }
             is GuildSlashCommand -> {
@@ -60,16 +67,23 @@ internal suspend fun KommandoBuilder.registerSlashCommands(
                     command.guildId,
                     command.name,
                     command.description,
-                ) { buildCommand(command) }
+                ) {
+                    defaultPermission = command.defaultPermission
+                    buildCommand(command)
+                }
                 put(registeredCommand.id, command)
             }
             is GuildSlashSubCommand -> error("GuildSlashSubCommand found at root level")
             is GuildUserCommand -> {
-                val registeredCommand = kord.createGuildUserCommand(command.guildId, command.name)
+                val registeredCommand = kord.createGuildUserCommand(command.guildId, command.name) {
+                    defaultPermission = command.defaultPermission
+                }
                 put(registeredCommand.id, command)
             }
             is GuildMessageCommand -> {
-                val registeredCommand = kord.createGuildMessageCommand(command.guildId, command.name)
+                val registeredCommand = kord.createGuildMessageCommand(command.guildId, command.name) {
+                    defaultPermission = command.defaultPermission
+                }
                 put(registeredCommand.id, command)
             }
         }
