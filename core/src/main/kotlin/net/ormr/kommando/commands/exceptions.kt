@@ -24,15 +24,10 @@
 
 package net.ormr.kommando.commands
 
-import com.github.h0tk3y.betterParse.parser.ErrorResult
-import com.github.h0tk3y.betterParse.parser.ParseException
 import net.ormr.kommando.commands.arguments.chat.ChatArgument
 
 public open class CommandException(description: String?, cause: Throwable? = null) :
     RuntimeException(description, cause)
-
-public class CommandParseException(public val errorResult: ErrorResult, cause: ParseException) :
-    CommandException("Command could not be parsed.", cause)
 
 /**
  * Thrown if no [ChatCommand] can be found with the given [commandName].
