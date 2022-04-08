@@ -27,6 +27,7 @@ package net.ormr.kommando.structures
 import dev.kord.core.event.Event
 import dev.kord.core.event.message.MessageCreateEvent
 import net.ormr.kommando.Kommando
+import net.ormr.kommando.KommandoAware
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.utils.checkIntents
 import dev.kord.core.on as kordOn
@@ -34,7 +35,7 @@ import dev.kord.core.on as kordOn
 // entire design here is very heavily based on the Listener DSL from DiscordKt
 
 @KommandoDsl
-public class EventListenerBuilder internal constructor(public val kommando: Kommando) {
+public class EventListenerBuilder internal constructor(override val kommando: Kommando) : KommandoAware {
     @KommandoDsl
     public inline fun <reified T : Event> on(crossinline consumer: suspend T.() -> Unit) {
         kommando.kord.kordOn<T> {
