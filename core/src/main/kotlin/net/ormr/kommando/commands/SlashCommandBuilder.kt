@@ -34,8 +34,7 @@ public sealed class SlashCommandBuilder<out C : SlashCommand<E, D, S>, S : Slash
 
     protected fun getExecutorSafe(): CommandExecutor<SlashArgument<*>, *, E, D>? {
         if (executor == null && (groups.isEmpty() && subCommands.isEmpty())) error("No groups, sub-commands nor executor has been defined.")
-        // TODO: throw an exception or log if executor isn't null and groups or sub-commands contains anything, as
-        //       having any groups / sub-commands makes the root executor useless.
+        if (executor != null && (groups.isNotEmpty() || subCommands.isNotEmpty())) error("Root executor is useless if groups/sub-commands have been defined.")
         return executor
     }
 
