@@ -22,7 +22,22 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.components
 
-@DslMarker
-public annotation class KommandoDsl
+import dev.kord.rest.builder.component.ActionRowBuilder
+
+// TODO: make a custom select menu type for just adapting an enum, the enum should inherit a custom class containing
+//       value name and description
+public sealed interface Component {
+    /**
+     * The width of the component.
+     *
+     * This does not represent the actual visual width of a component, but rather how much space it takes up per row.
+     * Each row can only contain a total width of 5.
+     */
+    public val width: Int
+
+    public val isDisabled: Boolean
+
+    public fun ActionRowBuilder.buildComponent()
+}

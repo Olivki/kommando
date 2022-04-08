@@ -22,7 +22,10 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.components
 
-@DslMarker
-public annotation class KommandoDsl
+internal fun <T> T.checkLabelAndEmoji()
+        where T : EmojiBuilder,
+              T : LabelBuilder {
+    if (label == null && emoji == null) error("Either 'label' or 'emoji' needs to be set, both cannot be empty.")
+}

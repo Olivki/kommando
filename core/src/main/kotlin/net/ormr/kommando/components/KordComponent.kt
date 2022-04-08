@@ -22,7 +22,9 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.components
 
-@DslMarker
-public annotation class KommandoDsl
+public typealias KordComponent = dev.kord.core.entity.component.Component
+public typealias KordButtonComponent = dev.kord.core.entity.component.ButtonComponent
+public typealias KordSelectMenuComponent = dev.kord.core.entity.component.SelectMenuComponent
+public typealias KordTextInputComponent = dev.kord.core.entity.component.TextInputComponent

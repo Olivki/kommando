@@ -22,7 +22,13 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.components
 
-@DslMarker
-public annotation class KommandoDsl
+import net.ormr.kommando.KommandoDsl
+
+@KommandoDsl
+public sealed class ComponentBuilder<out R : Component> {
+    public var isDisabled: Boolean = false
+
+    internal abstract fun build(): R
+}

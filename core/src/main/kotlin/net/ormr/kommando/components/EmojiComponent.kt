@@ -22,7 +22,10 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.components
 
-@DslMarker
-public annotation class KommandoDsl
+import dev.kord.common.entity.DiscordPartialEmoji
+
+public sealed interface EmojiComponent {
+    public val emoji: DiscordPartialEmoji?
+}

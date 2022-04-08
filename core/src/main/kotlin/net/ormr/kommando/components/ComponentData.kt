@@ -22,7 +22,30 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.components
 
-@DslMarker
-public annotation class KommandoDsl
+import dev.kord.core.Kord
+import dev.kord.core.behavior.channel.MessageChannelBehavior
+import dev.kord.core.entity.Message
+import dev.kord.core.entity.interaction.ComponentInteraction
+import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
+import net.ormr.kommando.KommandoAware
+
+public sealed interface ComponentData<E : ComponentInteractionCreateEvent> : KommandoAware {
+    public val event: E
+    public val interaction: ComponentInteraction
+    public val kord: Kord
+        get() = kommando.kord
+}
+
+/**
+ * The message that the [component][ComponentInteraction] is attached to.
+ */
+public val ComponentData<*>.message: Message
+    get() = interaction.message
+
+/**
+ * The channel behavior the interaction was sent from.
+ */
+public val ComponentData<*>.channel: MessageChannelBehavior
+    get() = interaction.channel

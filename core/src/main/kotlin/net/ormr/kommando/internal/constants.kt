@@ -22,7 +22,9 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.internal
 
-@DslMarker
-public annotation class KommandoDsl
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+
+internal val ONE_SECOND: Duration = 1.seconds

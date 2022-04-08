@@ -22,7 +22,31 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.components
 
-@DslMarker
-public annotation class KommandoDsl
+import dev.kord.common.entity.DiscordPartialEmoji
+import dev.kord.common.entity.optional.optional
+import dev.kord.core.entity.GuildEmoji
+import dev.kord.core.entity.ReactionEmoji
+import dev.kord.x.emoji.DiscordEmoji
+import dev.kord.x.emoji.toReaction
+
+public interface EmojiBuilder {
+    public var emoji: DiscordPartialEmoji?
+
+    public fun emoji(emoji: GuildEmoji) {
+        this.emoji = DiscordPartialEmoji(id = emoji.id, name = null, animated = emoji.isAnimated.optional())
+    }
+
+    public fun emoji(emoji: ReactionEmoji.Unicode) {
+        this.emoji = DiscordPartialEmoji(name = emoji.name, id = null)
+    }
+
+    public fun emoji(emoji: ReactionEmoji.Custom) {
+        this.emoji = DiscordPartialEmoji(name = emoji.name, id = emoji.id, animated = emoji.isAnimated.optional())
+    }
+}
+
+public fun EmojiBuilder.emoji(emoji: DiscordEmoji) {
+    emoji(emoji.toReaction())
+}

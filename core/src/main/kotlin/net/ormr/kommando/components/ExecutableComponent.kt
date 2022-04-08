@@ -22,7 +22,11 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.components
 
-@DslMarker
-public annotation class KommandoDsl
+import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
+
+public sealed interface ExecutableComponent<E : ComponentInteractionCreateEvent, D : ComponentData<E>> : Component {
+    public val customId: String
+    public val executor: ComponentExecutor<D>
+}

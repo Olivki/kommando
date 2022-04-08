@@ -22,7 +22,9 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.internal
 
-@DslMarker
-public annotation class KommandoDsl
+import java.util.*
+
+@PublishedApi
+internal fun createUuidString(): String = UUID.randomUUID().toString()

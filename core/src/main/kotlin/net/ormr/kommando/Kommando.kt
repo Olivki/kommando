@@ -38,9 +38,9 @@ import net.ormr.kommando.commands.ChatCommand
 import net.ormr.kommando.commands.CommandGroup
 import net.ormr.kommando.commands.prefix.CommandPrefix
 import net.ormr.kommando.commands.prefix.CommandPrefixBuilder
-import net.ormr.kommando.internal.handleApplicationCommands
-import net.ormr.kommando.internal.handleChatCommands
-import net.ormr.kommando.internal.registerSlashCommands
+import net.ormr.kommando.components.ComponentGroup
+import net.ormr.kommando.components.ExecutableComponent
+import net.ormr.kommando.internal.*
 import net.ormr.kommando.structures.CommandPrecondition
 import net.ormr.kommando.structures.EventListener
 import net.ormr.kommando.structures.MessageFilter
@@ -49,6 +49,10 @@ import org.kodein.di.DI
 import org.kodein.di.DirectDI
 import org.kodein.di.DirectDIAware
 import org.kodein.di.bindSingleton
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
@@ -63,15 +67,27 @@ public class Kommando(
     public val chatCommands: Map<String, ChatCommand<*>>,
     public val applicationCommands: List<ApplicationCommand<*, *>>,
     public val prefix: CommandPrefix?,
+    public val componentsDuration: Duration,
     internal val registeredApplicationCommands: Map<Snowflake, ApplicationCommand<*, *>>,
 ) : DirectDIAware {
     private companion object {
         private val logger = InlineLogger()
     }
 
+    public val executableComponents: MutableMap<String, ExecutableComponent<*, *>> = ConcurrentHashMap()
+
+    public fun addComponentGroup(group: ComponentGroup) {
+        executableComponents.putAll(group.executableComponents)
+    }
+
+    public fun removeComponentGroup(group: ComponentGroup) {
+        for ((key, _) in group.executableComponents) executableComponents.remove(key)
+    }
+
     internal suspend fun initialize() {
         handleApplicationCommands()
         handleChatCommands()
+        handleComponents()
         eventListeners.forEach { it.executeBlock(this) }
     }
 }
@@ -92,6 +108,15 @@ public class KommandoBuilder @PublishedApi internal constructor(
     public val eventListeners: MutableList<EventListener> = mutableListOf()
 
     public val messageFilters: MutableList<MessageFilter> = mutableListOf()
+
+    /**
+     * How long automatically managed components should stay alive for, must be within range `1m..4h`.
+     */
+    public var componentsDuration: Duration = 15.minutes + ONE_SECOND
+        set(value) {
+            require(value in 1.minutes..4.hours) { "Value must be within 1m..4h, was $value." }
+            field = value + ONE_SECOND
+        }
 
     /**
      * Filters away any messages created by the bot itself.
@@ -166,6 +191,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
             chatCommands = chatCommands,
             applicationCommands = applicationCommands,
             prefix = prefix,
+            componentsDuration = componentsDuration,
             registeredApplicationCommands = registeredApplicationCommands,
         )
 

@@ -22,7 +22,26 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.internal
 
-@DslMarker
-public annotation class KommandoDsl
+import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
+import dev.kord.core.on
+import net.ormr.kommando.Kommando
+import net.ormr.kommando.components.*
+
+internal suspend fun Kommando.handleComponents() {
+    val kommando = this
+    kord.on<ComponentInteractionCreateEvent> {
+        // TODO: pass to listener if we implement that system
+        when (val component = executableComponents[interaction.componentId] ?: return@on) {
+            is ButtonComponent -> {
+                check(this is ButtonComponentEvent) { "Mismatch of component and event type. ($component x $this)" }
+                component.executor(ButtonComponentData(kommando, this))
+            }
+            is SelectMenuComponent -> {
+                check(this is SelectMenuComponentEvent) { "Mismatch of component and event type. ($component x $this)" }
+                component.executor(SelectMenuComponentData(kommando, this))
+            }
+        }
+    }
+}

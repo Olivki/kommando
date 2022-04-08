@@ -22,7 +22,21 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.components
 
-@DslMarker
-public annotation class KommandoDsl
+import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
+import net.ormr.kommando.KommandoDsl
+
+public sealed class ExecutableComponentBuilder<E : ComponentInteractionCreateEvent, D : ComponentData<E>, out R : ExecutableComponent<E, D>> :
+    ComponentBuilder<R>() {
+    private var executor: ComponentExecutor<D>? = null
+
+    protected fun getNonNullExecutor(): ComponentExecutor<D> =
+        executor ?: throw IllegalArgumentException("Missing required 'execute' block.")
+
+    @KommandoDsl
+    public fun execute(executor: ComponentExecutor<D>) {
+        require(this.executor == null) { "Only one 'execute' block can exist per component." }
+        this.executor = executor
+    }
+}

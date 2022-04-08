@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando
+package net.ormr.kommando.components
 
-@DslMarker
-public annotation class KommandoDsl
+public typealias ComponentExecutor<D> = suspend D.() -> Unit
