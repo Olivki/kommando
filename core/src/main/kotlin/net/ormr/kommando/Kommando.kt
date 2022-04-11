@@ -33,9 +33,9 @@ import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.gateway.builder.PresenceBuilder
-import net.ormr.kommando.commands.ApplicationCommand
 import net.ormr.kommando.commands.ChatCommand
 import net.ormr.kommando.commands.CommandGroup
+import net.ormr.kommando.commands.TopLevelApplicationCommand
 import net.ormr.kommando.commands.prefix.CommandPrefix
 import net.ormr.kommando.commands.prefix.CommandPrefixBuilder
 import net.ormr.kommando.components.ComponentGroup
@@ -65,10 +65,10 @@ public class Kommando(
     public val eventListeners: List<EventListener>,
     public val messageFilters: List<MessageFilter>,
     public val chatCommands: Map<String, ChatCommand<*>>,
-    public val applicationCommands: List<ApplicationCommand<*, *>>,
+    public val applicationCommands: List<TopLevelApplicationCommand<*, *>>,
     public val prefix: CommandPrefix?,
     public val componentsDuration: Duration,
-    internal val registeredApplicationCommands: Map<Snowflake, ApplicationCommand<*, *>>,
+    internal val registeredApplicationCommands: Map<Snowflake, TopLevelApplicationCommand<*, *>>,
 ) : DirectDIAware {
     private companion object {
         private val logger = InlineLogger()
@@ -177,7 +177,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
                     it.aliases.forEach { alias -> put(alias, it) }
                 }
         }
-        val applicationCommands = flattenedCommands.filterIsInstance<ApplicationCommand<*, *>>()
+        val applicationCommands = flattenedCommands.filterIsInstance<TopLevelApplicationCommand<*, *>>()
         logger.info { "Registering ${applicationCommands.size} application commands." }
         val (registeredApplicationCommands, duration) = measureTimedValue { registerSlashCommands(applicationCommands) }
         logger.info { "Registration of all ${applicationCommands.size} application commands took $duration." }

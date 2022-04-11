@@ -27,6 +27,8 @@ package net.ormr.kommando.commands
 import dev.kord.core.event.Event
 import net.ormr.kommando.commands.arguments.CommandArgument
 import net.ormr.kommando.commands.arguments.CommandExecutorArguments
+import net.ormr.kommando.commands.arguments.chat.ChatArgument
+import net.ormr.kommando.commands.arguments.slash.SlashArgument
 
 public class CommandExecutor<out A : CommandArgument<*>, EA : CommandExecutorArguments, E : Event, D : CommandData<E>>(
     public val arguments: List<A>,
@@ -37,3 +39,6 @@ public class CommandExecutor<out A : CommandArgument<*>, EA : CommandExecutorArg
         executable(data, arguments as EA)
     }
 }
+
+public typealias ApplicationCommandExecutor<E, D> = CommandExecutor<SlashArgument<*>, *, E, D>
+public typealias ChatCommandExecutor<E, D> = CommandExecutor<ChatArgument<*>, *, E, D>

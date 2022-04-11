@@ -41,7 +41,7 @@ public data class GlobalMessageCommand(
     override val defaultPermission: Boolean,
     override val permissions: ApplicationCommandPermissions?,
     override val executor: CommandExecutor<SlashArgument<*>, CommandExecutorArguments.Args1<Message>, GlobalMessageEvent, GlobalMessageCommandData>,
-) : ApplicationCommand<GlobalMessageEvent, GlobalMessageCommandData>, GlobalApplicationCommand
+) : TopLevelApplicationCommand<GlobalMessageEvent, GlobalMessageCommandData>, GlobalApplicationCommand
 
 public data class GlobalMessageCommandData(
     override val kommando: Kommando,

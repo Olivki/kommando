@@ -28,8 +28,5 @@ import dev.kord.core.event.Event
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
 
 public sealed interface ApplicationCommand<E : Event, D : CommandData<E>> : Command {
-    public val defaultPermission: Boolean
-    public val permissions: ApplicationCommandPermissions?
-
     public val executor: CommandExecutor<SlashArgument<*>, *, E, D>?
 }

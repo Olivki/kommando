@@ -219,7 +219,7 @@ private fun SlashArgumentWithChoice<*>.getAutoComplete(): AutoCompleteAction =
 private fun CommandExecutor<SlashArgument<*>, *, *, *>.getArgument(name: String): SlashArgument<*> =
     arguments.single { it.name == name }
 
-private fun Kommando.getCommand(id: Snowflake): ApplicationCommand<*, *> =
+private fun Kommando.getCommand(id: Snowflake): TopLevelApplicationCommand<*, *> =
     registeredApplicationCommands[id] ?: noCommandFound(id)
 
 private suspend fun <E : Event, D : CommandData<E>> ApplicationCommand<E, D>.getArgs(

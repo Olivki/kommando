@@ -41,7 +41,7 @@ public data class GlobalUserCommand(
     override val defaultPermission: Boolean,
     override val permissions: ApplicationCommandPermissions?,
     override val executor: CommandExecutor<SlashArgument<*>, CommandExecutorArguments.Args1<User>, GlobalUserEvent, GlobalUserCommandData>,
-) : ApplicationCommand<GlobalUserEvent, GlobalUserCommandData>, GlobalApplicationCommand
+) : TopLevelApplicationCommand<GlobalUserEvent, GlobalUserCommandData>, GlobalApplicationCommand
 
 public data class GlobalUserCommandData(
     override val kommando: Kommando,

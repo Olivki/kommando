@@ -28,22 +28,14 @@ import net.ormr.kommando.commands.arguments.slash.SlashArgument
 
 // TODO: make custom builder exceptions
 public sealed class SlashCommandBuilder<out C : SlashCommand<E, D, S>, S : SlashSubCommand<*, *>, E : SlashEvent, D : CommandData<E>> :
-    CommandBuilder<C, SlashArgument<*>, E, D>() {
+    TopLevelApplicationCommandBuilder<C, E, D>() {
     protected val groups: MutableMap<String, SlashCommandGroup<S>> = hashMapOf()
     protected val subCommands: MutableMap<String, S> = hashMapOf()
-    protected var permissions: ApplicationCommandPermissions? = null
-    public var defaultPermission: Boolean = true
 
     protected fun getExecutorSafe(): CommandExecutor<SlashArgument<*>, *, E, D>? {
         if (executor == null && (groups.isEmpty() && subCommands.isEmpty())) error("No groups, sub-commands nor executor has been defined.")
         if (executor != null && (groups.isNotEmpty() || subCommands.isNotEmpty())) error("Root executor is useless if groups/sub-commands have been defined.")
         return executor
-    }
-
-    @PublishedApi
-    @JvmName("setPermissionsDelegate")
-    internal fun setPermissions(permissions: ApplicationCommandPermissions) {
-        this.permissions = permissions
     }
 
     @PublishedApi

@@ -24,14 +24,16 @@
 
 package net.ormr.kommando.commands
 
-import dev.kord.core.entity.interaction.ChatInputCommandInteraction
-import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
-import net.ormr.kommando.commands.arguments.slash.SlashArgument
+import dev.kord.core.event.interaction.ApplicationCommandInteractionCreateEvent
 
-internal typealias SlashEvent = ChatInputCommandInteractionCreateEvent
-internal typealias SlashInteraction = ChatInputCommandInteraction
+public sealed class TopLevelApplicationCommandBuilder<out C : TopLevelApplicationCommand<E, D>, E : ApplicationCommandInteractionCreateEvent, D : CommandData<E>>
+    : ApplicationCommandBuilder<C, E, D>() {
+    protected var permissions: ApplicationCommandPermissions? = null
+    public var defaultPermission: Boolean = true
 
-public sealed interface SlashSubCommand<E : SlashEvent, D : SlashSubCommandData<E>> : ApplicationCommand<E, D>,
-    DescribableCommand {
-    override val executor: CommandExecutor<SlashArgument<*>, *, E, D>
+    @PublishedApi
+    @JvmName("setPermissionsDelegate")
+    internal fun setPermissions(permissions: ApplicationCommandPermissions) {
+        this.permissions = permissions
+    }
 }

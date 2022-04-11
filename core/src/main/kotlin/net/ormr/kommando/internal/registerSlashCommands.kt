@@ -35,8 +35,8 @@ import net.ormr.kommando.commands.arguments.slash.SlashArgument
 
 // TODO: this gets relatively slow, but only for guild commands?
 internal suspend fun KommandoBuilder.registerSlashCommands(
-    applicationCommands: List<ApplicationCommand<*, *>>,
-): Map<Snowflake, ApplicationCommand<*, *>> = buildMap {
+    applicationCommands: List<TopLevelApplicationCommand<*, *>>,
+): Map<Snowflake, TopLevelApplicationCommand<*, *>> = buildMap {
     for (command in applicationCommands) {
         when (command) {
             is GlobalSlashCommand -> {
@@ -49,7 +49,6 @@ internal suspend fun KommandoBuilder.registerSlashCommands(
                 }
                 put(registeredCommand.id, command)
             }
-            is GlobalSlashSubCommand -> error("GlobalSlashSubCommand found at root level")
             is GlobalUserCommand -> {
                 val registeredCommand = kord.createGlobalUserCommand(command.name) {
                     defaultPermission = command.defaultPermission
@@ -73,7 +72,6 @@ internal suspend fun KommandoBuilder.registerSlashCommands(
                 }
                 put(registeredCommand.id, command)
             }
-            is GuildSlashSubCommand -> error("GuildSlashSubCommand found at root level")
             is GuildUserCommand -> {
                 val registeredCommand = kord.createGuildUserCommand(command.guildId, command.name) {
                     defaultPermission = command.defaultPermission
