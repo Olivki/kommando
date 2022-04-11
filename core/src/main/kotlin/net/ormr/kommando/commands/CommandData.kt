@@ -26,6 +26,7 @@ package net.ormr.kommando.commands
 
 import dev.kord.core.Kord
 import dev.kord.core.event.Event
+import dev.kord.core.event.message.MessageCreateEvent
 import net.ormr.kommando.KommandoAware
 
 public sealed interface CommandData<E : Event> : KommandoAware {
@@ -33,3 +34,5 @@ public sealed interface CommandData<E : Event> : KommandoAware {
         get() = kommando.kord
     public val event: E
 }
+
+public typealias ChatCommandData = CommandData<MessageCreateEvent>

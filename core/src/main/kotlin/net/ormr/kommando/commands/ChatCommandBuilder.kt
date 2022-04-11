@@ -24,12 +24,23 @@
 
 package net.ormr.kommando.commands
 
-import dev.kord.core.event.Event
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.arguments.CommandArgument
 
-public sealed class ChatCommandBuilder<out C : Command, A : CommandArgument<*>, E : Event, D : CommandData<E>> :
-    CommandBuilder<C, A, E, D>() {
-    @KommandoDsl
+@KommandoDsl
+public sealed class ChatCommandBuilder<out C : ChatCommand<D>, D : ChatCommandData> {
+    @KommandoDsl // TODO: remove annotation?
     public var aliases: Set<String> = emptySet()
+
+    protected var executor: ChatCommandExecutor<D>? = null
+
+    protected fun getNonNullExecutor(): ChatCommandExecutor<D> =
+        executor ?: throw IllegalArgumentException("Missing required 'execute' block.")
+
+    internal fun registerExecutor(executor: ChatCommandExecutor<D>) {
+        require(this.executor == null) { "Only one 'execute' block can exist per command." }
+        this.executor = executor
+    }
+
+    @PublishedApi
+    internal abstract fun build(category: String): C
 }

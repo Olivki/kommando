@@ -25,7 +25,19 @@
 package net.ormr.kommando.commands
 
 import dev.kord.core.event.Event
-import net.ormr.kommando.commands.arguments.slash.SlashArgument
+import net.ormr.kommando.KommandoDsl
 
-public sealed class ApplicationCommandBuilder<out C : ApplicationCommand<E, D>, E : Event, D : CommandData<E>> :
-    CommandBuilder<C, SlashArgument<*>, E, D>()
+@KommandoDsl
+public sealed class ApplicationCommandBuilder<out C : ApplicationCommand<E, D>, E : Event, D : CommandData<E>> {
+    protected var executor: ApplicationCommandExecutor<E, D>? = null
+
+    protected fun getNonNullExecutor(): ApplicationCommandExecutor<E, D> =
+        executor ?: throw IllegalArgumentException("Missing required 'execute' block.")
+
+    internal fun registerExecutor(executor: ApplicationCommandExecutor<E, D>) {
+        require(this.executor == null) { "Only one 'execute' block can exist per command." }
+        this.executor = executor
+    }
+
+    internal abstract fun build(category: String): C
+}

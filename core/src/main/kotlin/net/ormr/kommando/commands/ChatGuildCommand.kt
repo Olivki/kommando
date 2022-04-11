@@ -65,7 +65,7 @@ public data class ChatGuildCommandData(
 public class ChatGuildCommandBuilder @PublishedApi internal constructor(
     private val name: String,
     private val description: String,
-) : ChatCommandBuilder<ChatGuildCommand, ChatArgument<*>, MessageCreateEvent, ChatGuildCommandData>() {
+) : ChatCommandBuilder<ChatGuildCommand, ChatGuildCommandData>() {
     @PublishedApi
     override fun build(category: String): ChatGuildCommand = ChatGuildCommand(
         category = category,

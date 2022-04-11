@@ -25,7 +25,6 @@
 package net.ormr.kommando.commands
 
 import dev.kord.core.event.Event
-import dev.kord.core.event.message.MessageCreateEvent
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.CommandExecutorArguments.*
 import net.ormr.kommando.commands.arguments.chat.ChatArgument
@@ -34,14 +33,14 @@ import net.ormr.kommando.commands.arguments.slash.SlashArgument
 // -- CHAT COMMANDS -- \\
 @KommandoDsl
 @JvmName("chatCommandExecute")
-public fun <D : CommandData<MessageCreateEvent>> CommandBuilder<ChatCommand<D>, ChatArgument<*>, MessageCreateEvent, D>.execute(
+public fun <D : ChatCommandData> ChatCommandBuilder<ChatCommand<D>, D>.execute(
     execute: suspend D.(Args0) -> Unit,
 ) {
     registerExecutor(CommandExecutor(listOf(), execute))
 }
 
 @KommandoDsl
-public fun <D : CommandData<MessageCreateEvent>, N1> CommandBuilder<ChatCommand<D>, ChatArgument<*>, MessageCreateEvent, D>.execute(
+public fun <D : ChatCommandData, N1> ChatCommandBuilder<ChatCommand<D>, D>.execute(
     n1: ChatArgument<N1>,
     execute: suspend D.(Args1<N1>) -> Unit,
 ) {
@@ -49,7 +48,7 @@ public fun <D : CommandData<MessageCreateEvent>, N1> CommandBuilder<ChatCommand<
 }
 
 @KommandoDsl
-public fun <D : CommandData<MessageCreateEvent>, N1, N2> CommandBuilder<ChatCommand<D>, ChatArgument<*>, MessageCreateEvent, D>.execute(
+public fun <D : ChatCommandData, N1, N2> ChatCommandBuilder<ChatCommand<D>, D>.execute(
     n1: ChatArgument<N1>,
     n2: ChatArgument<N2>,
     execute: suspend D.(Args2<N1, N2>) -> Unit,
@@ -58,7 +57,7 @@ public fun <D : CommandData<MessageCreateEvent>, N1, N2> CommandBuilder<ChatComm
 }
 
 @KommandoDsl
-public fun <D : CommandData<MessageCreateEvent>, N1, N2, N3> CommandBuilder<ChatCommand<D>, ChatArgument<*>, MessageCreateEvent, D>.execute(
+public fun <D : ChatCommandData, N1, N2, N3> ChatCommandBuilder<ChatCommand<D>, D>.execute(
     n1: ChatArgument<N1>,
     n2: ChatArgument<N2>,
     n3: ChatArgument<N3>,
@@ -68,7 +67,7 @@ public fun <D : CommandData<MessageCreateEvent>, N1, N2, N3> CommandBuilder<Chat
 }
 
 @KommandoDsl
-public fun <D : CommandData<MessageCreateEvent>, N1, N2, N3, N4> CommandBuilder<ChatCommand<D>, ChatArgument<*>, MessageCreateEvent, D>.execute(
+public fun <D : ChatCommandData, N1, N2, N3, N4> ChatCommandBuilder<ChatCommand<D>, D>.execute(
     n1: ChatArgument<N1>,
     n2: ChatArgument<N2>,
     n3: ChatArgument<N3>,
@@ -79,7 +78,7 @@ public fun <D : CommandData<MessageCreateEvent>, N1, N2, N3, N4> CommandBuilder<
 }
 
 @KommandoDsl
-public fun <D : CommandData<MessageCreateEvent>, N1, N2, N3, N4, N5> CommandBuilder<ChatCommand<D>, ChatArgument<*>, MessageCreateEvent, D>.execute(
+public fun <D : ChatCommandData, N1, N2, N3, N4, N5> ChatCommandBuilder<ChatCommand<D>, D>.execute(
     n1: ChatArgument<N1>,
     n2: ChatArgument<N2>,
     n3: ChatArgument<N3>,
@@ -93,14 +92,14 @@ public fun <D : CommandData<MessageCreateEvent>, N1, N2, N3, N4, N5> CommandBuil
 // -- SLASH COMMANDS -- \\
 // TODO: verify that non optional commands are placed before optional commands
 @KommandoDsl
-public fun <E : Event, D : CommandData<E>> CommandBuilder<ApplicationCommand<E, D>, SlashArgument<*>, E, D>.execute(
+public fun <E : Event, D : CommandData<E>> ApplicationCommandBuilder<ApplicationCommand<E, D>, E, D>.execute(
     execute: suspend D.(Args0) -> Unit,
 ) {
     registerExecutor(CommandExecutor(listOf(), execute))
 }
 
 @KommandoDsl
-public fun <E : Event, D : CommandData<E>, N1> CommandBuilder<ApplicationCommand<E, D>, SlashArgument<*>, E, D>.execute(
+public fun <E : Event, D : CommandData<E>, N1> ApplicationCommandBuilder<ApplicationCommand<E, D>, E, D>.execute(
     n1: SlashArgument<N1>,
     execute: suspend D.(Args1<N1>) -> Unit,
 ) {
@@ -108,7 +107,7 @@ public fun <E : Event, D : CommandData<E>, N1> CommandBuilder<ApplicationCommand
 }
 
 @KommandoDsl
-public fun <E : Event, D : CommandData<E>, N1, N2> CommandBuilder<ApplicationCommand<E, D>, SlashArgument<*>, E, D>.execute(
+public fun <E : Event, D : CommandData<E>, N1, N2> ApplicationCommandBuilder<ApplicationCommand<E, D>, E, D>.execute(
     n1: SlashArgument<N1>,
     n2: SlashArgument<N2>,
     execute: suspend D.(Args2<N1, N2>) -> Unit,
@@ -117,7 +116,7 @@ public fun <E : Event, D : CommandData<E>, N1, N2> CommandBuilder<ApplicationCom
 }
 
 @KommandoDsl
-public fun <E : Event, D : CommandData<E>, N1, N2, N3> CommandBuilder<ApplicationCommand<E, D>, SlashArgument<*>, E, D>.execute(
+public fun <E : Event, D : CommandData<E>, N1, N2, N3> ApplicationCommandBuilder<ApplicationCommand<E, D>, E, D>.execute(
     n1: SlashArgument<N1>,
     n2: SlashArgument<N2>,
     n3: SlashArgument<N3>,
@@ -127,7 +126,7 @@ public fun <E : Event, D : CommandData<E>, N1, N2, N3> CommandBuilder<Applicatio
 }
 
 @KommandoDsl
-public fun <E : Event, D : CommandData<E>, N1, N2, N3, N4> CommandBuilder<ApplicationCommand<E, D>, SlashArgument<*>, E, D>.execute(
+public fun <E : Event, D : CommandData<E>, N1, N2, N3, N4> ApplicationCommandBuilder<ApplicationCommand<E, D>, E, D>.execute(
     n1: SlashArgument<N1>,
     n2: SlashArgument<N2>,
     n3: SlashArgument<N3>,
@@ -138,7 +137,7 @@ public fun <E : Event, D : CommandData<E>, N1, N2, N3, N4> CommandBuilder<Applic
 }
 
 @KommandoDsl
-public fun <E : Event, D : CommandData<E>, N1, N2, N3, N4, N5> CommandBuilder<ApplicationCommand<E, D>, SlashArgument<*>, E, D>.execute(
+public fun <E : Event, D : CommandData<E>, N1, N2, N3, N4, N5> ApplicationCommandBuilder<ApplicationCommand<E, D>, E, D>.execute(
     n1: SlashArgument<N1>,
     n2: SlashArgument<N2>,
     n3: SlashArgument<N3>,

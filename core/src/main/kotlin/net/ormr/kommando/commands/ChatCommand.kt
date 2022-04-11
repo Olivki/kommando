@@ -28,7 +28,7 @@ import dev.kord.core.event.message.MessageCreateEvent
 import net.ormr.kommando.commands.arguments.chat.ChatArgument
 
 // TODO: don't allow names/aliases with spaces in them
-public sealed interface ChatCommand<D : CommandData<MessageCreateEvent>> : Command, DescribableCommand {
+public sealed interface ChatCommand<D : ChatCommandData> : Command, DescribableCommand {
     public val executor: CommandExecutor<ChatArgument<*>, *, MessageCreateEvent, D>
 
     public val aliases: Set<String>
