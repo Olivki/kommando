@@ -29,7 +29,6 @@ import dev.kord.core.entity.interaction.UserCommandInteraction
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.arguments.CommandExecutorArguments
 import net.ormr.kommando.commands.arguments.slash.SlashUserArgument
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
@@ -41,7 +40,7 @@ public data class GlobalUserCommand(
     override val defaultPermission: Boolean,
     override val permissions: ApplicationCommandPermissions?,
     override val executor: ContextCommandExecutor<User, GlobalUserEvent, GlobalUserCommandData>,
-) : TopLevelApplicationCommand<GlobalUserEvent, GlobalUserCommandData>, GlobalApplicationCommand
+) : ContextCommand<User, GlobalUserEvent, GlobalUserCommandData>, GlobalApplicationCommand
 
 public data class GlobalUserCommandData(
     override val kommando: Kommando,
@@ -52,12 +51,24 @@ public data class GlobalUserCommandData(
 }
 
 @KommandoDsl
+public class GlobalUserCommandBuilder @PublishedApi internal constructor(private val name: String) :
+    ContextCommandBuilder<GlobalUserCommand, User, GlobalUserEvent, GlobalUserCommandData>() {
+    override fun getEmptyArgument(): SlashUserArgument = SlashUserArgument("", "")
+
+    @PublishedApi
+    override fun build(category: String): GlobalUserCommand = GlobalUserCommand(
+        category = category,
+        name = name,
+        defaultPermission = defaultPermission,
+        permissions = permissions,
+        executor = getNonNullExecutor(),
+    )
+}
+
+@KommandoDsl
 public fun CommandGroupBuilder.globalUserCommand(
     name: String,
-    defaultPermission: Boolean = true,
-    permissions: ApplicationCommandPermissions? = null,
-    execute: suspend GlobalUserCommandData.(CommandExecutorArguments.Args1<User>) -> Unit,
+    builder: GlobalUserCommandBuilder.() -> Unit,
 ) {
-    val executor = CommandExecutor(listOf(SlashUserArgument("", "")), execute)
-    addCommand(GlobalUserCommand(category, name, defaultPermission, permissions, executor))
+    addCommand(GlobalUserCommandBuilder(name).apply(builder).build(category))
 }

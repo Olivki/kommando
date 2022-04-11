@@ -30,7 +30,6 @@ import dev.kord.core.entity.interaction.GuildUserCommandInteraction
 import dev.kord.core.event.interaction.GuildUserCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.arguments.CommandExecutorArguments.Args1
 import net.ormr.kommando.commands.arguments.slash.SlashUserArgument
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
@@ -43,7 +42,7 @@ public data class GuildUserCommand(
     override val permissions: ApplicationCommandPermissions?,
     override val executor: ContextCommandExecutor<User, GuildUserEvent, GuildUserCommandData>,
     override val guildId: Snowflake,
-) : TopLevelApplicationCommand<GuildUserEvent, GuildUserCommandData>, GuildApplicationCommand
+) : ContextCommand<User, GuildUserEvent, GuildUserCommandData>, GuildApplicationCommand
 
 public data class GuildUserCommandData(
     override val kommando: Kommando,
@@ -54,13 +53,28 @@ public data class GuildUserCommandData(
 }
 
 @KommandoDsl
-public fun CommandGroupBuilder.guildUserCommand(
+public class GuildUserCommandBuilder @PublishedApi internal constructor(
+    private val name: String,
+    private val guildId: Snowflake,
+) : ContextCommandBuilder<GuildUserCommand, User, GuildUserEvent, GuildUserCommandData>() {
+    override fun getEmptyArgument(): SlashUserArgument = SlashUserArgument("", "")
+
+    @PublishedApi
+    override fun build(category: String): GuildUserCommand = GuildUserCommand(
+        category = category,
+        name = name,
+        defaultPermission = defaultPermission,
+        permissions = permissions,
+        executor = getNonNullExecutor(),
+        guildId = guildId,
+    )
+}
+
+@KommandoDsl
+public inline fun CommandGroupBuilder.guildUserCommand(
     name: String,
     guildId: Snowflake,
-    defaultPermission: Boolean = true,
-    permissions: ApplicationCommandPermissions? = null,
-    execute: suspend GuildUserCommandData.(Args1<User>) -> Unit,
+    builder: GuildUserCommandBuilder.() -> Unit,
 ) {
-    val executor = CommandExecutor(listOf(SlashUserArgument("", "")), execute)
-    addCommand(GuildUserCommand(category, name, defaultPermission, permissions, executor, guildId))
+    addCommand(GuildUserCommandBuilder(name, guildId).apply(builder).build(category))
 }

@@ -29,7 +29,6 @@ import dev.kord.core.entity.interaction.MessageCommandInteraction
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.arguments.CommandExecutorArguments
 import net.ormr.kommando.commands.arguments.slash.SlashMentionableArgument
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
@@ -41,7 +40,7 @@ public data class GlobalMessageCommand(
     override val defaultPermission: Boolean,
     override val permissions: ApplicationCommandPermissions?,
     override val executor: ContextCommandExecutor<Message, GlobalMessageEvent, GlobalMessageCommandData>,
-) : TopLevelApplicationCommand<GlobalMessageEvent, GlobalMessageCommandData>, GlobalApplicationCommand
+) : ContextCommand<Message, GlobalMessageEvent, GlobalMessageCommandData>, GlobalApplicationCommand
 
 public data class GlobalMessageCommandData(
     override val kommando: Kommando,
@@ -52,12 +51,24 @@ public data class GlobalMessageCommandData(
 }
 
 @KommandoDsl
+public class GlobalMessageCommandBuilder @PublishedApi internal constructor(private val name: String) :
+    ContextCommandBuilder<GlobalMessageCommand, Message, GlobalMessageEvent, GlobalMessageCommandData>() {
+    override fun getEmptyArgument(): SlashMentionableArgument = SlashMentionableArgument("", "")
+
+    @PublishedApi
+    override fun build(category: String): GlobalMessageCommand = GlobalMessageCommand(
+        category = category,
+        name = name,
+        defaultPermission = defaultPermission,
+        permissions = permissions,
+        executor = getNonNullExecutor(),
+    )
+}
+
+@KommandoDsl
 public fun CommandGroupBuilder.globalMessageCommand(
     name: String,
-    defaultPermission: Boolean = true,
-    permissions: ApplicationCommandPermissions? = null,
-    execute: suspend GlobalMessageCommandData.(CommandExecutorArguments.Args1<Message>) -> Unit,
+    builder: GlobalMessageCommandBuilder.() -> Unit,
 ) {
-    val executor = CommandExecutor(listOf(SlashMentionableArgument("", "")), execute)
-    addCommand(GlobalMessageCommand(category, name, defaultPermission, permissions, executor))
+    addCommand(GlobalMessageCommandBuilder(name).apply(builder).build(category))
 }

@@ -22,25 +22,11 @@
  * SOFTWARE.
  */
 
-package net.ormr.exabot.modules
+package net.ormr.kommando.commands
 
-import dev.kord.common.entity.Snowflake
-import dev.kord.core.behavior.interaction.respondEphemeral
-import net.ormr.kommando.commands.commands
-import net.ormr.kommando.commands.guildMessageCommand
-import net.ormr.kommando.commands.guildUserCommand
-import net.ormr.kommando.processor.Tag
+import dev.kord.core.event.interaction.ApplicationCommandInteractionCreateEvent
 
-fun idChecker(@Tag guildId: Snowflake) = commands("ID Checker") {
-    guildUserCommand("Show ID", guildId) {
-        execute { (user) ->
-            interaction.respondEphemeral { content = "${user.id}" }
-        }
-    }
-
-    guildMessageCommand("Show ID", guildId) {
-        execute { (message) ->
-            interaction.respondEphemeral { content = "${message.id}" }
-        }
-    }
+public sealed interface ContextCommand<T : Any, E : ApplicationCommandInteractionCreateEvent, D : CommandData<E>> :
+    TopLevelApplicationCommand<E, D> {
+    override val executor: ContextCommandExecutor<T, E, D>
 }

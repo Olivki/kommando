@@ -30,7 +30,6 @@ import dev.kord.core.entity.interaction.GuildMessageCommandInteraction
 import dev.kord.core.event.interaction.GuildMessageCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.arguments.CommandExecutorArguments.Args1
 import net.ormr.kommando.commands.arguments.slash.SlashMentionableArgument
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
@@ -43,7 +42,7 @@ public data class GuildMessageCommand(
     override val permissions: ApplicationCommandPermissions?,
     override val executor: ContextCommandExecutor<Message, GuildMessageEvent, GuildMessageCommandData>,
     override val guildId: Snowflake,
-) : TopLevelApplicationCommand<GuildMessageEvent, GuildMessageCommandData>, GuildApplicationCommand
+) : ContextCommand<Message, GuildMessageEvent, GuildMessageCommandData>, GuildApplicationCommand
 
 public data class GuildMessageCommandData(
     override val kommando: Kommando,
@@ -54,13 +53,28 @@ public data class GuildMessageCommandData(
 }
 
 @KommandoDsl
-public fun CommandGroupBuilder.guildMessageCommand(
+public class GuildMessageCommandBuilder @PublishedApi internal constructor(
+    private val name: String,
+    private val guildId: Snowflake,
+) : ContextCommandBuilder<GuildMessageCommand, Message, GuildMessageEvent, GuildMessageCommandData>() {
+    override fun getEmptyArgument(): SlashMentionableArgument = SlashMentionableArgument("", "")
+
+    @PublishedApi
+    override fun build(category: String): GuildMessageCommand = GuildMessageCommand(
+        category = category,
+        name = name,
+        defaultPermission = defaultPermission,
+        permissions = permissions,
+        executor = getNonNullExecutor(),
+        guildId = guildId,
+    )
+}
+
+@KommandoDsl
+public inline fun CommandGroupBuilder.guildMessageCommand(
     name: String,
     guildId: Snowflake,
-    defaultPermission: Boolean = true,
-    permissions: ApplicationCommandPermissions? = null,
-    execute: suspend GuildMessageCommandData.(Args1<Message>) -> Unit,
+    builder: GuildMessageCommandBuilder.() -> Unit,
 ) {
-    val executor = CommandExecutor(listOf(SlashMentionableArgument("", "")), execute)
-    addCommand(GuildMessageCommand(category, name, defaultPermission, permissions, executor, guildId))
+    addCommand(GuildMessageCommandBuilder(name, guildId).apply(builder).build(category))
 }
