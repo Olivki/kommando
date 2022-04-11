@@ -28,6 +28,7 @@ import dev.kord.core.event.Event
 import dev.kord.core.event.message.MessageCreateEvent
 import net.ormr.kommando.commands.arguments.CommandArgument
 import net.ormr.kommando.commands.arguments.CommandExecutorArguments
+import net.ormr.kommando.commands.arguments.CommandExecutorArguments.Args1
 import net.ormr.kommando.commands.arguments.chat.ChatArgument
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
 
@@ -42,4 +43,5 @@ public class CommandExecutor<out A : CommandArgument<*>, EA : CommandExecutorArg
 }
 
 public typealias ApplicationCommandExecutor<E, D> = CommandExecutor<SlashArgument<*>, *, E, D>
+public typealias ContextCommandExecutor<T, E, D> = CommandExecutor<SlashArgument<*>, Args1<T>, E, D>
 public typealias ChatCommandExecutor<D> = CommandExecutor<ChatArgument<*>, *, MessageCreateEvent, D>

@@ -31,7 +31,6 @@ import dev.kord.core.event.interaction.GuildMessageCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.CommandExecutorArguments.Args1
-import net.ormr.kommando.commands.arguments.slash.SlashArgument
 import net.ormr.kommando.commands.arguments.slash.SlashMentionableArgument
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
@@ -42,7 +41,7 @@ public data class GuildMessageCommand(
     override val name: String,
     override val defaultPermission: Boolean,
     override val permissions: ApplicationCommandPermissions?,
-    override val executor: CommandExecutor<SlashArgument<*>, Args1<Message>, GuildMessageEvent, GuildMessageCommandData>,
+    override val executor: ContextCommandExecutor<Message, GuildMessageEvent, GuildMessageCommandData>,
     override val guildId: Snowflake,
 ) : TopLevelApplicationCommand<GuildMessageEvent, GuildMessageCommandData>, GuildApplicationCommand
 

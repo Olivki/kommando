@@ -30,7 +30,6 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.CommandExecutorArguments
-import net.ormr.kommando.commands.arguments.slash.SlashArgument
 import net.ormr.kommando.commands.arguments.slash.SlashUserArgument
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
@@ -41,7 +40,7 @@ public data class GlobalUserCommand(
     override val name: String,
     override val defaultPermission: Boolean,
     override val permissions: ApplicationCommandPermissions?,
-    override val executor: CommandExecutor<SlashArgument<*>, CommandExecutorArguments.Args1<User>, GlobalUserEvent, GlobalUserCommandData>,
+    override val executor: ContextCommandExecutor<User, GlobalUserEvent, GlobalUserCommandData>,
 ) : TopLevelApplicationCommand<GlobalUserEvent, GlobalUserCommandData>, GlobalApplicationCommand
 
 public data class GlobalUserCommandData(
