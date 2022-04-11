@@ -45,10 +45,7 @@ import net.ormr.kommando.structures.CommandPrecondition
 import net.ormr.kommando.structures.EventListener
 import net.ormr.kommando.structures.MessageFilter
 import net.ormr.kommando.structures.messageFilter
-import org.kodein.di.DI
-import org.kodein.di.DirectDI
-import org.kodein.di.DirectDIAware
-import org.kodein.di.bindSingleton
+import org.kodein.di.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
@@ -56,7 +53,7 @@ import kotlin.time.measureTimedValue
 public class Kommando(
     public val kord: Kord,
     public val intents: Intents,
-    override val directDI: DirectDI,
+    override val di: DI,
     public val commands: List<CommandGroup>,
     public val commandPreconditions: List<CommandPrecondition>,
     public val eventListeners: List<EventListener>,
@@ -65,7 +62,7 @@ public class Kommando(
     public val applicationCommands: List<TopLevelApplicationCommand<*, *>>,
     public val prefix: CommandPrefix?,
     internal val registeredApplicationCommands: Map<Snowflake, TopLevelApplicationCommand<*, *>>,
-) : DirectDIAware {
+) : DIAware {
     private companion object {
         private val logger = InlineLogger()
     }
@@ -171,7 +168,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
         val kommando = Kommando(
             kord = kord,
             intents = intents,
-            directDI = directDI,
+            di = directDI.di,
             commands = commands,
             commandPreconditions = commandPreconditions,
             eventListeners = eventListeners,
