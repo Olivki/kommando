@@ -27,17 +27,14 @@ package net.ormr.kommando.commands
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
-import net.ormr.kommando.permissions.Permissions
-import net.ormr.kommando.permissions.WithPermissionsBuilder
 
 @KommandoDsl
 public sealed class SlashCommandBuilder<out C : SlashCommand<E, D, S>, S : SlashSubCommand<*, *>, E : SlashEvent, D : CommandData<E>> :
-    ApplicationCommandBuilder<C, E, D>(), WithApplicationCommandPermissionsBuilder, WithPermissionsBuilder {
+    ApplicationCommandBuilder<C, E, D>(), WithApplicationCommandPermissionsBuilder {
     protected val groups: MutableMap<String, SlashCommandGroup<S>> = hashMapOf()
     protected val subCommands: MutableMap<String, S> = hashMapOf()
     override var applicationPermissions: ApplicationCommandPermissions? = null
     override var defaultApplicationPermission: Boolean = true
-    override var permissions: Permissions? = null
 
     protected fun getExecutorSafe(): CommandExecutor<SlashArgument<*>, *, E, D>? {
         if (executor == null && (groups.isEmpty() && subCommands.isEmpty())) error("No groups, sub-commands nor executor has been defined.")

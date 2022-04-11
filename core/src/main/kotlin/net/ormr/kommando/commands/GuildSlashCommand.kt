@@ -32,7 +32,6 @@ import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEve
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
-import net.ormr.kommando.permissions.Permissions
 
 internal typealias GuildSlashEvent = GuildChatInputCommandInteractionCreateEvent
 internal typealias GuildSlashInteraction = GuildChatInputCommandInteraction
@@ -43,7 +42,6 @@ public data class GuildSlashCommand(
     override val description: String,
     override val defaultApplicationPermission: Boolean,
     override val applicationPermissions: ApplicationCommandPermissions?,
-    override val permissions: Permissions?,
     override val executor: ApplicationCommandExecutor<GuildSlashEvent, GuildSlashCommandData>?,
     override val groups: Map<String, SlashCommandGroup<GuildSlashSubCommand>>,
     override val subCommands: Map<String, GuildSlashSubCommand>,
@@ -76,7 +74,6 @@ public class GuildSlashCommandBuilder @PublishedApi internal constructor(
         description = description,
         defaultApplicationPermission = defaultApplicationPermission,
         applicationPermissions = applicationPermissions,
-        permissions = permissions,
         executor = getExecutorSafe(),
         groups = groups,
         subCommands = subCommands,

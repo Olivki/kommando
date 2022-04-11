@@ -40,10 +40,6 @@ import net.ormr.kommando.commands.arguments.slash.AutoCompleteAction
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
 import net.ormr.kommando.commands.arguments.slash.SlashArgumentWithChoice
 import net.ormr.kommando.commands.arguments.slash.SlashDefaultArgument
-import net.ormr.kommando.permissions.hasPermission
-import net.ormr.kommando.utils.respondEphemeral
-
-private const val LACKING_PERMISSION = "You don't have permission to execute this command."
 
 internal suspend fun Kommando.handleApplicationCommands() {
     val kommando = this@handleApplicationCommands
@@ -144,10 +140,6 @@ internal suspend fun Kommando.handleApplicationCommands() {
                         }
                     }
                     is GuildSlashCommand -> {
-                        if (!command.hasPermission(user)) {
-                            interaction.respondEphemeral(LACKING_PERMISSION)
-                            return@on
-                        }
                         when (interactionCommand) {
                             is RootCommand -> {
                                 val args = command.getArgs(interactionCommand, this)
