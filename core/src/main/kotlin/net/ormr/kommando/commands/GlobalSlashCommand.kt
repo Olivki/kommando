@@ -29,6 +29,7 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
+import net.ormr.kommando.permissions.Permissions
 
 internal typealias GlobalSlashEvent = ChatInputCommandInteractionCreateEvent
 internal typealias GlobalSlashInteraction = ChatInputCommandInteraction
@@ -39,6 +40,7 @@ public data class GlobalSlashCommand(
     override val description: String,
     override val defaultApplicationPermission: Boolean,
     override val applicationPermissions: ApplicationCommandPermissions?,
+    override val permissions: Permissions?,
     override val executor: ApplicationCommandExecutor<GlobalSlashEvent, GlobalSlashCommandData>?,
     override val groups: Map<String, SlashCommandGroup<GlobalSlashSubCommand>>,
     override val subCommands: Map<String, GlobalSlashSubCommand>,
@@ -64,6 +66,7 @@ public class GlobalSlashCommandBuilder @PublishedApi internal constructor(
         description = description,
         defaultApplicationPermission = defaultApplicationPermission,
         applicationPermissions = applicationPermissions,
+        permissions = permissions,
         executor = getExecutorSafe(),
         groups = groups.toMap(),
         subCommands = subCommands.toMap(),

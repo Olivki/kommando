@@ -22,15 +22,8 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.commands
+package net.ormr.kommando.permissions
 
-import dev.kord.core.event.Event
-import net.ormr.kommando.permissions.WithPermissions
-
-// TODO: move 'WithCommandPermission' to 'TopLevelApplicationCommand'
-public sealed interface SlashCommand<E : Event, D : CommandData<E>, S : SlashSubCommand<*, *>> :
-    TopLevelApplicationCommand<E, D>, DescribableCommand, WithPermissions {
-    public val groups: Map<String, SlashCommandGroup<S>>
-
-    public val subCommands: Map<String, S>
+public interface WithPermissionsBuilder {
+    public var permissions: Permissions?
 }

@@ -22,15 +22,25 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.commands
+package net.ormr.kommando.permissions
 
-import dev.kord.core.event.Event
-import net.ormr.kommando.permissions.WithPermissions
+/**
+ * Stores the [name] of the permission along with its [handler].
+ */
+public data class Permission(
+    public val name: String,
+    public val handler: PermissionHandler,
+    public val ordinal: Int,
+) : Comparable<Permission> {
+    /**
+     * Returns the result of invoking [handler][PermissionHandler.hasPermission] with the given [request].
+     */
+    public suspend fun checkPermission(request: PermissionRequest): Boolean =
+        with(request) {
+            with(handler) {
+                hasPermission()
+            }
+        }
 
-// TODO: move 'WithCommandPermission' to 'TopLevelApplicationCommand'
-public sealed interface SlashCommand<E : Event, D : CommandData<E>, S : SlashSubCommand<*, *>> :
-    TopLevelApplicationCommand<E, D>, DescribableCommand, WithPermissions {
-    public val groups: Map<String, SlashCommandGroup<S>>
-
-    public val subCommands: Map<String, S>
+    override fun compareTo(other: Permission): Int = ordinal.compareTo(other.ordinal)
 }

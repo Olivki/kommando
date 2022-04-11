@@ -40,6 +40,10 @@ import net.ormr.kommando.commands.arguments.slash.AutoCompleteAction
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
 import net.ormr.kommando.commands.arguments.slash.SlashArgumentWithChoice
 import net.ormr.kommando.commands.arguments.slash.SlashDefaultArgument
+import net.ormr.kommando.permissions.hasPermission
+import net.ormr.kommando.utils.respondEphemeral
+
+private const val LACKING_PERMISSION = "You don't have permission to execute this command."
 
 internal suspend fun Kommando.handleApplicationCommands() {
     val kommando = this@handleApplicationCommands
@@ -116,41 +120,50 @@ internal suspend fun Kommando.handleApplicationCommands() {
                 }
             }
             is GuildChatInputCommandInteractionCreateEvent -> {
-                val interaction = interaction.command
-                val commandId = interaction.rootId
+                val user = interaction.user
+                val interactionCommand = interaction.command
+                val commandId = interactionCommand.rootId
                 when (val command = getCommand(commandId)) {
-                    is GlobalSlashCommand -> when (interaction) {
-                        is RootCommand -> {
-                            val args = command.getArgs(interaction, this)
-                            command.executor!!.execute(GlobalSlashCommandData(kommando, this), args)
-                        }
-                        is SubCommand -> {
-                            val subCommand = command.getSubCommand(interaction.name, commandId)
-                            val args = subCommand.getArgs(interaction, this)
-                            subCommand.executor.execute(GlobalSlashSubCommandData(kommando, this), args)
-                        }
-                        is GroupCommand -> {
-                            val group = command.getGroup(interaction.groupName, commandId)
-                            val subCommand = group.getSubCommand(interaction.name, commandId)
-                            val args = subCommand.getArgs(interaction, this)
-                            subCommand.executor.execute(GlobalSlashSubCommandData(kommando, this), args)
+                    is GlobalSlashCommand -> {
+                        when (interactionCommand) {
+                            is RootCommand -> {
+                                val args = command.getArgs(interactionCommand, this)
+                                command.executor!!.execute(GlobalSlashCommandData(kommando, this), args)
+                            }
+                            is SubCommand -> {
+                                val subCommand = command.getSubCommand(interactionCommand.name, commandId)
+                                val args = subCommand.getArgs(interactionCommand, this)
+                                subCommand.executor.execute(GlobalSlashSubCommandData(kommando, this), args)
+                            }
+                            is GroupCommand -> {
+                                val group = command.getGroup(interactionCommand.groupName, commandId)
+                                val subCommand = group.getSubCommand(interactionCommand.name, commandId)
+                                val args = subCommand.getArgs(interactionCommand, this)
+                                subCommand.executor.execute(GlobalSlashSubCommandData(kommando, this), args)
+                            }
                         }
                     }
-                    is GuildSlashCommand -> when (interaction) {
-                        is RootCommand -> {
-                            val args = command.getArgs(interaction, this)
-                            command.executor!!.execute(GuildSlashCommandData(kommando, this), args)
+                    is GuildSlashCommand -> {
+                        if (!command.hasPermission(user)) {
+                            interaction.respondEphemeral(LACKING_PERMISSION)
+                            return@on
                         }
-                        is SubCommand -> {
-                            val subCommand = command.getSubCommand(interaction.name, commandId)
-                            val args = subCommand.getArgs(interaction, this)
-                            subCommand.executor.execute(GuildSlashSubCommandData(kommando, this), args)
-                        }
-                        is GroupCommand -> {
-                            val group = command.getGroup(interaction.groupName, commandId)
-                            val subCommand = group.getSubCommand(interaction.name, commandId)
-                            val args = subCommand.getArgs(interaction, this)
-                            subCommand.executor.execute(GuildSlashSubCommandData(kommando, this), args)
+                        when (interactionCommand) {
+                            is RootCommand -> {
+                                val args = command.getArgs(interactionCommand, this)
+                                command.executor!!.execute(GuildSlashCommandData(kommando, this), args)
+                            }
+                            is SubCommand -> {
+                                val subCommand = command.getSubCommand(interactionCommand.name, commandId)
+                                val args = subCommand.getArgs(interactionCommand, this)
+                                subCommand.executor.execute(GuildSlashSubCommandData(kommando, this), args)
+                            }
+                            is GroupCommand -> {
+                                val group = command.getGroup(interactionCommand.groupName, commandId)
+                                val subCommand = group.getSubCommand(interactionCommand.name, commandId)
+                                val args = subCommand.getArgs(interactionCommand, this)
+                                subCommand.executor.execute(GuildSlashSubCommandData(kommando, this), args)
+                            }
                         }
                     }
                     // TODO: throw exception?

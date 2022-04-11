@@ -32,6 +32,7 @@ import kotlinx.serialization.Serializable
 import net.ormr.kommando.commands.commands
 import net.ormr.kommando.commands.execute
 import net.ormr.kommando.commands.guildSlashCommand
+import net.ormr.kommando.permissions.permissions
 import net.ormr.kommando.processor.Module
 import net.ormr.kommando.processor.Tag
 import org.kodein.db.DB
@@ -40,6 +41,9 @@ import org.kodein.db.model.Id
 
 fun greetings(@Tag guildId: Snowflake, db: DB) = commands("Greetings") {
     guildSlashCommand("greet", "Greet the bot!", guildId) {
+        permissions {
+            defaultPermission("basic bitch") { false }
+        }
         execute {
             val deferred = interaction.deferEphemeralResponse()
             val timesGreeted = db.getById<GreetedUser>(user.id)?.timesGreeted ?: 0

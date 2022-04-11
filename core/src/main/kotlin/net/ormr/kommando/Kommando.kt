@@ -62,11 +62,16 @@ public class Kommando(
     public val applicationCommands: List<TopLevelApplicationCommand<*, *>>,
     public val prefix: CommandPrefix?,
     internal val registeredApplicationCommands: Map<Snowflake, TopLevelApplicationCommand<*, *>>,
-) : DIAware {
-    private companion object {
-        private val logger = InlineLogger()
-    }
+) : DIAware, KommandoAware {
+    /**
+     * This [Kommando] instance.
+     */
+    override val kommando: Kommando
+        get() = this
 
+    /**
+     * All the [executable components][ExecutableComponent] that are currently registered to this Kommando instance.
+     */
     public val executableComponents: MutableMap<String, ExecutableComponent<*, *>> = ConcurrentHashMap()
 
     public fun addComponentGroup(group: ComponentGroup) {
@@ -121,6 +126,8 @@ public class KommandoBuilder @PublishedApi internal constructor(
 
     @PublishedApi
     internal var prefix: CommandPrefix? = null
+
+
 
     init {
         @OptIn(PrivilegedIntent::class)

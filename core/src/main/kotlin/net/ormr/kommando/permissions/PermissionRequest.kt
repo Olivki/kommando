@@ -22,15 +22,20 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.commands
+package net.ormr.kommando.permissions
 
-import dev.kord.core.event.Event
-import net.ormr.kommando.permissions.WithPermissions
+import dev.kord.core.entity.User
+import net.ormr.kommando.Kommando
+import net.ormr.kommando.KommandoAware
 
-// TODO: move 'WithCommandPermission' to 'TopLevelApplicationCommand'
-public sealed interface SlashCommand<E : Event, D : CommandData<E>, S : SlashSubCommand<*, *>> :
-    TopLevelApplicationCommand<E, D>, DescribableCommand, WithPermissions {
-    public val groups: Map<String, SlashCommandGroup<S>>
+/**
+ * The [user] to request the permission for, and the [kommando] instance that is requesting the permission.
+ */
+public data class PermissionRequest(override val kommando: Kommando, public val user: User) : KommandoAware
 
-    public val subCommands: Map<String, S>
-}
+/**
+ * Returns a new [PermissionRequest] for `this` user.
+ */
+context(KommandoAware)
+        public fun User.toPermissionRequest(): PermissionRequest =
+    PermissionRequest(this@KommandoAware.kommando, this)

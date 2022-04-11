@@ -22,15 +22,14 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.commands
+package net.ormr.kommando.permissions
 
-import dev.kord.core.event.Event
-import net.ormr.kommando.permissions.WithPermissions
-
-// TODO: move 'WithCommandPermission' to 'TopLevelApplicationCommand'
-public sealed interface SlashCommand<E : Event, D : CommandData<E>, S : SlashSubCommand<*, *>> :
-    TopLevelApplicationCommand<E, D>, DescribableCommand, WithPermissions {
-    public val groups: Map<String, SlashCommandGroup<S>>
-
-    public val subCommands: Map<String, S>
+/**
+ * Determines whether a [request][PermissionRequest] is allowed or denied.
+ */
+public fun interface PermissionHandler : PermissionRequestResultMarker {
+    /**
+     * Returns `true` if the [request][PermissionRequest]  is allowed, otherwise returns `false`.
+     */
+    public suspend fun PermissionRequest.hasPermission(): Boolean
 }

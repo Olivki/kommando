@@ -22,15 +22,10 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.commands
+package net.ormr.kommando.permissions
 
-import dev.kord.core.event.Event
-import net.ormr.kommando.permissions.WithPermissions
-
-// TODO: move 'WithCommandPermission' to 'TopLevelApplicationCommand'
-public sealed interface SlashCommand<E : Event, D : CommandData<E>, S : SlashSubCommand<*, *>> :
-    TopLevelApplicationCommand<E, D>, DescribableCommand, WithPermissions {
-    public val groups: Map<String, SlashCommandGroup<S>>
-
-    public val subCommands: Map<String, S>
-}
+/**
+ * Marker interface used to narrow the scope of extension functions used to build [PermissionRequestResult]
+ * instances.
+ */
+public sealed interface PermissionRequestResultMarker

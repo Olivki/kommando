@@ -22,15 +22,27 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.commands
+package net.ormr.kommando.permissions
 
-import dev.kord.core.event.Event
-import net.ormr.kommando.permissions.WithPermissions
+import dev.kord.core.entity.User
+import net.ormr.kommando.KommandoAware
 
-// TODO: move 'WithCommandPermission' to 'TopLevelApplicationCommand'
-public sealed interface SlashCommand<E : Event, D : CommandData<E>, S : SlashSubCommand<*, *>> :
-    TopLevelApplicationCommand<E, D>, DescribableCommand, WithPermissions {
-    public val groups: Map<String, SlashCommandGroup<S>>
+/**
+ * Represents a type that can have permissions set for its action execution.
+ */
+public interface WithPermissions {
+    public val permissions: Permissions?
+}
 
-    public val subCommands: Map<String, S>
+/**
+ * Returns `true` if [user] has high enough permission to execute the action belonging to this type, otherwise returns
+ * `false`.
+ *
+ * Note that if [permissions][WithPermissions.permissions] is `null` then `true` will always be returned.
+ */
+context(KommandoAware)
+        public suspend fun WithPermissions.hasPermission(user: User): Boolean {
+    val request = user.toPermissionRequest()
+    val permissions = permissions ?: return true
+    return permissions.getPermissionOrNull(request) != null
 }
