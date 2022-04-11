@@ -29,11 +29,11 @@ import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
 // TODO: make custom builder exceptions
 public sealed class SlashCommandBuilder<out C : SlashCommand<E, D, S>, S : SlashSubCommand<*, *>, E : SlashEvent, D : CommandData<E>> :
-    ApplicationCommandBuilder<C, E, D>() {
+    ApplicationCommandBuilder<C, E, D>(), WithApplicationCommandPermissionsBuilder {
     protected val groups: MutableMap<String, SlashCommandGroup<S>> = hashMapOf()
     protected val subCommands: MutableMap<String, S> = hashMapOf()
-    protected var permissions: ApplicationCommandPermissions? = null
-    public var defaultPermission: Boolean = true
+    override var permissions: ApplicationCommandPermissions? = null
+    override var defaultPermission: Boolean = true
 
     @PublishedApi
     @JvmName("setPermissionsDelegate")
