@@ -51,6 +51,6 @@ public inline fun SlashCommandBuilder<*, *, *, *>.permissions(
     builder: ApplicationCommandPermissionsBuilder.() -> Unit,
 ): ApplicationCommandPermissions {
     val perms = ApplicationCommandPermissionsBuilder().apply(builder).build()
-    setPermissions(perms)
+    permissions = perms
     return perms
 }

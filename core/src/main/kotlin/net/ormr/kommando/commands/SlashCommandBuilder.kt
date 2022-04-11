@@ -35,12 +35,6 @@ public sealed class SlashCommandBuilder<out C : SlashCommand<E, D, S>, S : Slash
     override var permissions: ApplicationCommandPermissions? = null
     override var defaultPermission: Boolean = true
 
-    @PublishedApi
-    @JvmName("setPermissionsDelegate")
-    internal fun setPermissions(permissions: ApplicationCommandPermissions) {
-        this.permissions = permissions
-    }
-
     protected fun getExecutorSafe(): CommandExecutor<SlashArgument<*>, *, E, D>? {
         if (executor == null && (groups.isEmpty() && subCommands.isEmpty())) error("No groups, sub-commands nor executor has been defined.")
         if (executor != null && (groups.isNotEmpty() || subCommands.isNotEmpty())) error("Root executor is useless if groups/sub-commands have been defined.")
