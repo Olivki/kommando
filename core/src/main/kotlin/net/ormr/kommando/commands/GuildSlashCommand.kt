@@ -32,6 +32,7 @@ import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEve
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
+import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
 internal typealias GuildSlashEvent = GuildChatInputCommandInteractionCreateEvent
 internal typealias GuildSlashInteraction = GuildChatInputCommandInteraction

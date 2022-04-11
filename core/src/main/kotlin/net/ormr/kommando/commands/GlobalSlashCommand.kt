@@ -29,6 +29,7 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
+import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
 internal typealias GlobalSlashEvent = ChatInputCommandInteractionCreateEvent
 internal typealias GlobalSlashInteraction = ChatInputCommandInteraction

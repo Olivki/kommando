@@ -32,6 +32,7 @@ import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.CommandExecutorArguments
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
 import net.ormr.kommando.commands.arguments.slash.SlashMentionableArgument
+import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
 private typealias GlobalMessageEvent = MessageCommandInteractionCreateEvent
 

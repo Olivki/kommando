@@ -22,19 +22,21 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.commands
+package net.ormr.kommando.commands.permissions
 
-/**
- * The mode of a permission.
- */
-public enum class PermissionMode {
-    /**
-     * Allows access to the command.
-     */
-    ALLOW,
+import dev.kord.common.entity.Snowflake
 
-    /**
-     * Denies access to the command.
-     */
-    DENY,
+public sealed class ApplicationCommandPermission {
+    public abstract val id: Snowflake
+    public abstract val mode: PermissionMode
+
+    public data class Role(
+        override val id: Snowflake,
+        override val mode: PermissionMode,
+    ) : ApplicationCommandPermission()
+
+    public data class User(
+        override val id: Snowflake,
+        override val mode: PermissionMode,
+    ) : ApplicationCommandPermission()
 }

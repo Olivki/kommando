@@ -25,6 +25,7 @@
 package net.ormr.kommando.commands
 
 import dev.kord.core.event.interaction.ApplicationCommandInteractionCreateEvent
+import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
 public sealed class TopLevelApplicationCommandBuilder<out C : TopLevelApplicationCommand<E, D>, E : ApplicationCommandInteractionCreateEvent, D : CommandData<E>>
     : ApplicationCommandBuilder<C, E, D>() {

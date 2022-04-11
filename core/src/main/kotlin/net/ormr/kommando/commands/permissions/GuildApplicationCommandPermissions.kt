@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.commands
+package net.ormr.kommando.commands.permissions
 
 import dev.kord.common.entity.Snowflake
 import net.ormr.kommando.KommandoDsl

@@ -26,9 +26,9 @@ package net.ormr.kommando.internal
 
 import dev.kord.common.entity.Snowflake
 import net.ormr.kommando.Kommando
-import net.ormr.kommando.commands.ApplicationCommandPermission
-import net.ormr.kommando.commands.GuildApplicationCommandPermissions
-import net.ormr.kommando.commands.PermissionMode
+import net.ormr.kommando.commands.permissions.ApplicationCommandPermission
+import net.ormr.kommando.commands.permissions.GuildApplicationCommandPermissions
+import net.ormr.kommando.commands.permissions.PermissionMode
 
 internal suspend fun Kommando.registerSlashCommandPermissions() {
     val sortedPermissions = buildMap<Snowflake, MutableList<PermissionWrapper>> {

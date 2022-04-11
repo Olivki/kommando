@@ -22,9 +22,10 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.commands
+package net.ormr.kommando.commands.permissions
 
 import net.ormr.kommando.KommandoDsl
+import net.ormr.kommando.commands.SlashCommandBuilder
 
 public data class ApplicationCommandPermissions(public val guildPermissions: List<GuildApplicationCommandPermissions>)
 
