@@ -29,12 +29,12 @@ import net.ormr.kommando.KommandoDsl
 
 @KommandoDsl
 public sealed class ApplicationCommandBuilder<out C : ApplicationCommand<E, D>, E : Event, D : CommandData<E>> {
-    protected var executor: ApplicationCommandExecutor<E, D>? = null
+    protected var executor: SlashCommandExecutor<E, D>? = null
 
-    protected fun getNonNullExecutor(): ApplicationCommandExecutor<E, D> =
+    protected fun getNonNullExecutor(): SlashCommandExecutor<E, D> =
         executor ?: throw IllegalArgumentException("Missing required 'execute' block.")
 
-    internal fun registerExecutor(executor: ApplicationCommandExecutor<E, D>) {
+    internal fun registerExecutor(executor: SlashCommandExecutor<E, D>) {
         require(this.executor == null) { "Only one 'execute' block can exist per command." }
         this.executor = executor
     }

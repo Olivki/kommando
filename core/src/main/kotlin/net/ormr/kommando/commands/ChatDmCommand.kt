@@ -31,13 +31,12 @@ import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.event.message.MessageCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.arguments.chat.ChatArgument
 
 public data class ChatDmCommand(
     override val category: String,
     override val name: String,
     override val description: String,
-    override val executor: CommandExecutor<ChatArgument<*>, *, MessageCreateEvent, ChatDmCommandData>,
+    override val executor: ChatCommandExecutor<ChatDmCommandData>,
     override val aliases: Set<String>,
 ) : ChatCommand<ChatDmCommandData>
 

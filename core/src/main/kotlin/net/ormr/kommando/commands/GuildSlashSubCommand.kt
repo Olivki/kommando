@@ -27,13 +27,12 @@ package net.ormr.kommando.commands
 import dev.kord.common.entity.Snowflake
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.arguments.slash.SlashArgument
 
 public data class GuildSlashSubCommand(
     override val category: String,
     override val name: String,
     override val description: String,
-    override val executor: CommandExecutor<SlashArgument<*>, *, GuildSlashEvent, GuildSlashSubCommandData>,
+    override val executor: SlashCommandExecutor<GuildSlashEvent, GuildSlashSubCommandData>,
     override val guildId: Snowflake,
 ) : SlashSubCommand<GuildSlashEvent, GuildSlashSubCommandData>, GuildApplicationCommand
 

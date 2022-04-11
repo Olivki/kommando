@@ -28,7 +28,6 @@ import dev.kord.core.entity.interaction.ChatInputCommandInteraction
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.arguments.slash.SlashArgument
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
 internal typealias GlobalSlashEvent = ChatInputCommandInteractionCreateEvent
@@ -40,7 +39,7 @@ public data class GlobalSlashCommand(
     override val description: String,
     override val defaultPermission: Boolean,
     override val permissions: ApplicationCommandPermissions?,
-    override val executor: CommandExecutor<SlashArgument<*>, *, GlobalSlashEvent, GlobalSlashCommandData>?,
+    override val executor: SlashCommandExecutor<GlobalSlashEvent, GlobalSlashCommandData>?,
     override val groups: Map<String, SlashCommandGroup<GlobalSlashSubCommand>>,
     override val subCommands: Map<String, GlobalSlashSubCommand>,
 ) : SlashCommand<GlobalSlashEvent, GlobalSlashCommandData, GlobalSlashSubCommand>, GlobalApplicationCommand

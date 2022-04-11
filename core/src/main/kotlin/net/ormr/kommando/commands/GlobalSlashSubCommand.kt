@@ -26,13 +26,12 @@ package net.ormr.kommando.commands
 
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.arguments.slash.SlashArgument
 
 public data class GlobalSlashSubCommand(
     override val category: String,
     override val name: String,
     override val description: String,
-    override val executor: CommandExecutor<SlashArgument<*>, *, GlobalSlashEvent, GlobalSlashSubCommandData>,
+    override val executor: SlashCommandExecutor<GlobalSlashEvent, GlobalSlashSubCommandData>,
 ) : SlashSubCommand<GlobalSlashEvent, GlobalSlashSubCommandData>, GlobalApplicationCommand
 
 public data class GlobalSlashSubCommandData(
