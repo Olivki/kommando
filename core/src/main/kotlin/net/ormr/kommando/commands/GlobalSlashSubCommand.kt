@@ -56,22 +56,24 @@ public class GlobalSlashSubCommandBuilder @PublishedApi internal constructor(
     )
 }
 
-@KommandoDsl
-public inline fun GlobalSlashCommandBuilder.subCommand(
+context(CommandGroupBuilder)
+        @KommandoDsl
+        public inline fun GlobalSlashCommandBuilder.subCommand(
     name: String,
     description: String,
     builder: GlobalSlashSubCommandBuilder.() -> Unit,
 ) {
-    // TODO: we can access category easily once we got context receivers
-    addSubCommand(GlobalSlashSubCommandBuilder(name, description).apply(builder).build(category = ""))
+    val category = this@CommandGroupBuilder.category
+    addSubCommand(GlobalSlashSubCommandBuilder(name, description).apply(builder).build(category))
 }
 
-@KommandoDsl
-public inline fun SlashCommandGroupBuilder<GlobalSlashSubCommand>.subCommand(
+context(CommandGroupBuilder)
+        @KommandoDsl
+        public inline fun SlashCommandGroupBuilder<GlobalSlashSubCommand>.subCommand(
     name: String,
     description: String,
     builder: GlobalSlashSubCommandBuilder.() -> Unit,
 ) {
-    // TODO: we can access category easily once we got context receivers
-    addSubCommand(GlobalSlashSubCommandBuilder(name, description).apply(builder).build(category = ""))
+    val category = this@CommandGroupBuilder.category
+    addSubCommand(GlobalSlashSubCommandBuilder(name, description).apply(builder).build(category))
 }

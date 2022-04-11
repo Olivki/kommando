@@ -69,19 +69,17 @@ public class GuildSlashCommandBuilder @PublishedApi internal constructor(
     @PublishedApi internal val guildId: Snowflake,
 ) : SlashCommandBuilder<GuildSlashCommand, GuildSlashSubCommand, GuildSlashEvent, GuildSlashCommandData>() {
     @PublishedApi
-    override fun build(category: String): GuildSlashCommand {
-        return GuildSlashCommand(
-            category = category,
-            name = name,
-            description = description,
-            defaultPermission = defaultPermission,
-            permissions = permissions,
-            executor = getExecutorSafe(),
-            groups = groups,
-            subCommands = subCommands,
-            guildId = guildId,
-        )
-    }
+    override fun build(category: String): GuildSlashCommand = GuildSlashCommand(
+        category = category,
+        name = name,
+        description = description,
+        defaultPermission = defaultPermission,
+        permissions = permissions,
+        executor = getExecutorSafe(),
+        groups = groups,
+        subCommands = subCommands,
+        guildId = guildId,
+    )
 }
 
 @KommandoDsl

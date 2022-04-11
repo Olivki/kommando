@@ -60,23 +60,37 @@ public class GuildSlashSubCommandBuilder @PublishedApi internal constructor(
     )
 }
 
-@KommandoDsl
-public inline fun GuildSlashCommandBuilder.subCommand(
+context(CommandGroupBuilder)
+        @KommandoDsl
+        public inline fun GuildSlashCommandBuilder.subCommand(
     name: String,
     description: String,
     builder: GuildSlashSubCommandBuilder.() -> Unit,
 ) {
-    // TODO: we can access category easily once we got context receivers
-    addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build(category = ""))
+    val category = this@CommandGroupBuilder.category
+    addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build(category))
 }
 
-@KommandoDsl
-public inline fun SlashCommandGroupBuilder<GuildSlashSubCommand>.subCommand(
+context(CommandGroupBuilder, GuildSlashCommandBuilder)
+        @KommandoDsl
+        public inline fun SlashCommandGroupBuilder<GuildSlashSubCommand>.subCommand(
+    name: String,
+    description: String,
+    builder: GuildSlashSubCommandBuilder.() -> Unit,
+) {
+    val category = this@CommandGroupBuilder.category
+    val guildId = this@GuildSlashCommandBuilder.guildId
+    addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build(category))
+}
+
+context(CommandGroupBuilder)
+        @KommandoDsl
+        public inline fun SlashCommandGroupBuilder<GuildSlashSubCommand>.subCommand(
     name: String,
     description: String,
     guildId: Snowflake,
     builder: GuildSlashSubCommandBuilder.() -> Unit,
 ) {
-    // TODO: we can access category easily once we got context receivers
-    addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build(category = ""))
+    val category = this@CommandGroupBuilder.category
+    addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build(category))
 }
