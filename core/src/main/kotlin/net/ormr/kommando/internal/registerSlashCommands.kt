@@ -44,20 +44,20 @@ internal suspend fun KommandoBuilder.registerSlashCommands(
                     command.name,
                     command.description,
                 ) {
-                    defaultPermission = command.defaultPermission
+                    defaultPermission = command.defaultApplicationPermission
                     buildCommand(command)
                 }
                 put(registeredCommand.id, command)
             }
             is GlobalUserCommand -> {
                 val registeredCommand = kord.createGlobalUserCommand(command.name) {
-                    defaultPermission = command.defaultPermission
+                    defaultPermission = command.defaultApplicationPermission
                 }
                 put(registeredCommand.id, command)
             }
             is GlobalMessageCommand -> {
                 val registeredCommand = kord.createGlobalMessageCommand(command.name) {
-                    defaultPermission = command.defaultPermission
+                    defaultPermission = command.defaultApplicationPermission
                 }
                 put(registeredCommand.id, command)
             }
@@ -67,20 +67,20 @@ internal suspend fun KommandoBuilder.registerSlashCommands(
                     command.name,
                     command.description,
                 ) {
-                    defaultPermission = command.defaultPermission
+                    defaultPermission = command.defaultApplicationPermission
                     buildCommand(command)
                 }
                 put(registeredCommand.id, command)
             }
             is GuildUserCommand -> {
                 val registeredCommand = kord.createGuildUserCommand(command.guildId, command.name) {
-                    defaultPermission = command.defaultPermission
+                    defaultPermission = command.defaultApplicationPermission
                 }
                 put(registeredCommand.id, command)
             }
             is GuildMessageCommand -> {
                 val registeredCommand = kord.createGuildMessageCommand(command.guildId, command.name) {
-                    defaultPermission = command.defaultPermission
+                    defaultPermission = command.defaultApplicationPermission
                 }
                 put(registeredCommand.id, command)
             }

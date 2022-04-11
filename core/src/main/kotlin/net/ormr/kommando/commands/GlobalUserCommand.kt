@@ -37,8 +37,8 @@ private typealias GlobalUserEvent = UserCommandInteractionCreateEvent
 public data class GlobalUserCommand(
     override val category: String,
     override val name: String,
-    override val defaultPermission: Boolean,
-    override val permissions: ApplicationCommandPermissions?,
+    override val defaultApplicationPermission: Boolean,
+    override val applicationPermissions: ApplicationCommandPermissions?,
     override val executor: ContextCommandExecutor<User, GlobalUserEvent, GlobalUserCommandData>,
 ) : ContextCommand<User, GlobalUserEvent, GlobalUserCommandData>, GlobalApplicationCommand
 
@@ -59,8 +59,8 @@ public class GlobalUserCommandBuilder @PublishedApi internal constructor(private
     override fun build(category: String): GlobalUserCommand = GlobalUserCommand(
         category = category,
         name = name,
-        defaultPermission = defaultApplicationPermission,
-        permissions = applicationPermissions,
+        defaultApplicationPermission = defaultApplicationPermission,
+        applicationPermissions = applicationPermissions,
         executor = getNonNullExecutor(),
     )
 }

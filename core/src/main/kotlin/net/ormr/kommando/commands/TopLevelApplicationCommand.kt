@@ -28,6 +28,6 @@ import dev.kord.core.event.Event
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
 public sealed interface TopLevelApplicationCommand<E : Event, D : CommandData<E>> : ApplicationCommand<E, D> {
-    public val defaultPermission: Boolean
-    public val permissions: ApplicationCommandPermissions?
+    public val defaultApplicationPermission: Boolean
+    public val applicationPermissions: ApplicationCommandPermissions?
 }

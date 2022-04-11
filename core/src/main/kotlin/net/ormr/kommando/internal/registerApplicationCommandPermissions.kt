@@ -30,10 +30,10 @@ import net.ormr.kommando.commands.permissions.ApplicationCommandPermission
 import net.ormr.kommando.commands.permissions.ApplicationPermissionMode
 import net.ormr.kommando.commands.permissions.GuildApplicationCommandPermissions
 
-internal suspend fun Kommando.registerSlashCommandPermissions() {
+internal suspend fun Kommando.registerApplicationCommandPermissions() {
     val sortedPermissions = buildMap<Snowflake, MutableList<PermissionWrapper>> {
         for ((commandId, command) in registeredApplicationCommands) {
-            val permissions = command.permissions ?: continue
+            val permissions = command.applicationPermissions ?: continue
             for (permission in permissions.guildPermissions) {
                 getOrPut(permission.guildId) { mutableListOf() }.add(PermissionWrapper(commandId, permission))
             }

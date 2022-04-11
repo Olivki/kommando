@@ -43,11 +43,11 @@ public class ApplicationCommandPermissionsBuilder @PublishedApi internal constru
 }
 
 @KommandoDsl
-public inline fun commandPermissions(builder: ApplicationCommandPermissionsBuilder.() -> Unit): ApplicationCommandPermissions =
+public inline fun applicationPermissions(builder: ApplicationCommandPermissionsBuilder.() -> Unit): ApplicationCommandPermissions =
     ApplicationCommandPermissionsBuilder().apply(builder).build()
 
 @KommandoDsl
-public inline fun SlashCommandBuilder<*, *, *, *>.permissions(
+public inline fun SlashCommandBuilder<*, *, *, *>.applicationPermissions(
     builder: ApplicationCommandPermissionsBuilder.() -> Unit,
 ): ApplicationCommandPermissions {
     val perms = ApplicationCommandPermissionsBuilder().apply(builder).build()

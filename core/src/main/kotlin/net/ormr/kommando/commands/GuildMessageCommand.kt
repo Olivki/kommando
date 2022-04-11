@@ -38,8 +38,8 @@ private typealias GuildMessageEvent = GuildMessageCommandInteractionCreateEvent
 public data class GuildMessageCommand(
     override val category: String,
     override val name: String,
-    override val defaultPermission: Boolean,
-    override val permissions: ApplicationCommandPermissions?,
+    override val defaultApplicationPermission: Boolean,
+    override val applicationPermissions: ApplicationCommandPermissions?,
     override val executor: ContextCommandExecutor<Message, GuildMessageEvent, GuildMessageCommandData>,
     override val guildId: Snowflake,
 ) : ContextCommand<Message, GuildMessageEvent, GuildMessageCommandData>, GuildApplicationCommand
@@ -63,8 +63,8 @@ public class GuildMessageCommandBuilder @PublishedApi internal constructor(
     override fun build(category: String): GuildMessageCommand = GuildMessageCommand(
         category = category,
         name = name,
-        defaultPermission = defaultApplicationPermission,
-        permissions = applicationPermissions,
+        defaultApplicationPermission = defaultApplicationPermission,
+        applicationPermissions = applicationPermissions,
         executor = getNonNullExecutor(),
         guildId = guildId,
     )

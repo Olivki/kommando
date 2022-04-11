@@ -78,7 +78,7 @@ public class Kommando(
     }
 
     internal suspend fun initialize() {
-        registerSlashCommandPermissions()
+        registerApplicationCommandPermissions()
         handleApplicationCommands()
         handleChatCommands()
         handleComponents()

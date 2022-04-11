@@ -32,6 +32,8 @@ public data class GuildApplicationCommandPermissions(
     public val permissions: List<ApplicationCommandPermission>,
 )
 
+public typealias GuildApplicationCommandPermissionsContainer = suspend GuildApplicationCommandPermissionsBuilder.() -> Unit
+
 @KommandoDsl
 public class GuildApplicationCommandPermissionsBuilder @PublishedApi internal constructor(private val guildId: Snowflake) {
     private val permissions = mutableListOf<ApplicationCommandPermission>()
@@ -58,7 +60,7 @@ public class GuildApplicationCommandPermissionsBuilder @PublishedApi internal co
 }
 
 @KommandoDsl
-public inline fun ApplicationCommandPermissionsBuilder.forGuild(
+public inline fun ApplicationCommandPermissionsBuilder.guild(
     guildId: Snowflake,
     builder: GuildApplicationCommandPermissionsBuilder.() -> Unit,
 ) {
