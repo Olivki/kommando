@@ -43,7 +43,7 @@ public data class GuildMessageCommand(
     override val defaultPermission: Boolean,
     override val permissions: ApplicationCommandPermissions?,
     override val executor: CommandExecutor<SlashArgument<*>, Args1<Message>, GuildMessageEvent, GuildMessageCommandData>,
-    public val guildId: Snowflake,
+    override val guildId: Snowflake,
 ) : TopLevelApplicationCommand<GuildMessageEvent, GuildMessageCommandData>, GuildApplicationCommand
 
 public data class GuildMessageCommandData(

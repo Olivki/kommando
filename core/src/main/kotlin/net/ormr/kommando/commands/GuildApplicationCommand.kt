@@ -24,7 +24,14 @@
 
 package net.ormr.kommando.commands
 
+import dev.kord.common.entity.Snowflake
+
 /**
  * Marker interface for any guild application commands.
  */
-public sealed interface GuildApplicationCommand
+public sealed interface GuildApplicationCommand {
+    /**
+     * The id of the guild that this application command belongs to.
+     */
+    public val guildId: Snowflake
+}

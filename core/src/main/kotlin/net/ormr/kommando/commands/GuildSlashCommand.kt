@@ -46,7 +46,7 @@ public data class GuildSlashCommand(
     override val executor: CommandExecutor<SlashArgument<*>, *, GuildSlashEvent, GuildSlashCommandData>?,
     override val groups: Map<String, SlashCommandGroup<GuildSlashSubCommand>>,
     override val subCommands: Map<String, GuildSlashSubCommand>,
-    public val guildId: Snowflake,
+    override val guildId: Snowflake,
 ) : SlashCommand<GuildSlashEvent, GuildSlashCommandData, GuildSlashSubCommand>, GuildApplicationCommand
 
 public data class GuildSlashCommandData(
