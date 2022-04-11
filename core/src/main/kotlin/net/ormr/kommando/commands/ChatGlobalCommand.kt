@@ -43,7 +43,7 @@ public data class ChatGlobalCommand(
 public data class ChatGlobalCommandData(
     override val kommando: Kommando,
     override val event: MessageCreateEvent,
-) : CommandData<MessageCreateEvent> {
+) : ChatCommandData {
     public val message: Message
         get() = event.message
 

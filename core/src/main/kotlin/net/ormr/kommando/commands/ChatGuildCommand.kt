@@ -44,7 +44,7 @@ public data class ChatGuildCommand(
 public data class ChatGuildCommandData(
     override val kommando: Kommando,
     override val event: MessageCreateEvent,
-) : CommandData<MessageCreateEvent> {
+) : ChatCommandData {
     public val message: Message
         get() = event.message
 
