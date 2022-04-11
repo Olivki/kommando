@@ -39,7 +39,7 @@ public data class GlobalSlashCommand(
     override val description: String,
     override val defaultPermission: Boolean,
     override val permissions: ApplicationCommandPermissions?,
-    override val executor: SlashCommandExecutor<GlobalSlashEvent, GlobalSlashCommandData>?,
+    override val executor: ApplicationCommandExecutor<GlobalSlashEvent, GlobalSlashCommandData>?,
     override val groups: Map<String, SlashCommandGroup<GlobalSlashSubCommand>>,
     override val subCommands: Map<String, GlobalSlashSubCommand>,
 ) : SlashCommand<GlobalSlashEvent, GlobalSlashCommandData, GlobalSlashSubCommand>, GlobalApplicationCommand

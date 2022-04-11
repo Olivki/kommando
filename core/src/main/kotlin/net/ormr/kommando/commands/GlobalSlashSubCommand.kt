@@ -31,7 +31,7 @@ public data class GlobalSlashSubCommand(
     override val category: String,
     override val name: String,
     override val description: String,
-    override val executor: SlashCommandExecutor<GlobalSlashEvent, GlobalSlashSubCommandData>,
+    override val executor: ApplicationCommandExecutor<GlobalSlashEvent, GlobalSlashSubCommandData>,
 ) : SlashSubCommand<GlobalSlashEvent, GlobalSlashSubCommandData>, GlobalApplicationCommand
 
 public data class GlobalSlashSubCommandData(

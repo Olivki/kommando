@@ -25,8 +25,7 @@
 package net.ormr.kommando.commands
 
 import dev.kord.core.event.Event
-import net.ormr.kommando.commands.arguments.slash.SlashArgument
 
 public sealed interface ApplicationCommand<E : Event, D : CommandData<E>> : Command {
-    public val executor: CommandExecutor<SlashArgument<*>, *, E, D>?
+    public val executor: ApplicationCommandExecutor<E, D>?
 }

@@ -41,5 +41,5 @@ public class CommandExecutor<out A : CommandArgument<*>, EA : CommandExecutorArg
     }
 }
 
-public typealias SlashCommandExecutor<E, D> = CommandExecutor<SlashArgument<*>, *, E, D>
+public typealias ApplicationCommandExecutor<E, D> = CommandExecutor<SlashArgument<*>, *, E, D>
 public typealias ChatCommandExecutor<D> = CommandExecutor<ChatArgument<*>, *, MessageCreateEvent, D>

@@ -42,7 +42,7 @@ public data class GuildSlashCommand(
     override val description: String,
     override val defaultPermission: Boolean,
     override val permissions: ApplicationCommandPermissions?,
-    override val executor: SlashCommandExecutor<GuildSlashEvent, GuildSlashCommandData>?,
+    override val executor: ApplicationCommandExecutor<GuildSlashEvent, GuildSlashCommandData>?,
     override val groups: Map<String, SlashCommandGroup<GuildSlashSubCommand>>,
     override val subCommands: Map<String, GuildSlashSubCommand>,
     override val guildId: Snowflake,
