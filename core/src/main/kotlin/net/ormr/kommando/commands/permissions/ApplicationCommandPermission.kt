@@ -28,15 +28,15 @@ import dev.kord.common.entity.Snowflake
 
 public sealed class ApplicationCommandPermission {
     public abstract val id: Snowflake
-    public abstract val mode: PermissionMode
+    public abstract val mode: ApplicationPermissionMode
 
     public data class Role(
         override val id: Snowflake,
-        override val mode: PermissionMode,
+        override val mode: ApplicationPermissionMode,
     ) : ApplicationCommandPermission()
 
     public data class User(
         override val id: Snowflake,
-        override val mode: PermissionMode,
+        override val mode: ApplicationPermissionMode,
     ) : ApplicationCommandPermission()
 }

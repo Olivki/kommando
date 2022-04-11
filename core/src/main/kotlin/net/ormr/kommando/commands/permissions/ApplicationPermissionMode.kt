@@ -27,7 +27,7 @@ package net.ormr.kommando.commands.permissions
 /**
  * The mode of a permission.
  */
-public enum class PermissionMode {
+public enum class ApplicationPermissionMode {
     /**
      * Allows access to the command.
      */

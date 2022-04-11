@@ -59,8 +59,8 @@ public class GlobalUserCommandBuilder @PublishedApi internal constructor(private
     override fun build(category: String): GlobalUserCommand = GlobalUserCommand(
         category = category,
         name = name,
-        defaultPermission = defaultPermission,
-        permissions = permissions,
+        defaultPermission = defaultApplicationPermission,
+        permissions = applicationPermissions,
         executor = getNonNullExecutor(),
     )
 }

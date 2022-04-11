@@ -34,8 +34,8 @@ import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 public sealed class ContextCommandBuilder<out C : ContextCommand<T, E, D>, T : Any, E : ApplicationCommandInteractionCreateEvent, D : CommandData<E>> :
     WithApplicationCommandPermissionsBuilder {
     private var executor: ContextCommandExecutor<T, E, D>? = null
-    override var permissions: ApplicationCommandPermissions? = null
-    override var defaultPermission: Boolean = true
+    override var applicationPermissions: ApplicationCommandPermissions? = null
+    override var defaultApplicationPermission: Boolean = true
 
     protected fun getNonNullExecutor(): ContextCommandExecutor<T, E, D> =
         executor ?: throw IllegalArgumentException("Missing required 'execute' block.")

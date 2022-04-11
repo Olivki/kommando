@@ -32,8 +32,8 @@ public sealed class SlashCommandBuilder<out C : SlashCommand<E, D, S>, S : Slash
     ApplicationCommandBuilder<C, E, D>(), WithApplicationCommandPermissionsBuilder {
     protected val groups: MutableMap<String, SlashCommandGroup<S>> = hashMapOf()
     protected val subCommands: MutableMap<String, S> = hashMapOf()
-    override var permissions: ApplicationCommandPermissions? = null
-    override var defaultPermission: Boolean = true
+    override var applicationPermissions: ApplicationCommandPermissions? = null
+    override var defaultApplicationPermission: Boolean = true
 
     protected fun getExecutorSafe(): CommandExecutor<SlashArgument<*>, *, E, D>? {
         if (executor == null && (groups.isEmpty() && subCommands.isEmpty())) error("No groups, sub-commands nor executor has been defined.")

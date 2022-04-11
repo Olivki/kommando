@@ -59,8 +59,8 @@ public class GlobalMessageCommandBuilder @PublishedApi internal constructor(priv
     override fun build(category: String): GlobalMessageCommand = GlobalMessageCommand(
         category = category,
         name = name,
-        defaultPermission = defaultPermission,
-        permissions = permissions,
+        defaultPermission = defaultApplicationPermission,
+        permissions = applicationPermissions,
         executor = getNonNullExecutor(),
     )
 }

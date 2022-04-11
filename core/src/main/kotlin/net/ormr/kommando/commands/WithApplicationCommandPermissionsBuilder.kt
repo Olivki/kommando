@@ -27,6 +27,6 @@ package net.ormr.kommando.commands
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
 public sealed interface WithApplicationCommandPermissionsBuilder {
-    public var permissions: ApplicationCommandPermissions?
-    public var defaultPermission: Boolean
+    public var applicationPermissions: ApplicationCommandPermissions?
+    public var defaultApplicationPermission: Boolean
 }

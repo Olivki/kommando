@@ -63,8 +63,8 @@ public class GuildMessageCommandBuilder @PublishedApi internal constructor(
     override fun build(category: String): GuildMessageCommand = GuildMessageCommand(
         category = category,
         name = name,
-        defaultPermission = defaultPermission,
-        permissions = permissions,
+        defaultPermission = defaultApplicationPermission,
+        permissions = applicationPermissions,
         executor = getNonNullExecutor(),
         guildId = guildId,
     )

@@ -40,7 +40,7 @@ public class GuildApplicationCommandPermissionsBuilder @PublishedApi internal co
      * Allows or denies any role with the given [id] access to the command, depending on the [mode].
      */
     @KommandoDsl
-    public fun role(id: Snowflake, mode: PermissionMode = PermissionMode.ALLOW) {
+    public fun role(id: Snowflake, mode: ApplicationPermissionMode = ApplicationPermissionMode.ALLOW) {
         permissions += ApplicationCommandPermission.Role(id, mode)
     }
 
@@ -48,7 +48,7 @@ public class GuildApplicationCommandPermissionsBuilder @PublishedApi internal co
      * Allows or denies the user with the given [id] access to the command, depending on the [mode].
      */
     @KommandoDsl
-    public fun user(id: Snowflake, mode: PermissionMode = PermissionMode.ALLOW) {
+    public fun user(id: Snowflake, mode: ApplicationPermissionMode = ApplicationPermissionMode.ALLOW) {
         permissions += ApplicationCommandPermission.User(id, mode)
     }
 
