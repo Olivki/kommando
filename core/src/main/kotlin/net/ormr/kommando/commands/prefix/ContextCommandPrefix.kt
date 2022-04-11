@@ -34,7 +34,7 @@ public class ContextCommandPrefix internal constructor(private val context: Cont
         context(event).parse(message, event)
 }
 
+// TODO: we want to make an extension function for this that's like 'contextPrefix' that has access to the event
+//       and the 'PrefixCommandBuilder'.
 @KommandoDsl
 public fun CommandPrefixBuilder.context(context: ContextBlock): CommandPrefix = ContextCommandPrefix(context)
-
-// TODO: add a 'contextPrefix' extension function once we can use context receivers in 1.6.20

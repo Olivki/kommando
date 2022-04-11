@@ -27,10 +27,14 @@ package net.ormr.kommando.commands.prefix
 import dev.kord.core.event.message.MessageCreateEvent
 import net.ormr.kommando.KommandoDsl
 
-public class LiteralCommandPrefix internal constructor(private val literal: String) : CommandPrefix {
+public class LiteralCommandPrefix internal constructor(
+    private val literal: String,
+    private val ignoreCase: Boolean,
+) : CommandPrefix {
     override suspend fun parse(message: String, event: MessageCreateEvent): String? =
-        literal.takeIf { message.startsWith(literal) }
+        literal.takeIf { message.startsWith(literal, ignoreCase = ignoreCase) }
 }
 
 @KommandoDsl
-public fun CommandPrefixBuilder.literal(literal: String): CommandPrefix = LiteralCommandPrefix(literal)
+public fun CommandPrefixBuilder.literal(literal: String, ignoreCase: Boolean = false): CommandPrefix =
+    LiteralCommandPrefix(literal, ignoreCase)

@@ -28,10 +28,4 @@ import dev.kord.core.Kord
 import net.ormr.kommando.KommandoDsl
 
 @KommandoDsl
-public class CommandPrefixBuilder(public val kord: Kord) {
-    // TODO: move out of here when we have context receivers in 1.6.20
-    // TODO: do we allow deep-nesting?
-    @KommandoDsl
-    public infix fun <L : CommandPrefix, R : CommandPrefix> L.or(right: R): CommandPrefix =
-        EitherCommandPrefix(this, right)
-}
+public class CommandPrefixBuilder(public val kord: Kord)

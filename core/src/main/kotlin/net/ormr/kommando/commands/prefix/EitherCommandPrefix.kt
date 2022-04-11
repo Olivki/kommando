@@ -25,6 +25,7 @@
 package net.ormr.kommando.commands.prefix
 
 import dev.kord.core.event.message.MessageCreateEvent
+import net.ormr.kommando.KommandoDsl
 
 public class EitherCommandPrefix<L : CommandPrefix, R : CommandPrefix> internal constructor(
     private val left: L,
@@ -33,3 +34,9 @@ public class EitherCommandPrefix<L : CommandPrefix, R : CommandPrefix> internal 
     override suspend fun parse(message: String, event: MessageCreateEvent): String? =
         left.parse(message, event) ?: right.parse(message, event)
 }
+
+// TODO: do we allow deep-nesting?
+context(CommandPrefixBuilder)
+        @KommandoDsl
+        public infix fun <L : CommandPrefix, R : CommandPrefix> L.or(right: R): CommandPrefix =
+    EitherCommandPrefix(this, right)
