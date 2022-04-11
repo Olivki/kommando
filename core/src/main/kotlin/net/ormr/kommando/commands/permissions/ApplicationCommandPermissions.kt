@@ -25,7 +25,7 @@
 package net.ormr.kommando.commands.permissions
 
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.SlashCommandBuilder
+import net.ormr.kommando.commands.WithApplicationCommandPermissionsBuilder
 
 public data class ApplicationCommandPermissions(public val guildPermissions: List<GuildApplicationCommandPermissions>)
 
@@ -47,7 +47,7 @@ public inline fun applicationPermissions(builder: ApplicationCommandPermissionsB
     ApplicationCommandPermissionsBuilder().apply(builder).build()
 
 @KommandoDsl
-public inline fun SlashCommandBuilder<*, *, *, *>.applicationPermissions(
+public inline fun WithApplicationCommandPermissionsBuilder.applicationPermissions(
     builder: ApplicationCommandPermissionsBuilder.() -> Unit,
 ): ApplicationCommandPermissions {
     val perms = ApplicationCommandPermissionsBuilder().apply(builder).build()
