@@ -57,7 +57,7 @@ public class EnumChoiceSlashArgument<T> @PublishedApi internal constructor(
 }
 
 @Suppress("FunctionName")
-public inline fun <reified T> SlashEnumChoiceArgument(name: String, description: String): EnumChoiceSlashArgument<T>
+public inline fun <reified T> EnumChoiceSlashArgument(name: String, description: String): EnumChoiceSlashArgument<T>
         where T : Enum<T>,
               T : EnumChoiceArgumentAdapter {
     val enumValues = enumValues<T>().toList()
