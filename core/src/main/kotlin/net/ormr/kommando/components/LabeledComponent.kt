@@ -31,7 +31,7 @@ import net.ormr.kommando.modals.ModalComponent
  */
 public sealed interface LabeledComponent {
     /**
-     * The label of the component.
+     * The label of this component.
      */
     public val label: String?
 }
