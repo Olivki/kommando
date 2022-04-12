@@ -40,6 +40,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.ormr.kommando.KommandoAware
 import net.ormr.kommando.KommandoDsl
+import net.ormr.kommando.storage.minusAssign
 import kotlin.time.Duration
 
 private const val MAX_ROW_WIDTH = 5
@@ -171,7 +172,7 @@ context(KommandoAware)
         }
     }
     if (shouldUnregister) {
-        for (id in actionRows.getCustomIds()) kommando.executableComponents.remove(id)
+        for (id in actionRows.getCustomIds()) kommando.componentStorage -= id
     }
 }
 
@@ -185,7 +186,7 @@ context(KommandoAware)
     edit {
         this.components = mutableListOf()
     }
-    if (shouldUnregister) kommando.removeComponentGroup(components)
+    if (shouldUnregister) kommando.componentStorage -= components
 }
 
 context(KommandoAware)
@@ -198,7 +199,7 @@ context(KommandoAware)
         this.components = mutableListOf()
     }
     if (shouldUnregister) {
-        for (id in actionRows.getCustomIds()) kommando.executableComponents.remove(id)
+        for (id in actionRows.getCustomIds()) kommando.componentStorage -= id
     }
 }
 
@@ -261,7 +262,7 @@ context(KommandoAware)
     edit {
         this.components = mutableListOf()
     }
-    if (shouldUnregister) kommando.removeComponentGroup(components)
+    if (shouldUnregister) kommando.componentStorage -= components
 }
 
 context(KommandoAware)
@@ -270,7 +271,7 @@ context(KommandoAware)
     shouldUnregister: Boolean = false,
 ): ComponentGroup {
     val newGroup = copyWithAllDisabled().applyToMessage(message)
-    if (shouldUnregister) kommando.removeComponentGroup(this)
+    if (shouldUnregister) kommando.componentStorage -= this
     return newGroup
 }
 
@@ -280,35 +281,35 @@ context(KommandoAware)
     shouldUnregister: Boolean = false,
 ): ComponentGroup {
     val newGroup = copyWithAllDisabled().applyToEphemeralMessage(message)
-    if (shouldUnregister) kommando.removeComponentGroup(this)
+    if (shouldUnregister) kommando.componentStorage -= this
     return newGroup
 }
 
 context(KommandoAware, MessageCreateBuilder)
         public fun ComponentGroup.disableAllAndApplyToMessage(shouldUnregister: Boolean = false): ComponentGroup {
     val newGroup = copyWithAllDisabled().applyToMessage()
-    if (shouldUnregister) kommando.removeComponentGroup(this)
+    if (shouldUnregister) kommando.componentStorage -= this
     return newGroup
 }
 
 context(KommandoAware, MessageModifyBuilder)
         public fun ComponentGroup.disableAllAndApplyToMessage(shouldUnregister: Boolean = false): ComponentGroup {
     val newGroup = copyWithAllDisabled().applyToMessage()
-    if (shouldUnregister) kommando.removeComponentGroup(this)
+    if (shouldUnregister) kommando.componentStorage -= this
     return newGroup
 }
 
 context(KommandoAware, MessageCreateBuilder)
         public fun ComponentGroup.applyToMessageAndRegister(): ComponentGroup = apply {
     this@MessageCreateBuilder.components.clear()
-    kommando.addComponentGroup(this)
+    kommando.componentStorage += this
     applyToMessage()
 }
 
 context(KommandoAware, MessageModifyBuilder)
         public fun ComponentGroup.applyToMessageAndRegister(): ComponentGroup = apply {
     this@MessageModifyBuilder.components = mutableListOf()
-    kommando.addComponentGroup(this)
+    kommando.componentStorage += this
     applyToMessage()
 }
 
@@ -368,7 +369,7 @@ context(KommandoAware)
         @KommandoDsl
         public inline fun MessageCreateBuilder.components(builder: ComponentGroupBuilder.() -> Unit): ComponentGroup {
     val group = ComponentGroupBuilder().apply(builder).build()
-    kommando.addComponentGroup(group)
+    kommando.componentStorage += group
     group.applyToMessage()
     return group
 }
@@ -377,7 +378,7 @@ context(KommandoAware)
         @KommandoDsl
         public inline fun MessageModifyBuilder.components(builder: ComponentGroupBuilder.() -> Unit): ComponentGroup {
     val group = ComponentGroupBuilder().apply(builder).build()
-    kommando.addComponentGroup(group)
+    kommando.componentStorage += group
     group.applyToMessage()
     return group
 }

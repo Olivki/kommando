@@ -38,7 +38,7 @@ import net.ormr.kommando.commands.CommandGroup
 import net.ormr.kommando.commands.TopLevelApplicationCommand
 import net.ormr.kommando.commands.prefix.CommandPrefix
 import net.ormr.kommando.commands.prefix.CommandPrefixBuilder
-import net.ormr.kommando.components.ComponentGroup
+import net.ormr.kommando.components.ComponentStorage
 import net.ormr.kommando.components.ExecutableComponent
 import net.ormr.kommando.internal.*
 import net.ormr.kommando.modals.Modal
@@ -48,7 +48,6 @@ import net.ormr.kommando.structures.EventListener
 import net.ormr.kommando.structures.MessageFilter
 import net.ormr.kommando.structures.messageFilter
 import org.kodein.di.*
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
@@ -74,24 +73,14 @@ public class Kommando(
         get() = this
 
     /**
-     * The [Modal]s stored by this Kommando instance.
+     * The [Modal]s that are currently being managed by this Kommando instance.
      */
     public val modalStorage: ModalStorage = ModalStorage(this, modalExpirationDuration)
 
     /**
-     * All the [executable components][ExecutableComponent] that are currently registered to this Kommando instance.
-     *
-     * The components are stored by their [customId][ExecutableComponent.customId].
+     * The [ExecutableComponent]s that are currently being managed by this Kommando instance.
      */
-    public val executableComponents: MutableMap<String, ExecutableComponent<*, *>> = ConcurrentHashMap()
-
-    public fun addComponentGroup(group: ComponentGroup) {
-        executableComponents.putAll(group.executableComponents)
-    }
-
-    public fun removeComponentGroup(group: ComponentGroup) {
-        for ((key, _) in group.executableComponents) executableComponents.remove(key)
-    }
+    public val componentStorage: ComponentStorage = ComponentStorage(this)
 
     internal suspend fun initialize() {
         registerApplicationCommandPermissions()

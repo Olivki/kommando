@@ -33,7 +33,7 @@ internal suspend fun Kommando.handleComponents() {
     val kommando = this
     kord.on<ComponentInteractionCreateEvent> {
         // TODO: pass to listener if we implement that system
-        when (val component = executableComponents[interaction.componentId] ?: return@on) {
+        when (val component = componentStorage[interaction.componentId] ?: return@on) {
             is ButtonComponent -> {
                 check(this is ButtonComponentEvent) { "Mismatch of component and event type. ($component x $this)" }
                 component.executor(ButtonComponentData(kommando, this))
