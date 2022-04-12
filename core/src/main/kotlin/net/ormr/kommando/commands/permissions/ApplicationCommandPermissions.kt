@@ -26,6 +26,8 @@ package net.ormr.kommando.commands.permissions
 
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.WithApplicationCommandPermissionsBuilder
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 public data class ApplicationCommandPermissions(public val guildPermissions: List<GuildApplicationCommandPermissions>)
 
@@ -50,6 +52,10 @@ public inline fun applicationPermissions(builder: ApplicationCommandPermissionsB
 public inline fun WithApplicationCommandPermissionsBuilder.applicationPermissions(
     builder: ApplicationCommandPermissionsBuilder.() -> Unit,
 ): ApplicationCommandPermissions {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     val perms = ApplicationCommandPermissionsBuilder().apply(builder).build()
     applicationPermissions = perms
     return perms

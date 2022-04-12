@@ -26,6 +26,8 @@ package net.ormr.kommando.commands.permissions
 
 import dev.kord.common.entity.Snowflake
 import net.ormr.kommando.KommandoDsl
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 public data class GuildApplicationCommandPermissions(
     public val guildId: Snowflake,
@@ -64,5 +66,9 @@ public inline fun ApplicationCommandPermissionsBuilder.guild(
     guildId: Snowflake,
     builder: GuildApplicationCommandPermissionsBuilder.() -> Unit,
 ) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     addPermission(GuildApplicationCommandPermissionsBuilder(guildId).apply(builder).build())
 }
