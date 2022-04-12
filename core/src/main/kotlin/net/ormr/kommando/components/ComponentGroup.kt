@@ -34,7 +34,6 @@ import dev.kord.core.entity.component.ActionRowComponent
 import dev.kord.core.entity.component.UnknownComponent
 import dev.kord.core.entity.interaction.followup.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
-import dev.kord.core.entity.interaction.response.MessageInteractionResponse
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.builder.message.create.actionRow
 import dev.kord.rest.builder.message.modify.MessageModifyBuilder
@@ -225,32 +224,6 @@ private fun List<ActionRowComponent>.getCustomIds(): List<String> = flatMap { it
             is UnknownComponent -> null
         }
     }
-
-context(KommandoAware)
-        public suspend fun MessageInteractionResponse.disableComponentsIn(
-    duration: Duration,
-    components: ComponentGroup,
-    shouldUnregister: Boolean = false,
-): Job = message.disableComponentsIn(duration, components, shouldUnregister)
-
-context(KommandoAware)
-        public suspend fun MessageInteractionResponse.disableComponentsIn(
-    duration: Duration,
-    shouldUnregister: Boolean = true,
-): Job = message.disableComponentsIn(duration, shouldUnregister)
-
-context(KommandoAware)
-        public suspend fun MessageInteractionResponse.removeComponentsIn(
-    duration: Duration,
-    components: ComponentGroup,
-    shouldUnregister: Boolean = false,
-): Job = message.removeComponentsIn(duration, components, shouldUnregister)
-
-context(KommandoAware)
-        public suspend fun MessageInteractionResponse.removeComponentsIn(
-    duration: Duration,
-    shouldUnregister: Boolean = true,
-): Job = message.removeComponentsIn(duration, shouldUnregister)
 
 context(KommandoAware)
         public suspend fun PublicFollowupMessage.disableComponentsIn(
