@@ -41,12 +41,15 @@ import net.ormr.kommando.commands.prefix.CommandPrefixBuilder
 import net.ormr.kommando.components.ComponentGroup
 import net.ormr.kommando.components.ExecutableComponent
 import net.ormr.kommando.internal.*
+import net.ormr.kommando.modals.Modal
+import net.ormr.kommando.modals.ModalStorage
 import net.ormr.kommando.structures.CommandPrecondition
 import net.ormr.kommando.structures.EventListener
 import net.ormr.kommando.structures.MessageFilter
 import net.ormr.kommando.structures.messageFilter
 import org.kodein.di.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
@@ -62,6 +65,7 @@ public class Kommando(
     public val applicationCommands: List<TopLevelApplicationCommand<*, *>>,
     public val prefix: CommandPrefix?,
     internal val registeredApplicationCommands: Map<Snowflake, TopLevelApplicationCommand<*, *>>,
+    modalExpirationDuration: Duration?,
 ) : DIAware, KommandoAware {
     /**
      * This [Kommando] instance.
@@ -70,7 +74,14 @@ public class Kommando(
         get() = this
 
     /**
+     * The [Modal]s stored by this Kommando instance.
+     */
+    public val modalStorage: ModalStorage = ModalStorage(this, modalExpirationDuration)
+
+    /**
      * All the [executable components][ExecutableComponent] that are currently registered to this Kommando instance.
+     *
+     * The components are stored by their [customId][ExecutableComponent.customId].
      */
     public val executableComponents: MutableMap<String, ExecutableComponent<*, *>> = ConcurrentHashMap()
 
@@ -87,6 +98,7 @@ public class Kommando(
         handleApplicationCommands()
         handleChatCommands()
         handleComponents()
+        handleModals()
         eventListeners.forEach { it.executeBlock(this) }
     }
 }
@@ -109,6 +121,12 @@ public class KommandoBuilder @PublishedApi internal constructor(
     public val messageFilters: MutableList<MessageFilter> = mutableListOf()
 
     /**
+     * How long until any stored [modals][Kommando.registeredModals] should be expired after write, if `null` then no expiration
+     * duration is set.
+     */
+    public var modalExpirationDuration: Duration? = null
+
+    /**
      * Filters away any messages created by the bot itself.
      *
      * Enabled by default if [Intent.MessageContent] is enabled in [intents].
@@ -127,8 +145,6 @@ public class KommandoBuilder @PublishedApi internal constructor(
     @PublishedApi
     internal var prefix: CommandPrefix? = null
 
-
-
     init {
         @OptIn(PrivilegedIntent::class)
         if (Intent.MessageContent in intents) {
@@ -140,15 +156,6 @@ public class KommandoBuilder @PublishedApi internal constructor(
     @KommandoDsl
     public inline fun prefix(builder: CommandPrefixBuilder.() -> CommandPrefix) {
         prefix = builder(CommandPrefixBuilder(kord))
-    }
-
-    // TODO: move these unary operators to extension functions once 1.6.20 is out so we can use multi-receiver contexts
-    public operator fun MessageFilter.unaryPlus() {
-        messageFilters += this
-    }
-
-    public operator fun MessageFilter.unaryMinus() {
-        messageFilters -= this
     }
 
     // TODO: throw exception if chatCommands are registered but no 'prefix' has been set
@@ -169,9 +176,10 @@ public class KommandoBuilder @PublishedApi internal constructor(
                 }
         }
         val applicationCommands = flattenedCommands.filterIsInstance<TopLevelApplicationCommand<*, *>>()
+        // TODO: should we log this if 'applicationCommands' is empty?
         logger.info { "Registering ${applicationCommands.size} application commands." }
         val (registeredApplicationCommands, duration) = measureTimedValue { registerSlashCommands(applicationCommands) }
-        logger.info { "Registration of all ${applicationCommands.size} application commands took $duration." }
+        logger.info { "Application command registration took $duration." }
         val kommando = Kommando(
             kord = kord,
             intents = intents,
@@ -184,12 +192,23 @@ public class KommandoBuilder @PublishedApi internal constructor(
             applicationCommands = applicationCommands,
             prefix = prefix,
             registeredApplicationCommands = registeredApplicationCommands,
+            modalExpirationDuration = modalExpirationDuration,
         )
 
         kommando.initialize()
 
         return kommando
     }
+}
+
+context(KommandoBuilder)
+        public operator fun MessageFilter.unaryPlus() {
+    messageFilters += this
+}
+
+context(KommandoBuilder)
+        public operator fun MessageFilter.unaryMinus() {
+    messageFilters -= this
 }
 
 @KommandoDsl
