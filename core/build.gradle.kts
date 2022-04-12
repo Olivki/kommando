@@ -28,6 +28,8 @@ dependencies {
     api(kotlin("reflect"))
     api("org.kodein.di:kodein-di:7.11.0")
     api("dev.kord:kord-core:0.8.0-M12")
-    implementation("com.michael-bull.kotlin-inline-logger:kotlin-inline-logger:1.0.4")
     api("dev.kord.x:emoji:0.5.0")
+    implementation("io.github.reactivecircus.cache4k:cache4k:0.4.0")
+
+    implementation("com.michael-bull.kotlin-inline-logger:kotlin-inline-logger:1.0.4")
 }
