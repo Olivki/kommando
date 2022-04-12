@@ -116,7 +116,6 @@ internal suspend fun Kommando.handleApplicationCommands() {
                 }
             }
             is GuildChatInputCommandInteractionCreateEvent -> {
-                val user = interaction.user
                 val interactionCommand = interaction.command
                 val commandId = interactionCommand.rootId
                 when (val command = getCommand(commandId)) {
