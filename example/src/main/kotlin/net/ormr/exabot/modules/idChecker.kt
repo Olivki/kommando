@@ -25,22 +25,22 @@
 package net.ormr.exabot.modules
 
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.behavior.interaction.respondEphemeral
 import net.ormr.kommando.commands.commands
 import net.ormr.kommando.commands.guildMessageCommand
 import net.ormr.kommando.commands.guildUserCommand
 import net.ormr.kommando.processor.Tag
+import net.ormr.kommando.utils.respondEphemeral
 
 fun idChecker(@Tag guildId: Snowflake) = commands("ID Checker") {
     guildUserCommand("Show ID", guildId) {
         execute { (user) ->
-            interaction.respondEphemeral { content = "${user.id}" }
+            interaction.respondEphemeral("${user.id}")
         }
     }
 
     guildMessageCommand("Show ID", guildId) {
         execute { (message) ->
-            interaction.respondEphemeral { content = "${message.id}" }
+            interaction.respondEphemeral("${message.id}")
         }
     }
 }

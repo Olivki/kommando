@@ -25,11 +25,11 @@
 package net.ormr.exabot.modules
 
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.suggestString
 import net.ormr.kommando.commands.*
 import net.ormr.kommando.commands.arguments.slash.SlashStringArgument
 import net.ormr.kommando.processor.Tag
+import net.ormr.kommando.utils.respondPublic
 
 fun autoComplete(@Tag guildId: Snowflake) = commands("Auto Completes!") {
     guildSlashCommand("autocomplete", "It auto completes! Wow!", guildId) {
@@ -38,7 +38,7 @@ fun autoComplete(@Tag guildId: Snowflake) = commands("Auto Completes!") {
                 execute(
                     SlashStringArgument("slash", "slash") { suggestString { choice("dab", "dab") } },
                 ) { (value) ->
-                    interaction.respondPublic { content = "Wow! $value" }
+                    interaction.respondPublic("Wow! $value")
                 }
             }
         }
@@ -46,7 +46,7 @@ fun autoComplete(@Tag guildId: Snowflake) = commands("Auto Completes!") {
             execute(
                 SlashStringArgument("slash", "slash") { suggestString { choice("dab", "dab") } },
             ) { (value) ->
-                interaction.respondPublic { content = "Wow! $value" }
+                interaction.respondPublic("Wow! $value")
             }
         }
     }
@@ -55,7 +55,7 @@ fun autoComplete(@Tag guildId: Snowflake) = commands("Auto Completes!") {
         execute(
             SlashStringArgument("slash", "slash") { suggestString { choice("dab", "dab") } },
         ) { (value) ->
-            interaction.respondPublic { content = "Wow! $value" }
+            interaction.respondPublic("Wow! $value")
         }
     }
 }

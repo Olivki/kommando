@@ -24,34 +24,34 @@
 
 package net.ormr.exabot.modules
 
-import dev.kord.core.behavior.interaction.respondPublic
 import net.ormr.kommando.commands.*
 import net.ormr.kommando.commands.arguments.slash.SlashDoubleArgument
 import net.ormr.kommando.commands.arguments.slash.SlashLongArgument
 import net.ormr.kommando.commands.arguments.slash.SlashStringArgument
+import net.ormr.kommando.utils.respondPublic
 
 fun advancedSlash() = commands("Baby!") {
     globalSlashCommand("advanced", "Some more complex/advanced slash commands!") {
         group("type", "Basic group") {
             subCommand("int", "Accepts integers") {
                 execute(SlashLongArgument("value", "It's an integer!")) { (value) ->
-                    interaction.respondPublic { content = "It's $value" }
+                    interaction.respondPublic("It's $value")
                 }
             }
             subCommand("double", "Accepts doubles!") {
                 execute(SlashDoubleArgument("value", "It's a double!")) { (value) ->
-                    interaction.respondPublic { content = "It's $value" }
+                    interaction.respondPublic("It's $value")
                 }
             }
             subCommand("string", "Accepts strings!") {
                 execute(SlashStringArgument("value", "It's a string!")) { (value) ->
-                    interaction.respondPublic { content = "It's '$value'" }
+                    interaction.respondPublic("It's '$value'")
                 }
             }
         }
         subCommand("steven", "It's Steve!") {
             execute {
-                interaction.respondPublic { content = "'ello there!" }
+                interaction.respondPublic("'ello there!")
             }
         }
     }

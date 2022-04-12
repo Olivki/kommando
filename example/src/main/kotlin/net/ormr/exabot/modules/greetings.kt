@@ -27,13 +27,13 @@
 package net.ormr.exabot.modules
 
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.behavior.interaction.response.respond
 import kotlinx.serialization.Serializable
 import net.ormr.kommando.commands.commands
 import net.ormr.kommando.commands.execute
 import net.ormr.kommando.commands.guildSlashCommand
 import net.ormr.kommando.processor.Module
 import net.ormr.kommando.processor.Tag
+import net.ormr.kommando.utils.respond
 import org.kodein.db.DB
 import org.kodein.db.getById
 import org.kodein.db.model.Id
@@ -45,9 +45,9 @@ fun greetings(@Tag guildId: Snowflake, db: DB) = commands("Greetings") {
             val timesGreeted = db.getById<GreetedUser>(user.id)?.timesGreeted ?: 0
 
             if (timesGreeted < 0) {
-                deferred.respond { content = "This is the first time you've greeted me, hello!" }
+                deferred.respond("This is the first time you've greeted me, hello!")
             } else {
-                deferred.respond { content = "Hello! You've greeted me ${timesGreeted + 1} times so far!" }
+                deferred.respond("Hello! You've greeted me ${timesGreeted + 1} times so far!")
             }
 
             db.put(GreetedUser(user.id, timesGreeted + 1))
