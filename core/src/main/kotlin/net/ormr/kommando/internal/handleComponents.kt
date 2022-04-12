@@ -30,18 +30,27 @@ import net.ormr.kommando.Kommando
 import net.ormr.kommando.components.*
 
 internal suspend fun Kommando.handleComponents() {
-    val kommando = this
     kord.on<ComponentInteractionCreateEvent> {
         // TODO: pass to listener if we implement that system
         when (val component = componentStorage[interaction.componentId] ?: return@on) {
             is ButtonComponent -> {
                 check(this is ButtonComponentEvent) { "Mismatch of component and event type. ($component x $this)" }
-                component.executor(ButtonComponentData(kommando, this))
+                component.execute(ButtonComponentData(kommando, this))
             }
             is SelectMenuComponent -> {
                 check(this is SelectMenuComponentEvent) { "Mismatch of component and event type. ($component x $this)" }
-                component.executor(SelectMenuComponentData(kommando, this))
+                component.execute(SelectMenuComponentData(kommando, this))
+            }
+            is EnumSelectMenuComponent<*> -> {
+                check(this is SelectMenuComponentEvent) { "Mismatch of component and event type. ($component x $this)" }
+                component.execute(EnumSelectMenuComponentData(kommando, this, component.optionMappings))
             }
         }
     }
+}
+
+private suspend fun <E : ComponentInteractionCreateEvent, D : ComponentData<E>> ExecutableComponent<E, D>.execute(
+    data: D,
+) {
+    executor(data)
 }

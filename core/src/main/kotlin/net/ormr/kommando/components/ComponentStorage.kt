@@ -69,6 +69,8 @@ public class ComponentStorage(override val kommando: Kommando) : MutableStorage<
     public fun removeComponentGroup(group: ComponentGroup) {
         for ((key, _) in group.executableComponents) components.remove(key)
     }
+
+    override fun toString(): String = components.toString()
 }
 
 /**

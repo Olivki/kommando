@@ -25,11 +25,14 @@
 package net.ormr.kommando.components
 
 import dev.kord.core.behavior.edit
+import dev.kord.core.behavior.interaction.followup.edit
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.edit
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.component.ActionRowComponent
 import dev.kord.core.entity.component.UnknownComponent
+import dev.kord.core.entity.interaction.followup.EphemeralFollowupMessage
+import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
 import dev.kord.core.entity.interaction.response.MessageInteractionResponse
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.builder.message.create.actionRow
@@ -104,6 +107,7 @@ public fun ComponentGroup.copyWithAllDisabled(): ComponentGroup {
         when (it) {
             is ButtonComponent -> it.copy(isDisabled = true)
             is SelectMenuComponent -> it.copy(isDisabled = true)
+            is EnumSelectMenuComponent<*> -> it.copy(isDisabled = true)
             is LinkButtonComponent -> it.copy(isDisabled = true)
         }
     }
@@ -125,7 +129,7 @@ context(KommandoAware)
 context(KommandoAware)
         public suspend fun Message.disableComponentsIn(
     duration: Duration,
-    shouldUnregister: Boolean = false,
+    shouldUnregister: Boolean = true,
 ): Job = kommando.kord.launch {
     delay(duration)
     edit {
@@ -192,7 +196,7 @@ context(KommandoAware)
 context(KommandoAware)
         public suspend fun Message.removeComponentsIn(
     duration: Duration,
-    shouldUnregister: Boolean = false,
+    shouldUnregister: Boolean = true,
 ): Job = kommando.kord.launch {
     delay(duration)
     edit {
@@ -224,7 +228,7 @@ context(KommandoAware)
 context(KommandoAware)
         public suspend fun MessageInteractionResponse.disableComponentsIn(
     duration: Duration,
-    shouldUnregister: Boolean = false,
+    shouldUnregister: Boolean = true,
 ): Job = message.disableComponentsIn(duration, shouldUnregister)
 
 context(KommandoAware)
@@ -237,7 +241,33 @@ context(KommandoAware)
 context(KommandoAware)
         public suspend fun MessageInteractionResponse.removeComponentsIn(
     duration: Duration,
+    shouldUnregister: Boolean = true,
+): Job = message.removeComponentsIn(duration, shouldUnregister)
+
+context(KommandoAware)
+        public suspend fun PublicFollowupMessage.disableComponentsIn(
+    duration: Duration,
+    components: ComponentGroup,
     shouldUnregister: Boolean = false,
+): Job = message.disableComponentsIn(duration, components, shouldUnregister)
+
+context(KommandoAware)
+        public suspend fun PublicFollowupMessage.disableComponentsIn(
+    duration: Duration,
+    shouldUnregister: Boolean = true,
+): Job = message.disableComponentsIn(duration, shouldUnregister)
+
+context(KommandoAware)
+        public suspend fun PublicFollowupMessage.removeComponentsIn(
+    duration: Duration,
+    components: ComponentGroup,
+    shouldUnregister: Boolean = false,
+): Job = message.removeComponentsIn(duration, components, shouldUnregister)
+
+context(KommandoAware)
+        public suspend fun PublicFollowupMessage.removeComponentsIn(
+    duration: Duration,
+    shouldUnregister: Boolean = true,
 ): Job = message.removeComponentsIn(duration, shouldUnregister)
 
 context(KommandoAware)
@@ -254,6 +284,31 @@ context(KommandoAware)
 
 context(KommandoAware)
         public suspend fun EphemeralMessageInteractionResponseBehavior.removeComponentsIn(
+    duration: Duration,
+    components: ComponentGroup,
+    shouldUnregister: Boolean = false,
+): Job = kommando.kord.launch {
+    delay(duration)
+    edit {
+        this.components = mutableListOf()
+    }
+    if (shouldUnregister) kommando.componentStorage -= components
+}
+
+context(KommandoAware)
+        public suspend fun EphemeralFollowupMessage.disableComponentsIn(
+    duration: Duration,
+    components: ComponentGroup,
+    shouldUnregister: Boolean = false,
+): Job = kommando.kord.launch {
+    delay(duration)
+    edit {
+        components.disableAllAndApplyToMessage(shouldUnregister = shouldUnregister)
+    }
+}
+
+context(KommandoAware)
+        public suspend fun EphemeralFollowupMessage.removeComponentsIn(
     duration: Duration,
     components: ComponentGroup,
     shouldUnregister: Boolean = false,
@@ -369,8 +424,7 @@ context(KommandoAware)
         @KommandoDsl
         public inline fun MessageCreateBuilder.components(builder: ComponentGroupBuilder.() -> Unit): ComponentGroup {
     val group = ComponentGroupBuilder().apply(builder).build()
-    kommando.componentStorage += group
-    group.applyToMessage()
+    group.applyToMessageAndRegister()
     return group
 }
 
@@ -378,7 +432,6 @@ context(KommandoAware)
         @KommandoDsl
         public inline fun MessageModifyBuilder.components(builder: ComponentGroupBuilder.() -> Unit): ComponentGroup {
     val group = ComponentGroupBuilder().apply(builder).build()
-    kommando.componentStorage += group
-    group.applyToMessage()
+    group.applyToMessageAndRegister()
     return group
 }
