@@ -33,7 +33,7 @@ import kotlin.time.Duration
 /**
  * Handles the storing and removal of [Modal]s for a [kommando] instance.
  *
- * `Modal`s are stored by their [customId][Modal.customId].
+ * `Modal`s are indexed by their [customId][Modal.customId].
  *
  * @property expirationDuration The duration after write that `Modal`s will automatically be invalidated, if `null`
  * then entries will never be automatically invalidated.
