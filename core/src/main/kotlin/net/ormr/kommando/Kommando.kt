@@ -52,7 +52,7 @@ import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
-public class Kommando(
+public class Kommando internal constructor(
     public val kord: Kord,
     public val intents: Intents,
     override val di: DI,
@@ -64,7 +64,7 @@ public class Kommando(
     public val applicationCommands: List<TopLevelApplicationCommand<*, *>>,
     public val prefix: CommandPrefix?,
     internal val registeredApplicationCommands: Map<Snowflake, TopLevelApplicationCommand<*, *>>,
-    modalExpirationDuration: Duration?,
+    internal val config: KommandoConfig,
 ) : DIAware, KommandoAware {
     /**
      * This [Kommando] instance.
@@ -75,7 +75,7 @@ public class Kommando(
     /**
      * The [Modal]s that are currently being managed by this Kommando instance.
      */
-    public val modalStorage: ModalStorage = ModalStorage(this, modalExpirationDuration)
+    public val modalStorage: ModalStorage = ModalStorage(this, config.modalExpirationDuration)
 
     /**
      * The [ExecutableComponent]s that are currently being managed by this Kommando instance.
@@ -181,7 +181,9 @@ public class KommandoBuilder @PublishedApi internal constructor(
             applicationCommands = applicationCommands,
             prefix = prefix,
             registeredApplicationCommands = registeredApplicationCommands,
-            modalExpirationDuration = modalExpirationDuration,
+            config = KommandoConfig(
+                modalExpirationDuration = modalExpirationDuration,
+            ),
         )
 
         kommando.initialize()
