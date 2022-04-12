@@ -146,6 +146,10 @@ public class KommandoBuilder @PublishedApi internal constructor(
 
     @KommandoDsl
     public inline fun prefix(builder: CommandPrefixBuilder.() -> CommandPrefix) {
+        contract {
+            callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+        }
+
         prefix = builder(CommandPrefixBuilder(kord))
     }
 
