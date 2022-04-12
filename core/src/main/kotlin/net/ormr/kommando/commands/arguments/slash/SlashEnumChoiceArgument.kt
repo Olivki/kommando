@@ -30,7 +30,7 @@ import dev.kord.rest.builder.interaction.string
 import net.ormr.kommando.commands.arguments.EnumChoiceArgumentAdapter
 import kotlin.reflect.KClass
 
-public class SlashEnumArgument<T> @PublishedApi internal constructor(
+public class SlashEnumChoiceArgument<T> @PublishedApi internal constructor(
     override val name: String,
     override val description: String,
     public val enumClass: KClass<T>,
@@ -57,10 +57,10 @@ public class SlashEnumArgument<T> @PublishedApi internal constructor(
 }
 
 @Suppress("FunctionName")
-public inline fun <reified T> SlashEnumArgument(name: String, description: String): SlashEnumArgument<T>
+public inline fun <reified T> SlashEnumChoiceArgument(name: String, description: String): SlashEnumChoiceArgument<T>
         where T : Enum<T>,
               T : EnumChoiceArgumentAdapter {
     val enumValues = enumValues<T>().toList()
     require(enumValues.size <= 25) { "Commands can only have 25 choices max, was given ${enumValues.size} choices." }
-    return SlashEnumArgument(name, description, T::class, enumValues<T>().toList())
+    return SlashEnumChoiceArgument(name, description, T::class, enumValues<T>().toList())
 }
