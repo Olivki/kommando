@@ -27,6 +27,7 @@ package net.ormr.kommando.components
 import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.followup.edit
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.edit
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.component.ActionRowComponent
@@ -276,6 +277,31 @@ context(KommandoAware)
     duration: Duration,
     shouldUnregister: Boolean = true,
 ): Job = message.removeComponentsIn(duration, shouldUnregister)
+
+context(KommandoAware)
+        public suspend fun PublicMessageInteractionResponseBehavior.disableComponentsIn(
+    duration: Duration,
+    components: ComponentGroup,
+    shouldUnregister: Boolean = false,
+): Job = kommando.kord.launch {
+    delay(duration)
+    edit {
+        components.disableAllAndApplyToMessage(shouldUnregister = shouldUnregister)
+    }
+}
+
+context(KommandoAware)
+        public suspend fun PublicMessageInteractionResponseBehavior.removeComponentsIn(
+    duration: Duration,
+    components: ComponentGroup,
+    shouldUnregister: Boolean = false,
+): Job = kommando.kord.launch {
+    delay(duration)
+    edit {
+        this.components = mutableListOf()
+    }
+    if (shouldUnregister) kommando.componentStorage -= components
+}
 
 context(KommandoAware)
         public suspend fun EphemeralMessageInteractionResponseBehavior.disableComponentsIn(

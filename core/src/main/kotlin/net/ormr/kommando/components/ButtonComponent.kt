@@ -89,6 +89,7 @@ public class ButtonComponentBuilder @PublishedApi internal constructor(
     }
 }
 
+// TODO: add builders for the different types of button styles
 @KommandoDsl
 public inline fun ComponentGroupBuilder.button(
     style: ButtonStyle = ButtonStyle.Primary,
