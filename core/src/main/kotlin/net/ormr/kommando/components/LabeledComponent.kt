@@ -24,6 +24,14 @@
 
 package net.ormr.kommando.components
 
+import net.ormr.kommando.modals.ModalComponent
+
+/**
+ * Represents a [modal component][ModalComponent] that can have a label.
+ */
 public sealed interface LabeledComponent {
+    /**
+     * The label of the component.
+     */
     public val label: String?
 }

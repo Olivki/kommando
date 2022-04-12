@@ -37,7 +37,15 @@ public sealed interface Component {
      */
     public val width: Int
 
+    /**
+     * Whether the component is disabled or not.
+     *
+     * A disabled component can't be interacted with and is also rendered differently.
+     */
     public val isDisabled: Boolean
 
+    /**
+     * Builds this component and adds it to the [action row][ActionRowBuilder].
+     */
     public fun ActionRowBuilder.buildComponent()
 }
