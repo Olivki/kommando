@@ -26,6 +26,8 @@ package net.ormr.kommando.components
 
 import dev.kord.common.entity.DiscordPartialEmoji
 import net.ormr.kommando.KommandoDsl
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 public data class SelectMenuOptionComponent(
     override val label: String,
@@ -64,5 +66,9 @@ public inline fun SelectMenuComponentBuilder.option(
     value: String,
     builder: SelectMenuOptionComponentBuilder.() -> Unit = {},
 ) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     addOption(SelectMenuOptionComponentBuilder(label, value).apply(builder).build())
 }

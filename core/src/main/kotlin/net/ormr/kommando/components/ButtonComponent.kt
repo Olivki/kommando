@@ -34,6 +34,8 @@ import dev.kord.rest.builder.component.ActionRowBuilder
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.internal.createUuidString
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 internal typealias ButtonComponentEvent = ButtonInteractionCreateEvent
 
@@ -93,5 +95,9 @@ public inline fun ComponentGroupBuilder.button(
     customId: String = createUuidString(),
     builder: ButtonComponentBuilder.() -> Unit,
 ) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     addComponent(ButtonComponentBuilder(customId, style).apply(builder).build())
 }

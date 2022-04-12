@@ -44,6 +44,8 @@ import kotlinx.coroutines.launch
 import net.ormr.kommando.KommandoAware
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.storage.minusAssign
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.time.Duration
 
 private const val MAX_ROW_WIDTH = 5
@@ -95,8 +97,13 @@ public class ComponentGroupBuilder @PublishedApi internal constructor() {
 }
 
 @KommandoDsl
-public inline fun components(builder: ComponentGroupBuilder.() -> Unit): ComponentGroup =
-    ComponentGroupBuilder().apply(builder).build()
+public inline fun components(builder: ComponentGroupBuilder.() -> Unit): ComponentGroup {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
+    return ComponentGroupBuilder().apply(builder).build()
+}
 
 /**
  * Returns a copy of `this` component group where the only difference is that all
@@ -423,6 +430,10 @@ context(MessageModifyBuilder)
 context(KommandoAware)
         @KommandoDsl
         public inline fun MessageCreateBuilder.components(builder: ComponentGroupBuilder.() -> Unit): ComponentGroup {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     val group = ComponentGroupBuilder().apply(builder).build()
     group.applyToMessageAndRegister()
     return group
@@ -431,6 +442,10 @@ context(KommandoAware)
 context(KommandoAware)
         @KommandoDsl
         public inline fun MessageModifyBuilder.components(builder: ComponentGroupBuilder.() -> Unit): ComponentGroup {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     val group = ComponentGroupBuilder().apply(builder).build()
     group.applyToMessageAndRegister()
     return group

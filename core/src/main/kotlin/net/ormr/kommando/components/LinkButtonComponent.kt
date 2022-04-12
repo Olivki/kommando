@@ -27,6 +27,8 @@ package net.ormr.kommando.components
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.rest.builder.component.ActionRowBuilder
 import net.ormr.kommando.KommandoDsl
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 public data class LinkButtonComponent(
     override val label: String?,
@@ -71,5 +73,9 @@ public inline fun ComponentGroupBuilder.linkButton(
     label: String? = null,
     builder: LinkButtonComponentBuilder.() -> Unit = {},
 ) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     addComponent(LinkButtonComponentBuilder(url, label).apply(builder).build())
 }
