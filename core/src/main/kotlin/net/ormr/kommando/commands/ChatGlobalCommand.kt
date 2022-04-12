@@ -79,12 +79,3 @@ public inline fun CommandGroupBuilder.chatGlobalCommand(
 ) {
     addCommand(ChatGlobalCommandBuilder(name, description).apply(builder).build(category))
 }
-
-@KommandoDsl
-public inline fun CommandGroupBuilder.chatCommand(
-    name: String,
-    description: String,
-    builder: ChatGlobalCommandBuilder.() -> Unit,
-) {
-    chatGlobalCommand(name, description, builder)
-}
