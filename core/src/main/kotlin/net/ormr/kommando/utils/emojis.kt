@@ -22,30 +22,22 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.components
+package net.ormr.kommando.utils
 
 import dev.kord.common.entity.DiscordPartialEmoji
+import dev.kord.common.entity.optional.optional
 import dev.kord.core.entity.GuildEmoji
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.x.emoji.DiscordEmoji
-import net.ormr.kommando.utils.toDiscordPartialEmoji
+import dev.kord.x.emoji.toReaction
 
-public interface EmojiBuilder {
-    public var emoji: DiscordPartialEmoji?
+// TODO: Kord has 'name = null' for GuildEmojis themselves when converting, is there an actual reason for that?
+public fun GuildEmoji.toDiscordPartialEmoji(): DiscordPartialEmoji =
+    DiscordPartialEmoji(id, name, isAnimated.optional())
 
-    public fun emoji(emoji: GuildEmoji) {
-        this.emoji = emoji.toDiscordPartialEmoji()
-    }
+public fun ReactionEmoji.Unicode.toDiscordPartialEmoji(): DiscordPartialEmoji = DiscordPartialEmoji(name = name)
 
-    public fun emoji(emoji: ReactionEmoji.Unicode) {
-        this.emoji = emoji.toDiscordPartialEmoji()
-    }
+public fun ReactionEmoji.Custom.toDiscordPartialEmoji(): DiscordPartialEmoji =
+    DiscordPartialEmoji(id, name, isAnimated.optional())
 
-    public fun emoji(emoji: ReactionEmoji.Custom) {
-        this.emoji = emoji.toDiscordPartialEmoji()
-    }
-
-    public fun emoji(emoji: DiscordEmoji) {
-        this.emoji = emoji.toDiscordPartialEmoji()
-    }
-}
+public fun DiscordEmoji.toDiscordPartialEmoji(): DiscordPartialEmoji = toReaction().toDiscordPartialEmoji()
