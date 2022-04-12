@@ -27,7 +27,7 @@ package net.ormr.kommando.commands.arguments.slash
 import dev.kord.core.entity.interaction.InteractionCommand
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.string
-import net.ormr.kommando.commands.arguments.ChoiceAdapter
+import net.ormr.kommando.commands.arguments.EnumChoiceArgumentAdapter
 import kotlin.reflect.KClass
 
 public class SlashEnumArgument<T> @PublishedApi internal constructor(
@@ -37,7 +37,7 @@ public class SlashEnumArgument<T> @PublishedApi internal constructor(
     public val enumValues: List<T>,
 ) : SlashArgument<T>
         where T : Enum<T>,
-              T : ChoiceAdapter {
+              T : EnumChoiceArgumentAdapter {
     override val type: SlashArgumentType.STRING
         get() = SlashArgumentType.STRING
 
@@ -59,7 +59,7 @@ public class SlashEnumArgument<T> @PublishedApi internal constructor(
 @Suppress("FunctionName")
 public inline fun <reified T> SlashEnumArgument(name: String, description: String): SlashEnumArgument<T>
         where T : Enum<T>,
-              T : ChoiceAdapter {
+              T : EnumChoiceArgumentAdapter {
     val enumValues = enumValues<T>().toList()
     require(enumValues.size <= 25) { "Commands can only have 25 choices max, was given ${enumValues.size} choices." }
     return SlashEnumArgument(name, description, T::class, enumValues<T>().toList())

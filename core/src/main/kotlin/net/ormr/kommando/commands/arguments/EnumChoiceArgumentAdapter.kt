@@ -24,7 +24,6 @@
 
 package net.ormr.kommando.commands.arguments
 
-// TODO: better name
-public interface ChoiceAdapter {
+public interface EnumChoiceArgumentAdapter {
     public val choiceName: String
 }
