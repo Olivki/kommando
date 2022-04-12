@@ -29,7 +29,7 @@ import dev.kord.core.entity.interaction.MessageCommandInteraction
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.arguments.slash.SlashMentionableArgument
+import net.ormr.kommando.commands.arguments.slash.MentionableSlashArgument
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
 private typealias GlobalMessageEvent = MessageCommandInteractionCreateEvent
@@ -53,7 +53,7 @@ public data class GlobalMessageCommandData(
 @KommandoDsl
 public class GlobalMessageCommandBuilder @PublishedApi internal constructor(private val name: String) :
     ContextCommandBuilder<GlobalMessageCommand, Message, GlobalMessageEvent, GlobalMessageCommandData>() {
-    override fun getEmptyArgument(): SlashMentionableArgument = SlashMentionableArgument("", "")
+    override fun getEmptyArgument(): MentionableSlashArgument = MentionableSlashArgument("", "")
 
     @PublishedApi
     override fun build(category: String): GlobalMessageCommand = GlobalMessageCommand(

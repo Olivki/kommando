@@ -27,32 +27,32 @@ package net.ormr.kommando.commands.arguments.chat
 import net.ormr.kommando.utils.Dummy
 
 @Suppress("UNUSED_PARAMETER")
-public sealed class ChatIntArgument(
+public sealed class ByteChatArgument(
     override val description: String?,
-    public val min: Int,
-    public val max: Int,
+    public val min: Byte,
+    public val max: Byte,
     dummy: Dummy,
-) : ChatArgument<Int>("Int") {
-    public companion object Default : ChatIntArgument(description = null, Int.MIN_VALUE, Int.MAX_VALUE, Dummy) {
-        public fun negative(description: String? = null, min: Int = Int.MIN_VALUE): ChatIntArgument =
-            ChatIntArgument(description, min = min, max = -1)
+) : ChatArgument<Byte>("Byte") {
+    public companion object Default : ByteChatArgument(description = null, Byte.MIN_VALUE, Byte.MAX_VALUE, Dummy) {
+        public fun negative(description: String? = null, min: Byte = Byte.MIN_VALUE): ByteChatArgument =
+            ByteChatArgument(description, min = min, max = -1)
 
-        public fun nonPositive(description: String? = null, min: Int = Int.MIN_VALUE): ChatIntArgument =
-            ChatIntArgument(description, min = min, max = 0)
+        public fun nonPositive(description: String? = null, min: Byte = Byte.MIN_VALUE): ByteChatArgument =
+            ByteChatArgument(description, min = min, max = 0)
 
-        public fun positive(description: String? = null, max: Int = Int.MAX_VALUE): ChatIntArgument =
-            ChatIntArgument(description, min = 1, max = max)
+        public fun positive(description: String? = null, max: Byte = Byte.MAX_VALUE): ByteChatArgument =
+            ByteChatArgument(description, min = 1, max = max)
 
-        public fun nonNegative(description: String? = null, max: Int = Int.MAX_VALUE): ChatIntArgument =
-            ChatIntArgument(description, min = 0, max = max)
+        public fun nonNegative(description: String? = null, max: Byte = Byte.MAX_VALUE): ByteChatArgument =
+            ByteChatArgument(description, min = 0, max = max)
     }
 }
 
-private class ChatIntArgumentImpl(description: String?, min: Int, max: Int) :
-    ChatIntArgument(description, min, max, Dummy)
+private class ByteChatArgumentImpl(description: String?, min: Byte, max: Byte) :
+    ByteChatArgument(description, min, max, Dummy)
 
-public fun ChatIntArgument(
+public fun ByteChatArgument(
     description: String? = null,
-    min: Int = Int.MIN_VALUE,
-    max: Int = Int.MAX_VALUE,
-): ChatIntArgument = ChatIntArgumentImpl(description, min, max)
+    min: Byte = Byte.MIN_VALUE,
+    max: Byte = Byte.MAX_VALUE,
+): ByteChatArgument = ByteChatArgumentImpl(description, min, max)

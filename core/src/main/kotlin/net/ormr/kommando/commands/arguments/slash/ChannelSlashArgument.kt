@@ -24,19 +24,19 @@
 
 package net.ormr.kommando.commands.arguments.slash
 
-import dev.kord.core.entity.Entity
+import dev.kord.core.entity.channel.ResolvedChannel
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import dev.kord.rest.builder.interaction.mentionable
+import dev.kord.rest.builder.interaction.channel
 
-public class SlashMentionableArgument(
+public class ChannelSlashArgument(
     override val name: String,
     override val description: String,
-) : SlashArgument<Entity> {
-    override val type: SlashArgumentType.MENTIONABLE
-        get() = SlashArgumentType.MENTIONABLE
+) : SlashArgument<ResolvedChannel> {
+    override val type: SlashArgumentType.CHANNEL
+        get() = SlashArgumentType.CHANNEL
 
     override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
-        mentionable(name, description) {
+        channel(name, description) {
             this.required = true
         }
     }

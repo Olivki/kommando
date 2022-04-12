@@ -29,7 +29,7 @@ import dev.kord.core.entity.interaction.UserCommandInteraction
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.arguments.slash.SlashUserArgument
+import net.ormr.kommando.commands.arguments.slash.UserSlashArgument
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
 private typealias GlobalUserEvent = UserCommandInteractionCreateEvent
@@ -53,7 +53,7 @@ public data class GlobalUserCommandData(
 @KommandoDsl
 public class GlobalUserCommandBuilder @PublishedApi internal constructor(private val name: String) :
     ContextCommandBuilder<GlobalUserCommand, User, GlobalUserEvent, GlobalUserCommandData>() {
-    override fun getEmptyArgument(): SlashUserArgument = SlashUserArgument("", "")
+    override fun getEmptyArgument(): UserSlashArgument = UserSlashArgument("", "")
 
     @PublishedApi
     override fun build(category: String): GlobalUserCommand = GlobalUserCommand(

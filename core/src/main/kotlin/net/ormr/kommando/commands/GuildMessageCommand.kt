@@ -30,7 +30,7 @@ import dev.kord.core.entity.interaction.GuildMessageCommandInteraction
 import dev.kord.core.event.interaction.GuildMessageCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.arguments.slash.SlashMentionableArgument
+import net.ormr.kommando.commands.arguments.slash.MentionableSlashArgument
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
 private typealias GuildMessageEvent = GuildMessageCommandInteractionCreateEvent
@@ -57,7 +57,7 @@ public class GuildMessageCommandBuilder @PublishedApi internal constructor(
     private val name: String,
     private val guildId: Snowflake,
 ) : ContextCommandBuilder<GuildMessageCommand, Message, GuildMessageEvent, GuildMessageCommandData>() {
-    override fun getEmptyArgument(): SlashMentionableArgument = SlashMentionableArgument("", "")
+    override fun getEmptyArgument(): MentionableSlashArgument = MentionableSlashArgument("", "")
 
     @PublishedApi
     override fun build(category: String): GuildMessageCommand = GuildMessageCommand(

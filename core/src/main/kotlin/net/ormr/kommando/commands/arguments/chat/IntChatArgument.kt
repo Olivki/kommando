@@ -27,32 +27,32 @@ package net.ormr.kommando.commands.arguments.chat
 import net.ormr.kommando.utils.Dummy
 
 @Suppress("UNUSED_PARAMETER")
-public sealed class ChatShortArgument(
+public sealed class IntChatArgument(
     override val description: String?,
-    public val min: Short,
-    public val max: Short,
+    public val min: Int,
+    public val max: Int,
     dummy: Dummy,
-) : ChatArgument<Short>("Short") {
-    public companion object Default : ChatShortArgument(description = null, Short.MIN_VALUE, Short.MAX_VALUE, Dummy) {
-        public fun negative(description: String? = null, min: Short = Short.MIN_VALUE): ChatShortArgument =
-            ChatShortArgument(description, min = min, max = -1)
+) : ChatArgument<Int>("Int") {
+    public companion object Default : IntChatArgument(description = null, Int.MIN_VALUE, Int.MAX_VALUE, Dummy) {
+        public fun negative(description: String? = null, min: Int = Int.MIN_VALUE): IntChatArgument =
+            IntChatArgument(description, min = min, max = -1)
 
-        public fun nonPositive(description: String? = null, min: Short = Short.MIN_VALUE): ChatShortArgument =
-            ChatShortArgument(description, min = min, max = 0)
+        public fun nonPositive(description: String? = null, min: Int = Int.MIN_VALUE): IntChatArgument =
+            IntChatArgument(description, min = min, max = 0)
 
-        public fun positive(description: String? = null, max: Short = Short.MAX_VALUE): ChatShortArgument =
-            ChatShortArgument(description, min = 1, max = max)
+        public fun positive(description: String? = null, max: Int = Int.MAX_VALUE): IntChatArgument =
+            IntChatArgument(description, min = 1, max = max)
 
-        public fun nonNegative(description: String? = null, max: Short = Short.MAX_VALUE): ChatShortArgument =
-            ChatShortArgument(description, min = 0, max = max)
+        public fun nonNegative(description: String? = null, max: Int = Int.MAX_VALUE): IntChatArgument =
+            IntChatArgument(description, min = 0, max = max)
     }
 }
 
-private class ChatShortArgumentImpl(description: String?, min: Short, max: Short) :
-    ChatShortArgument(description, min, max, Dummy)
+private class IntChatArgumentImpl(description: String?, min: Int, max: Int) :
+    IntChatArgument(description, min, max, Dummy)
 
-public fun ChatShortArgument(
+public fun IntChatArgument(
     description: String? = null,
-    min: Short = Short.MIN_VALUE,
-    max: Short = Short.MAX_VALUE,
-): ChatShortArgument = ChatShortArgumentImpl(description, min, max)
+    min: Int = Int.MIN_VALUE,
+    max: Int = Int.MAX_VALUE,
+): IntChatArgument = IntChatArgumentImpl(description, min, max)

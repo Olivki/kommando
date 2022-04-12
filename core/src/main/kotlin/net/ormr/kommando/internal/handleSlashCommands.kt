@@ -37,9 +37,9 @@ import net.ormr.kommando.commands.*
 import net.ormr.kommando.commands.arguments.CommandExecutorArguments
 import net.ormr.kommando.commands.arguments.CommandExecutorArguments.*
 import net.ormr.kommando.commands.arguments.slash.AutoCompleteAction
+import net.ormr.kommando.commands.arguments.slash.DefaultSlashArgument
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
 import net.ormr.kommando.commands.arguments.slash.SlashArgumentWithChoice
-import net.ormr.kommando.commands.arguments.slash.SlashDefaultArgument
 
 internal suspend fun Kommando.handleApplicationCommands() {
     val kommando = this@handleApplicationCommands
@@ -231,7 +231,7 @@ private suspend fun <E : Event, D : CommandData<E>> ApplicationCommand<E, D>.get
     event: ChatInputCommandInteractionCreateEvent,
 ): CommandExecutorArguments = executor?.arguments?.map {
     when (it) {
-        is SlashDefaultArgument<*> -> it.getValueOrCreate(command, event)
+        is DefaultSlashArgument<*> -> it.getValueOrCreate(command, event)
         else -> it.getValue(command)
     }
 }?.toArgs() ?: error("Executor for $this is null for command (id=${command.rootId}, name=${command.rootName})")

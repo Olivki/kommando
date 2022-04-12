@@ -30,7 +30,7 @@ import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 
 private typealias SlashDefaultValueSupplier<T> = suspend ChatInputCommandInteractionCreateEvent.() -> T
 
-public class SlashDefaultArgument<T> internal constructor(
+public class DefaultSlashArgument<T> internal constructor(
     private val argument: SlashArgument<T>,
     private val defaultSupplier: SlashDefaultValueSupplier<T>,
 ) : SlashArgument<T> by argument {
@@ -51,10 +51,10 @@ public class SlashDefaultArgument<T> internal constructor(
     }
 }
 
-public infix fun <T> SlashArgument<T>.default(supplier: SlashDefaultValueSupplier<T>): SlashDefaultArgument<T> {
-    require(this !is SlashDefaultArgument<*>) { "Nesting of default arguments is not allowed." }
-    require(this !is SlashOptionalArgument<*>) { "Optional arguments can't be made default." }
-    return SlashDefaultArgument(this, supplier)
+public infix fun <T> SlashArgument<T>.default(supplier: SlashDefaultValueSupplier<T>): DefaultSlashArgument<T> {
+    require(this !is DefaultSlashArgument<*>) { "Nesting of default arguments is not allowed." }
+    require(this !is OptionalSlashArgument<*>) { "Optional arguments can't be made default." }
+    return DefaultSlashArgument(this, supplier)
 }
 
 @Suppress("unused", "UNUSED_PARAMETER")
@@ -63,7 +63,7 @@ public infix fun <T> SlashArgument<T>.default(supplier: SlashDefaultValueSupplie
     replaceWith = ReplaceWith(""),
     level = DeprecationLevel.ERROR,
 )
-public fun <T> SlashDefaultArgument<T>.default(supplier: SlashDefaultValueSupplier<T>): Nothing =
+public fun <T> DefaultSlashArgument<T>.default(supplier: SlashDefaultValueSupplier<T>): Nothing =
     error("Nesting of default arguments is not allowed.")
 
 @Suppress("unused", "UNUSED_PARAMETER")
@@ -72,5 +72,5 @@ public fun <T> SlashDefaultArgument<T>.default(supplier: SlashDefaultValueSuppli
     replaceWith = ReplaceWith(""),
     level = DeprecationLevel.ERROR,
 )
-public fun <T> SlashOptionalArgument<T>.default(supplier: SlashDefaultValueSupplier<T>): Nothing =
+public fun <T> OptionalSlashArgument<T>.default(supplier: SlashDefaultValueSupplier<T>): Nothing =
     error("Optional arguments can't be made default.")

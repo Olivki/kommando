@@ -24,15 +24,15 @@
 
 package net.ormr.exabot.modules
 
-import net.ormr.kommando.commands.arguments.chat.ChatBooleanArgument
-import net.ormr.kommando.commands.arguments.chat.ChatIntArgument
+import net.ormr.kommando.commands.arguments.chat.BooleanChatArgument
+import net.ormr.kommando.commands.arguments.chat.IntChatArgument
 import net.ormr.kommando.commands.chatGuildCommand
 import net.ormr.kommando.commands.commands
 import net.ormr.kommando.commands.execute
 
 fun chatCommands() = commands("Epic Things") {
     chatGuildCommand("test", "It's a test command.") {
-        execute(ChatIntArgument, ChatBooleanArgument) { (int, bool) ->
+        execute(IntChatArgument, BooleanChatArgument) { (int, bool) ->
             channel.createMessage("stinky lol: $int - $bool")
         }
     }

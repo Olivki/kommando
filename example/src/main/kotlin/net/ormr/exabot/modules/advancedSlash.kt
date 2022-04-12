@@ -25,26 +25,26 @@
 package net.ormr.exabot.modules
 
 import net.ormr.kommando.commands.*
-import net.ormr.kommando.commands.arguments.slash.SlashDoubleArgument
-import net.ormr.kommando.commands.arguments.slash.SlashLongArgument
-import net.ormr.kommando.commands.arguments.slash.SlashStringArgument
+import net.ormr.kommando.commands.arguments.slash.DoubleSlashArgument
+import net.ormr.kommando.commands.arguments.slash.LongSlashArgument
+import net.ormr.kommando.commands.arguments.slash.StringSlashArgument
 import net.ormr.kommando.utils.respondPublic
 
 fun advancedSlash() = commands("Baby!") {
     globalSlashCommand("advanced", "Some more complex/advanced slash commands!") {
         group("type", "Basic group") {
             subCommand("int", "Accepts integers") {
-                execute(SlashLongArgument("value", "It's an integer!")) { (value) ->
+                execute(LongSlashArgument("value", "It's an integer!")) { (value) ->
                     interaction.respondPublic("It's $value")
                 }
             }
             subCommand("double", "Accepts doubles!") {
-                execute(SlashDoubleArgument("value", "It's a double!")) { (value) ->
+                execute(DoubleSlashArgument("value", "It's a double!")) { (value) ->
                     interaction.respondPublic("It's $value")
                 }
             }
             subCommand("string", "Accepts strings!") {
-                execute(SlashStringArgument("value", "It's a string!")) { (value) ->
+                execute(StringSlashArgument("value", "It's a string!")) { (value) ->
                     interaction.respondPublic("It's '$value'")
                 }
             }

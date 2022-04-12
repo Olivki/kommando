@@ -24,34 +24,20 @@
 
 package net.ormr.kommando.commands.arguments.slash
 
+import dev.kord.core.entity.Entity
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
+import dev.kord.rest.builder.interaction.mentionable
 
-public class SlashChoiceArgument<T> internal constructor(
-    private val argument: SlashArgumentWithChoice<T>,
-    private val choices: List<SlashChoice<T>>,
-) : SlashArgument<T> by argument {
+public class MentionableSlashArgument(
+    override val name: String,
+    override val description: String,
+) : SlashArgument<Entity> {
+    override val type: SlashArgumentType.MENTIONABLE
+        get() = SlashArgumentType.MENTIONABLE
+
     override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
-        with(argument) {
-            buildArgumentWithChoices(choices, required)
+        mentionable(name, description) {
+            this.required = true
         }
     }
-}
-
-public typealias SlashChoice<T> = Pair<String, T>
-
-public fun <T> SlashArgumentWithChoice<T>.choices(
-    first: SlashChoice<T>,
-    vararg rest: SlashChoice<T>,
-): SlashChoiceArgument<T> {
-    require(rest.size <= 24) { "Commands can only have 25 choices max, was given ${rest.size} choices." }
-    val choices = buildList(rest.size + 1) {
-        add(first)
-        addAll(rest)
-    }
-    return SlashChoiceArgument(this, choices)
-}
-
-public infix fun <T> SlashArgumentWithChoice<T>.choices(choices: List<SlashChoice<T>>): SlashChoiceArgument<T> {
-    require(choices.size <= 25) { "Commands can only have 25 choices max, was given ${choices.size} choices." }
-    return SlashChoiceArgument(this, choices.toList())
 }

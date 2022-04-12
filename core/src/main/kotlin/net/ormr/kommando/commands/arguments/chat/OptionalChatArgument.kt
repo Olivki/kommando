@@ -25,7 +25,7 @@
 package net.ormr.kommando.commands.arguments.chat
 
 @Suppress("UNCHECKED_CAST")
-public class ChatOptionalArgument<T> internal constructor(
+public class OptionalChatArgument<T> internal constructor(
     private val argument: ChatArgument<T>,
 ) : ChatArgument<T?>("${argument.typeName}?") {
     override val description: String?
@@ -33,6 +33,6 @@ public class ChatOptionalArgument<T> internal constructor(
 }
 
 public fun <T> ChatArgument<T>.optional(): ChatArgument<T?> {
-    require(this !is ChatOptionalArgument<*>) { "Nesting of optional arguments is not allowed." }
-    return ChatOptionalArgument(this)
+    require(this !is OptionalChatArgument<*>) { "Nesting of optional arguments is not allowed." }
+    return OptionalChatArgument(this)
 }

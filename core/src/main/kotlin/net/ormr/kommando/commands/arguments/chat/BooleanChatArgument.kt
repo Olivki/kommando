@@ -22,22 +22,18 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.commands.arguments.slash
+package net.ormr.kommando.commands.arguments.chat
 
-import dev.kord.core.entity.Attachment
-import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import dev.kord.rest.builder.interaction.attachment
+import net.ormr.kommando.utils.Dummy
 
-public class SlashAttachmentArgument(
-    override val name: String,
-    override val description: String,
-) : SlashArgument<Attachment> {
-    override val type: SlashArgumentType.ATTACHMENT
-        get() = SlashArgumentType.ATTACHMENT
-
-    override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
-        attachment(name, description) {
-            this.required = true
-        }
-    }
+@Suppress("UNUSED_PARAMETER")
+public sealed class BooleanChatArgument(
+    override val description: String?,
+    dummy: Dummy,
+) : ChatArgument<Boolean>("Boolean") {
+    public companion object Default : BooleanChatArgument(description = null, Dummy)
 }
+
+private class BooleanChatArgumentImpl(description: String?) : BooleanChatArgument(description, Dummy)
+
+public fun BooleanChatArgument(description: String? = null): BooleanChatArgument = BooleanChatArgumentImpl(description)

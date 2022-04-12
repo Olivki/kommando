@@ -24,20 +24,20 @@
 
 package net.ormr.kommando.commands.arguments.slash
 
-import dev.kord.core.entity.channel.ResolvedChannel
+import dev.kord.core.entity.User
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import dev.kord.rest.builder.interaction.channel
+import dev.kord.rest.builder.interaction.user
 
-public class SlashChannelArgument(
+public class UserSlashArgument(
     override val name: String,
     override val description: String,
-) : SlashArgument<ResolvedChannel> {
-    override val type: SlashArgumentType.CHANNEL
-        get() = SlashArgumentType.CHANNEL
+) : SlashArgument<User> {
+    override val type: SlashArgumentType.USER
+        get() = SlashArgumentType.USER
 
     override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
-        channel(name, description) {
-            this.required = true
+        user(name, description) {
+            this.required = required
         }
     }
 }

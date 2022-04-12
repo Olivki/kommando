@@ -27,7 +27,7 @@ package net.ormr.kommando.commands.arguments.slash
 import dev.kord.core.entity.interaction.InteractionCommand
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 
-public class SlashOptionalArgument<T> internal constructor(
+public class OptionalSlashArgument<T> internal constructor(
     private val argument: SlashArgument<T>,
 ) : SlashArgument<T?> {
     override val type: SlashArgumentType<*>
@@ -48,10 +48,10 @@ public class SlashOptionalArgument<T> internal constructor(
     }
 }
 
-public fun <T> SlashArgument<T>.optional(): SlashOptionalArgument<T> {
-    require(this !is SlashOptionalArgument<*>) { "Nesting of optional arguments is not allowed." }
-    require(this !is SlashDefaultArgument<*>) { "Default arguments can't be made optional." }
-    return SlashOptionalArgument(this)
+public fun <T> SlashArgument<T>.optional(): OptionalSlashArgument<T> {
+    require(this !is OptionalSlashArgument<*>) { "Nesting of optional arguments is not allowed." }
+    require(this !is DefaultSlashArgument<*>) { "Default arguments can't be made optional." }
+    return OptionalSlashArgument(this)
 }
 
 @Suppress("unused")
@@ -60,7 +60,7 @@ public fun <T> SlashArgument<T>.optional(): SlashOptionalArgument<T> {
     replaceWith = ReplaceWith(""),
     level = DeprecationLevel.ERROR,
 )
-public fun SlashOptionalArgument<*>.optional(): Nothing = error("Nesting of optional arguments is not allowed.")
+public fun OptionalSlashArgument<*>.optional(): Nothing = error("Nesting of optional arguments is not allowed.")
 
 @Suppress("unused")
 @Deprecated(
@@ -68,4 +68,4 @@ public fun SlashOptionalArgument<*>.optional(): Nothing = error("Nesting of opti
     replaceWith = ReplaceWith(""),
     level = DeprecationLevel.ERROR,
 )
-public fun SlashDefaultArgument<*>.optional(): Nothing = error("Default arguments can't be made optional.")
+public fun DefaultSlashArgument<*>.optional(): Nothing = error("Default arguments can't be made optional.")

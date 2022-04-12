@@ -24,30 +24,20 @@
 
 package net.ormr.kommando.commands.arguments.slash
 
+import dev.kord.core.entity.Role
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import dev.kord.rest.builder.interaction.int
+import dev.kord.rest.builder.interaction.role
 
-// TODO: kord doesn't actually allow us to set min/max values for integers and doubles yet, at least not via the api
-//       that we're making use of
-public class SlashLongArgument(
+public class RoleSlashArgument(
     override val name: String,
     override val description: String,
-    override val autoComplete: AutoCompleteAction? = null,
-) : SlashArgumentWithChoice<Long> {
-    override val type: SlashArgumentType.LONG
-        get() = SlashArgumentType.LONG
+) : SlashArgument<Role> {
+    override val type: SlashArgumentType.ROLE
+        get() = SlashArgumentType.ROLE
 
     override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
-        int(name, description) {
-            this.autocomplete = autoComplete != null
-            this.required = required
-        }
-    }
-
-    override fun BaseInputChatBuilder.buildArgumentWithChoices(choices: List<SlashChoice<Long>>, required: Boolean) {
-        int(name, description) {
-            this.required = required
-            for ((name, value) in choices) choice(name, value)
+        role(name, description) {
+            this.required = true
         }
     }
 }

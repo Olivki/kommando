@@ -25,8 +25,8 @@
 package net.ormr.exabot.modules
 
 import dev.kord.common.entity.Snowflake
-import net.ormr.kommando.commands.arguments.slash.SlashLongArgument
-import net.ormr.kommando.commands.arguments.slash.SlashStringArgument
+import net.ormr.kommando.commands.arguments.slash.LongSlashArgument
+import net.ormr.kommando.commands.arguments.slash.StringSlashArgument
 import net.ormr.kommando.commands.arguments.slash.default
 import net.ormr.kommando.commands.arguments.slash.optional
 import net.ormr.kommando.commands.commands
@@ -38,9 +38,9 @@ import net.ormr.kommando.utils.respondEphemeral
 fun optionalCommand(@Tag guildId: Snowflake) = commands("Optionals") {
     guildSlashCommand("optional", "A command with optional arguments", guildId) {
         execute(
-            SlashStringArgument("not_optional", "A non optional argument."),
-            SlashLongArgument("long", "A long!!"),
-            SlashStringArgument("optional", "An optional argument.").optional(),
+            StringSlashArgument("not_optional", "A non optional argument."),
+            LongSlashArgument("long", "A long!!"),
+            StringSlashArgument("optional", "An optional argument.").optional(),
         ) { (nonOptional, long, optional) ->
             interaction.respondEphemeral("Non-Optional: '$nonOptional' - Optional: '$optional', Long: $long")
         }
@@ -48,8 +48,8 @@ fun optionalCommand(@Tag guildId: Snowflake) = commands("Optionals") {
 
     guildSlashCommand("default", "A command with default arguments.", guildId) {
         execute(
-            SlashStringArgument("not_default", "A non default argument."),
-            SlashStringArgument("default", "A default argument.") default { "hello" },
+            StringSlashArgument("not_default", "A non default argument."),
+            StringSlashArgument("default", "A default argument.") default { "hello" },
         ) { (notDefault, default) ->
             interaction.respondEphemeral("Not-Default: '$notDefault' - Default: '$default'")
         }

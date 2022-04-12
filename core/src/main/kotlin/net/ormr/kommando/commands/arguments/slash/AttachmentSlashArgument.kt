@@ -24,18 +24,19 @@
 
 package net.ormr.kommando.commands.arguments.slash
 
+import dev.kord.core.entity.Attachment
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import dev.kord.rest.builder.interaction.boolean
+import dev.kord.rest.builder.interaction.attachment
 
-public class SlashBooleanArgument(
+public class AttachmentSlashArgument(
     override val name: String,
     override val description: String,
-) : SlashArgument<Boolean> {
-    override val type: SlashArgumentType.BOOLEAN
-        get() = SlashArgumentType.BOOLEAN
+) : SlashArgument<Attachment> {
+    override val type: SlashArgumentType.ATTACHMENT
+        get() = SlashArgumentType.ATTACHMENT
 
     override fun BaseInputChatBuilder.buildArgument(required: Boolean) {
-        boolean(name, description) {
+        attachment(name, description) {
             this.required = true
         }
     }
