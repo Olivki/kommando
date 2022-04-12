@@ -29,6 +29,8 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 internal typealias GlobalSlashEvent = ChatInputCommandInteractionCreateEvent
 internal typealias GlobalSlashInteraction = ChatInputCommandInteraction
@@ -76,5 +78,9 @@ public inline fun CommandGroupBuilder.globalSlashCommand(
     description: String,
     builder: GlobalSlashCommandBuilder.() -> Unit,
 ) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     addCommand(GlobalSlashCommandBuilder(name, description).apply(builder).build(category))
 }

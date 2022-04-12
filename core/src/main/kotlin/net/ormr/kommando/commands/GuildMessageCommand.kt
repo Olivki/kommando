@@ -32,6 +32,8 @@ import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.slash.MentionableSlashArgument
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 private typealias GuildMessageEvent = GuildMessageCommandInteractionCreateEvent
 
@@ -76,5 +78,9 @@ public inline fun CommandGroupBuilder.guildMessageCommand(
     guildId: Snowflake,
     builder: GuildMessageCommandBuilder.() -> Unit,
 ) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     addCommand(GuildMessageCommandBuilder(name, guildId).apply(builder).build(category))
 }

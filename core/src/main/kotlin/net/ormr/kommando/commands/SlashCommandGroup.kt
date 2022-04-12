@@ -25,6 +25,8 @@
 package net.ormr.kommando.commands
 
 import net.ormr.kommando.KommandoDsl
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 public data class SlashCommandGroup<S : SlashSubCommand<*, *>>(
     public val name: String,
@@ -54,5 +56,9 @@ public inline fun <S : SlashSubCommand<*, *>> SlashCommandBuilder<*, S, *, *>.gr
     description: String,
     builder: SlashCommandGroupBuilder<S>.() -> Unit,
 ) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     addGroup(SlashCommandGroupBuilder<S>(name, description).apply(builder).build())
 }

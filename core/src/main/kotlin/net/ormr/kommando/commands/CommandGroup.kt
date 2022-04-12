@@ -25,6 +25,8 @@
 package net.ormr.kommando.commands
 
 import net.ormr.kommando.KommandoDsl
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 public data class CommandGroup(public val category: String, public val commands: List<Command>)
 
@@ -41,5 +43,10 @@ public class CommandGroupBuilder @PublishedApi internal constructor(@PublishedAp
 }
 
 @KommandoDsl
-public inline fun commands(category: String, builder: CommandGroupBuilder.() -> Unit): CommandGroup =
-    CommandGroupBuilder(category).apply(builder).build()
+public inline fun commands(category: String, builder: CommandGroupBuilder.() -> Unit): CommandGroup {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
+    return CommandGroupBuilder(category).apply(builder).build()
+}

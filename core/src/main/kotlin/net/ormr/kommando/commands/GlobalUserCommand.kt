@@ -31,6 +31,8 @@ import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.slash.UserSlashArgument
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 private typealias GlobalUserEvent = UserCommandInteractionCreateEvent
 
@@ -70,5 +72,9 @@ public fun CommandGroupBuilder.globalUserCommand(
     name: String,
     builder: GlobalUserCommandBuilder.() -> Unit,
 ) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     addCommand(GlobalUserCommandBuilder(name).apply(builder).build(category))
 }

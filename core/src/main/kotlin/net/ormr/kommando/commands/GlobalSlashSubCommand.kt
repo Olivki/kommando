@@ -26,6 +26,8 @@ package net.ormr.kommando.commands
 
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 public data class GlobalSlashSubCommand(
     override val category: String,
@@ -63,6 +65,10 @@ context(CommandGroupBuilder)
     description: String,
     builder: GlobalSlashSubCommandBuilder.() -> Unit,
 ) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     val category = this@CommandGroupBuilder.category
     addSubCommand(GlobalSlashSubCommandBuilder(name, description).apply(builder).build(category))
 }
@@ -74,6 +80,10 @@ context(CommandGroupBuilder)
     description: String,
     builder: GlobalSlashSubCommandBuilder.() -> Unit,
 ) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     val category = this@CommandGroupBuilder.category
     addSubCommand(GlobalSlashSubCommandBuilder(name, description).apply(builder).build(category))
 }

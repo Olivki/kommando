@@ -32,6 +32,8 @@ import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.event.message.MessageCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 public data class ChatGuildCommand(
     override val category: String,
@@ -81,5 +83,9 @@ public inline fun CommandGroupBuilder.chatGuildCommand(
     description: String,
     builder: ChatGuildCommandBuilder.() -> Unit,
 ) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     addCommand(ChatGuildCommandBuilder(name, description).apply(builder).build(category))
 }

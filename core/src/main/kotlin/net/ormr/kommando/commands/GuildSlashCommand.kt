@@ -32,6 +32,8 @@ import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEve
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 internal typealias GuildSlashEvent = GuildChatInputCommandInteractionCreateEvent
 internal typealias GuildSlashInteraction = GuildChatInputCommandInteraction
@@ -88,5 +90,9 @@ public inline fun CommandGroupBuilder.guildSlashCommand(
     guildId: Snowflake,
     builder: GuildSlashCommandBuilder.() -> Unit,
 ) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     addCommand(GuildSlashCommandBuilder(name, description, guildId).apply(builder).build(category))
 }

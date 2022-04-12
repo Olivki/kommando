@@ -27,6 +27,8 @@ package net.ormr.kommando.commands
 import dev.kord.common.entity.Snowflake
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 public data class GuildSlashSubCommand(
     override val category: String,
@@ -67,6 +69,10 @@ context(CommandGroupBuilder)
     description: String,
     builder: GuildSlashSubCommandBuilder.() -> Unit,
 ) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     val category = this@CommandGroupBuilder.category
     addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build(category))
 }
@@ -78,6 +84,10 @@ context(CommandGroupBuilder, GuildSlashCommandBuilder)
     description: String,
     builder: GuildSlashSubCommandBuilder.() -> Unit,
 ) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     val category = this@CommandGroupBuilder.category
     val guildId = this@GuildSlashCommandBuilder.guildId
     addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build(category))
@@ -91,6 +101,10 @@ context(CommandGroupBuilder)
     guildId: Snowflake,
     builder: GuildSlashSubCommandBuilder.() -> Unit,
 ) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     val category = this@CommandGroupBuilder.category
     addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build(category))
 }
