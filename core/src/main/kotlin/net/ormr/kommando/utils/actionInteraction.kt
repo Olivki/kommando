@@ -28,8 +28,9 @@ import dev.kord.common.entity.MessageFlag
 import dev.kord.core.behavior.interaction.ActionInteractionBehavior
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
-import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.*
+import dev.kord.core.entity.interaction.followup.EphemeralFollowupMessage
+import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
 
 /**
  * Responds to the interaction with a public [message].
@@ -42,3 +43,15 @@ public suspend fun ActionInteractionBehavior.respondPublic(message: String): Pub
  */
 public suspend fun ActionInteractionBehavior.respondEphemeral(message: String): EphemeralMessageInteractionResponseBehavior =
     respondEphemeral { content = message }
+
+/**
+ * Follows up an interaction response by sending a public [message].
+ */
+public suspend fun FollowupPermittingInteractionResponseBehavior.createPublicFollowup(message: String): PublicFollowupMessage =
+    createPublicFollowup { content = message }
+
+/**
+ * Follows up an interaction response by sending an [ephemeral][MessageFlag.Ephemeral] [message].
+ */
+public suspend fun FollowupPermittingInteractionResponseBehavior.createEphemeralFollowup(message: String): EphemeralFollowupMessage =
+    createEphemeralFollowup { content = message }
