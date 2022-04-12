@@ -37,4 +37,9 @@ public interface Storage<K : Any, out V : Any> {
      * Returns `true` if [key] stores a value, otherwise `false`.
      */
     public operator fun contains(key: K): Boolean
+
+    /**
+     * Returns `true` if this storage has no entries, otherwise `false`.
+     */
+    public fun isEmpty(): Boolean
 }

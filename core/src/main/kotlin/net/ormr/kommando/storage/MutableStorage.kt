@@ -37,4 +37,9 @@ public interface MutableStorage<K : Any, V : Any> : Storage<K, V> {
      * Removes the value stored under the given [key].
      */
     public fun remove(key: K)
+
+    /**
+     * Removes all values from this storage.
+     */
+    public fun clear()
 }

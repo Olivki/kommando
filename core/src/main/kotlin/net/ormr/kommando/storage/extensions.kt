@@ -25,6 +25,11 @@
 package net.ormr.kommando.storage
 
 /**
+ * Returns `true` if this storage has entries, otherwise `false`.
+ */
+public fun <K : Any, V : Any> Storage<K, V>.isNotEmpty(): Boolean = !isEmpty()
+
+/**
  * Stores the given [value] in this storage under the given [key].
  */
 public operator fun <K : Any, V : Any> MutableStorage<K, V>.set(key: K, value: V) {
