@@ -48,6 +48,8 @@ import net.ormr.kommando.structures.EventListener
 import net.ormr.kommando.structures.MessageFilter
 import net.ormr.kommando.structures.messageFilter
 import org.kodein.di.*
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
@@ -210,6 +212,11 @@ public suspend inline fun bot(
     crossinline di: DI.MainBuilder.() -> Unit,
     builder: KommandoBuilder.() -> Unit,
 ) {
+    contract {
+        callsInPlace(presence, InvocationKind.EXACTLY_ONCE)
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     bot(Kord(token), intents, presence, di, builder)
 }
 
@@ -221,6 +228,11 @@ public suspend inline fun bot(
     crossinline di: DI.MainBuilder.() -> Unit,
     builder: KommandoBuilder.() -> Unit,
 ) {
+    contract {
+        callsInPlace(presence, InvocationKind.EXACTLY_ONCE)
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     val kodein = DI.direct {
         bindSingleton { kord }
         di()
