@@ -76,12 +76,12 @@ internal class KommandoProcessor(
         if (modules.isEmpty()) return emptyList()
 
         val (toInject, kommandoTypes) = segregateTypes(modules)
-        FileSpec.builder(packageName, fileName)
+        val file = FileSpec.builder(packageName, fileName)
             .addImport("org.kodein.di", "instance")
             .addFunction(buildKodeinSetup(toInject))
             .addFunction(buildKommandoBuilder(kommandoTypes))
             .build()
-            .writeTo(codeGenerator, Dependencies(aggregating = true, *modules.map { it.file }.toTypedArray()))
+        file.writeTo(codeGenerator, Dependencies(aggregating = true, *modules.map { it.file }.toTypedArray()))
 
         return emptyList()
     }
@@ -180,6 +180,7 @@ internal class KommandoProcessor(
                 .toList()
             ModuleFile(file, nodes)
         }
+        .filter { it.nodes.isNotEmpty() }
 
     private fun Sequence<KSDeclaration>.mapToTypedNodes(): Sequence<TypedNode> =
         mapNotNull { node -> node.accept(ReturnTypeVisitor, logger)?.let { TypedNode(it, node) } }
