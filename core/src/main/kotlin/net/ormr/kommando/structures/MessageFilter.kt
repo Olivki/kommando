@@ -27,6 +27,8 @@ package net.ormr.kommando.structures
 import dev.kord.core.event.message.MessageCreateEvent
 import net.ormr.kommando.KommandoDsl
 
+// TODO: adding 'context(Kommando)' to this fails the compilation of 'Kommando', add it whenever context receivers are
+//       more stable
 private typealias MessagePredicate = suspend MessageCreateEvent.() -> Boolean
 
 public class MessageFilter internal constructor(public val predicate: MessagePredicate) {
