@@ -133,6 +133,7 @@ internal class KommandoProcessor(
                     .mapToTypedNodes()
                     .filter { (type, _) -> type.isKommandoType() }
                     .filter { (_, node) -> node.accept(BindingsSanityVerifier, logger) }
+                    .filter { (type, node) -> node.accept(NullabilityVerifier, NullabilityPayload(logger, type)) }
                     .toList()
                 ModuleFile(file, nodes)
             }
@@ -148,6 +149,7 @@ internal class KommandoProcessor(
             .filter { it.accept(BindingsSanityVerifier, logger) }
             .filterIsInstance<KSDeclaration>()
             .mapToTypedNodes()
+            .filter { (type, node) -> node.accept(NullabilityVerifier, NullabilityPayload(logger, type)) }
             .onEach { (type, node) ->
                 if (node is KSPropertyDeclaration && !type.isKommandoType()) {
                     logger.warn("Try to avoid @Include on properties for injection purposes.", node)
@@ -175,6 +177,7 @@ internal class KommandoProcessor(
                 .mapToTypedNodes()
                 .filter { (type, _) -> type.isKommandoType() }
                 .filter { (_, node) -> node.accept(BindingsSanityVerifier, logger) }
+                .filter { (type, node) -> node.accept(NullabilityVerifier, NullabilityPayload(logger, type)) }
                 .onEach { (_, node) -> logger.info("Found node via auto-search.", node) }
                 .toList()
             ModuleFile(file, nodes)
@@ -403,6 +406,35 @@ private object BindingsSanityVerifier : KSDefaultVisitor<KSPLogger, Boolean>() {
         }
         return isValid
     }
+}
+
+private data class NullabilityPayload(val logger: KSPLogger, val type: KSType)
+
+private object NullabilityVerifier : KSDefaultVisitor<NullabilityPayload, Boolean>() {
+    override fun defaultHandler(node: KSNode, data: NullabilityPayload): Boolean = false
+
+    private fun isValid(name: String, data: NullabilityPayload, symbol: KSNode): Boolean =
+        when (data.type.nullability) {
+            Nullability.NULLABLE -> {
+                data.logger.error("$name bindings type can't be nullable.", symbol)
+                false
+            }
+            Nullability.NOT_NULL -> true
+            Nullability.PLATFORM -> {
+                data.logger.error("$name bindings type can't be platform type.", symbol)
+                false
+            }
+        }
+
+    override fun visitFunctionDeclaration(function: KSFunctionDeclaration, data: NullabilityPayload): Boolean =
+        isValid("Function", data, function)
+
+    override fun visitPropertyDeclaration(property: KSPropertyDeclaration, data: NullabilityPayload): Boolean =
+        isValid("Property", data, property)
+
+    // this should basically never happen, but y'know
+    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: NullabilityPayload): Boolean =
+        isValid("Class", data, classDeclaration)
 }
 
 private object ReturnTypeVisitor : KSDefaultVisitor<KSPLogger, KSType?>() {
