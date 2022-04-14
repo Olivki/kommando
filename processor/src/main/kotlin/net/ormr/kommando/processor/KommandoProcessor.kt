@@ -60,8 +60,7 @@ private enum class KommandoType(val clazz: KClass<*>, val collectionName: String
     }
 }
 
-// TODO: allow an option for just automatically finding all kommando type functions/properties and binding them without
-//       the use of any annotations?
+// TODO: injection might be a bit sus for things that have generics?
 internal class KommandoProcessor(
     private val packageName: String,
     private val fileName: String,
@@ -202,7 +201,7 @@ private fun FunSpec.Builder.addInstanceParameters(parameters: List<KSValueParame
 private fun KSDeclaration.asClassName(): ClassName = ClassName(packageName.asString(), simpleName.asString())
 
 @OptIn(KspExperimental::class)
-private fun KSAnnotated.getBindingTagOrNull(): String? = getAnnotationsByType(Tag::class).firstOrNull()?.value
+private fun KSAnnotated.getBindingTagOrNull(): String? = getAnnotationsByType(BindingTag::class).firstOrNull()?.value
 
 @OptIn(KspExperimental::class)
 private fun KSAnnotated.getTagOrNull(): String? = getAnnotationsByType(Tag::class).firstOrNull()?.value
@@ -263,6 +262,23 @@ private object KodeinSingletonStatementBuilder : KSDefaultVisitor<FunSpec.Builde
             else -> data.addStatement("%T(tag = %S) { %T }", BIND_SINGLETON, tag, type)
         }
     }
+
+    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: FunSpec.Builder) {
+        val type = classDeclaration.asClassName()
+        val constructor = classDeclaration.primaryConstructor ?: error("Class binding has no primary constructor.")
+        when (val tag = classDeclaration.getBindingTagOrNull()) {
+            null -> {
+                data.addCode("%T { %T(", BIND_SINGLETON, type)
+                data.addInstanceParameters(constructor.parameters)
+                data.addStatement(") }")
+            }
+            else -> {
+                data.addCode("%T(tag = %S) { %T(", BIND_SINGLETON, tag, type)
+                data.addInstanceParameters(constructor.parameters)
+                data.addStatement(") }")
+            }
+        }
+    }
 }
 
 private object KommandoStatementBuilder : KSDefaultVisitor<FunSpec.Builder, Unit>() {
@@ -316,6 +332,45 @@ private object StandaloneBindingsVerifier : KSDefaultVisitor<KSPLogger, Boolean>
         }
         return isValid
     }
+
+    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: KSPLogger): Boolean {
+        var isValid = true
+        if (classDeclaration.classKind != ClassKind.CLASS) {
+            data.error("Class bindings can only be 'class', was '${classDeclaration.classKind}'.", classDeclaration)
+            isValid = false
+        }
+        if (!classDeclaration.isVisibleForInjection()) {
+            data.error("Class bindings must be public or internal.", classDeclaration)
+            isValid = false
+        }
+        if (classDeclaration.isAbstract()) {
+            data.error("Class bindings must not be abstract.", classDeclaration)
+            isValid = false
+        }
+        if (classDeclaration.isCompanionObject) {
+            data.error("Class bindings are not allowed to be companion objects.", classDeclaration)
+            isValid = false
+        }
+        when (val constructor = classDeclaration.primaryConstructor) {
+            null -> {
+                data.error("Class bindings must have a primary constructor.", classDeclaration)
+                isValid = false
+            }
+            else -> {
+                if (!constructor.isVisibleForInjection()) {
+                    data.error("Class bindings constructor must be public or internal.", constructor)
+                    isValid = false
+                }
+
+                for (parameter in constructor.parameters) {
+                    if (parameter.hasDefault) {
+                        data.warn("Default parameters of class bindings constructor will always be filled.", parameter)
+                    }
+                }
+            }
+        }
+        return isValid
+    }
 }
 
 private object BindingsSanityVerifier : KSDefaultVisitor<KSPLogger, Boolean>() {
@@ -334,6 +389,20 @@ private object BindingsSanityVerifier : KSDefaultVisitor<KSPLogger, Boolean>() {
     }
 
     override fun visitPropertyDeclaration(property: KSPropertyDeclaration, data: KSPLogger): Boolean = true
+
+    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: KSPLogger): Boolean {
+        var isValid = true
+        // this verifier should never be run before 'StandAloneBindingsVerifier' and a non-standalone bindings shouldn't
+        // be able to be a class, so this should be safe to do unless something has gone wrong
+        for (parameter in classDeclaration.primaryConstructor!!.parameters) {
+            val tag = parameter.getTagOrNull()
+            if (tag != null && tag.isEmpty() && parameter.name == null) {
+                data.error("'value' on @Tag needs to be defined when parameter name is missing.", parameter)
+                isValid = false
+            }
+        }
+        return isValid
+    }
 }
 
 private object ReturnTypeVisitor : KSDefaultVisitor<KSPLogger, KSType?>() {
@@ -352,4 +421,7 @@ private object ReturnTypeVisitor : KSDefaultVisitor<KSPLogger, KSType?>() {
         property: KSPropertyDeclaration,
         data: KSPLogger,
     ): KSType = property.type.resolve()
+
+    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: KSPLogger): KSType =
+        classDeclaration.asStarProjectedType()
 }

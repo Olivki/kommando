@@ -47,7 +47,7 @@ internal const val INCLUDE = "net.ormr.kommando.processor.Include"
  * the DI block. This annotation is only for meant for *very simple* usage when used for DI binding purposes.
  */
 @Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
 public annotation class Include
 
 internal const val EXCLUDE = "net.ormr.kommando.processor.Exclude"
