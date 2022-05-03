@@ -30,7 +30,7 @@ import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 
 @AutoService(SymbolProcessorProvider::class)
-internal class KommandoProcessProvider : SymbolProcessorProvider {
+internal class KommandoProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor = environment.run {
         val packageName = options.getOrDefault("kommando.packageName", "net.ormr.kommando.generated")
         val fileName = options.getOrDefault("kommando.fileName", "GeneratedKommandoSetup")
