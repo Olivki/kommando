@@ -36,7 +36,7 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 internal typealias GuildSlashEvent = GuildChatInputCommandInteractionCreateEvent
-internal typealias GuildSlashInteraction = GuildChatInputCommandInteraction
+public typealias GuildSlashInteraction = GuildChatInputCommandInteraction
 
 public data class GuildSlashCommand(
     override val category: String,
