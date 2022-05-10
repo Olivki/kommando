@@ -22,6 +22,13 @@
  * SOFTWARE.
  */
 
-include("core", "processor", "example", "humbaba")
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenLocal()
+    }
+}
+
+include("core", "processor", "example", "humbaba", "gradle-plugin")
 
 rootProject.name = "kommando"
