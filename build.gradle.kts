@@ -66,7 +66,6 @@ subprojects {
                 jvmTarget = "17"
                 freeCompilerArgs = freeCompilerArgs + listOf(
                     "-opt-in=kotlin.RequiresOptIn",
-                    "-Xcontext-receivers",
                     "-opt-in=kotlin.contracts.ExperimentalContracts",
                 )
             }

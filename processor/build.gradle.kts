@@ -35,3 +35,11 @@ dependencies {
     kapt("com.google.auto.service:auto-service:1.0.1")
     compileOnly("com.google.auto.service:auto-service:1.0.1")
 }
+
+tasks {
+    compileKotlin {
+        kotlinOptions {
+            freeCompilerArgs = freeCompilerArgs + listOf("-Xcontext-receivers")
+        }
+    }
+}
