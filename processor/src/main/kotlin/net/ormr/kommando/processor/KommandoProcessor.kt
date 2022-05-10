@@ -75,12 +75,12 @@ internal class KommandoProcessor(
         if (modules.isEmpty()) return emptyList()
 
         val (toInject, kommandoTypes) = segregateTypes(modules)
-        val file = FileSpec.builder(packageName, fileName)
+        FileSpec.builder(packageName, fileName)
             .addImport("org.kodein.di", "instance")
             .addFunction(buildKodeinSetup(toInject))
             .addFunction(buildKommandoBuilder(kommandoTypes))
             .build()
-        file.writeTo(codeGenerator, Dependencies(aggregating = true, *modules.map { it.file }.toTypedArray()))
+            .writeTo(codeGenerator, Dependencies(aggregating = true, *modules.map { it.file }.toTypedArray()))
 
         return emptyList()
     }
