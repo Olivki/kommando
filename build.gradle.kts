@@ -30,6 +30,7 @@ plugins {
 val kotestVersion: String by project
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -40,6 +41,7 @@ subprojects {
     group = "net.ormr.kommando"
 
     repositories {
+        mavenLocal()
         mavenCentral()
     }
 
