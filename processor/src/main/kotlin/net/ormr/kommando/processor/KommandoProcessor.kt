@@ -36,6 +36,7 @@ import net.ormr.kommando.commands.CommandContainer
 import net.ormr.kommando.structures.EventListener
 import net.ormr.kommando.structures.MessageFilter
 import org.kodein.di.DI
+import java.nio.ByteBuffer
 import kotlin.reflect.KClass
 
 private val DI_MAIN_BUILDER = DI.MainBuilder::class.asClassName()
@@ -80,7 +81,24 @@ internal class KommandoProcessor(
             .build()
             .writeTo(codeGenerator, Dependencies(aggregating = true, *modules.map { it.file }.toTypedArray()))
 
+        writeMetadataFile("$packageName.${fileName}Kt", "setupDI", "setupKommando")
+
         return emptyList()
+    }
+
+    private fun writeMetadataFile(vararg values: String) {
+        val encodedValues = values.map { it.toByteArray() }
+        val size = encodedValues.fold(0) { acc, value -> acc + (Int.SIZE_BYTES + value.size) }
+        val bytes = ByteArray(size)
+        val buffer = ByteBuffer.wrap(bytes)
+        for (value in encodedValues) {
+            buffer.putInt(value.size)
+            buffer.put(value)
+        }
+
+        codeGenerator.createNewFile(Dependencies(aggregating = false), "", ".kommando_processor_metadata", "").use {
+            it.write(bytes)
+        }
     }
 
     private fun buildKodeinSetup(
