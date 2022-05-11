@@ -41,7 +41,7 @@ public data class GlobalSlashCommand(
     override val defaultApplicationPermission: Boolean,
     override val applicationPermissions: ApplicationCommandPermissions?,
     override val executor: ApplicationCommandExecutor<GlobalSlashEvent, GlobalSlashCommandData>?,
-    override val groups: Map<String, SlashCommandGroup<GlobalSlashSubCommand>>,
+    override val groups: Map<String, GlobalSlashCommandGroup>,
     override val subCommands: Map<String, GlobalSlashSubCommand>,
 ) : SlashCommand<GlobalSlashEvent, GlobalSlashCommandData, GlobalSlashSubCommand>, GlobalApplicationCommand
 
@@ -57,7 +57,7 @@ public data class GlobalSlashCommandData(
 public class GlobalSlashCommandBuilder @PublishedApi internal constructor(
     private val name: String,
     private val description: String,
-) : SlashCommandBuilder<GlobalSlashCommand, GlobalSlashSubCommand, GlobalSlashEvent, GlobalSlashCommandData>() {
+) : SlashCommandBuilder<GlobalSlashCommand, GlobalSlashSubCommand, GlobalSlashCommandGroup, GlobalSlashEvent, GlobalSlashCommandData>() {
     @PublishedApi
     override fun build(): GlobalSlashCommand = GlobalSlashCommand(
         name = name,

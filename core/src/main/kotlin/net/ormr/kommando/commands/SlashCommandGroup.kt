@@ -24,22 +24,33 @@
 
 package net.ormr.kommando.commands
 
+import dev.kord.common.entity.Snowflake
 import net.ormr.kommando.KommandoDsl
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-public data class SlashCommandGroup<S : SlashSubCommand<*, *>>(
-    public val name: String,
-    public val description: String,
-    public val subCommands: Map<String, S>,
-)
+public sealed class SlashCommandGroup<S : SlashSubCommand<*, *>> {
+    public abstract val name: String
+    public abstract val description: String
+    public abstract val subCommands: Map<String, S>
+}
+
+public data class GlobalSlashCommandGroup(
+    override val name: String,
+    override val description: String,
+    override val subCommands: Map<String, GlobalSlashSubCommand>,
+) : SlashCommandGroup<GlobalSlashSubCommand>()
+
+public data class GuildSlashCommandGroup(
+    override val name: String,
+    override val description: String,
+    override val subCommands: Map<String, GuildSlashSubCommand>,
+    public val guildId: Snowflake,
+) : SlashCommandGroup<GuildSlashSubCommand>()
 
 @KommandoDsl
-public class SlashCommandGroupBuilder<S : SlashSubCommand<*, *>> @PublishedApi internal constructor(
-    private val name: String,
-    private val description: String,
-) {
-    private val subCommands: MutableMap<String, S> = hashMapOf()
+public sealed class SlashCommandGroupBuilder<S : SlashSubCommand<*, *>, G : SlashCommandGroup<S>> {
+    protected val subCommands: MutableMap<String, S> = hashMapOf()
 
     @PublishedApi
     internal fun addSubCommand(subCommand: S) {
@@ -47,18 +58,51 @@ public class SlashCommandGroupBuilder<S : SlashSubCommand<*, *>> @PublishedApi i
     }
 
     @PublishedApi
-    internal fun build(): SlashCommandGroup<S> = SlashCommandGroup(name, description, subCommands.toMap())
+    internal abstract fun build(): G
 }
 
 @KommandoDsl
-public inline fun <S : SlashSubCommand<*, *>> SlashCommandBuilder<*, S, *, *>.group(
+public class GlobalSlashCommandGroupBuilder @PublishedApi internal constructor(
+    private val name: String,
+    private val description: String,
+) : SlashCommandGroupBuilder<GlobalSlashSubCommand, GlobalSlashCommandGroup>() {
+    @PublishedApi
+    override fun build(): GlobalSlashCommandGroup = GlobalSlashCommandGroup(name, description, subCommands.toMap())
+}
+
+@KommandoDsl
+public class GuildSlashCommandGroupBuilder @PublishedApi internal constructor(
+    private val name: String,
+    private val description: String,
+    @PublishedApi internal val guildId: Snowflake,
+) : SlashCommandGroupBuilder<GuildSlashSubCommand, GuildSlashCommandGroup>() {
+    @PublishedApi
+    override fun build(): GuildSlashCommandGroup =
+        GuildSlashCommandGroup(name, description, subCommands.toMap(), guildId)
+}
+
+@KommandoDsl
+public inline fun GlobalSlashCommandBuilder.group(
     name: String,
     description: String,
-    builder: SlashCommandGroupBuilder<S>.() -> Unit,
+    builder: GlobalSlashCommandGroupBuilder.() -> Unit,
 ) {
     contract {
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    addGroup(SlashCommandGroupBuilder<S>(name, description, ).apply(builder).build())
+    addGroup(GlobalSlashCommandGroupBuilder(name, description).apply(builder).build())
+}
+
+@KommandoDsl
+public inline fun GuildSlashCommandBuilder.group(
+    name: String,
+    description: String,
+    builder: GuildSlashCommandGroupBuilder.() -> Unit,
+) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
+    addGroup(GuildSlashCommandGroupBuilder(name, description, guildId).apply(builder).build())
 }

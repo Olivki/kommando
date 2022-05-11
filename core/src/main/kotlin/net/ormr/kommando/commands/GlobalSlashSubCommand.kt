@@ -72,7 +72,7 @@ context(CommandContainerBuilder)
 
 context(CommandContainerBuilder)
         @KommandoDsl
-        public inline fun SlashCommandGroupBuilder<GlobalSlashSubCommand>.subCommand(
+        public inline fun GlobalSlashCommandGroupBuilder.subCommand(
     name: String,
     description: String,
     builder: GlobalSlashSubCommandBuilder.() -> Unit,

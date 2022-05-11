@@ -44,7 +44,7 @@ public data class GuildSlashCommand(
     override val defaultApplicationPermission: Boolean,
     override val applicationPermissions: ApplicationCommandPermissions?,
     override val executor: ApplicationCommandExecutor<GuildSlashEvent, GuildSlashCommandData>?,
-    override val groups: Map<String, SlashCommandGroup<GuildSlashSubCommand>>,
+    override val groups: Map<String, GuildSlashCommandGroup>,
     override val subCommands: Map<String, GuildSlashSubCommand>,
     override val guildId: Snowflake,
 ) : SlashCommand<GuildSlashEvent, GuildSlashCommandData, GuildSlashSubCommand>, GuildApplicationCommand
@@ -67,7 +67,7 @@ public class GuildSlashCommandBuilder @PublishedApi internal constructor(
     private val name: String,
     private val description: String,
     @PublishedApi internal val guildId: Snowflake,
-) : SlashCommandBuilder<GuildSlashCommand, GuildSlashSubCommand, GuildSlashEvent, GuildSlashCommandData>() {
+) : SlashCommandBuilder<GuildSlashCommand, GuildSlashSubCommand, GuildSlashCommandGroup, GuildSlashEvent, GuildSlashCommandData>() {
     @PublishedApi
     override fun build(): GuildSlashCommand = GuildSlashCommand(
         name = name,
@@ -75,7 +75,7 @@ public class GuildSlashCommandBuilder @PublishedApi internal constructor(
         defaultApplicationPermission = defaultApplicationPermission,
         applicationPermissions = applicationPermissions,
         executor = getExecutorSafe(),
-        groups = groups,
+        groups = groups.toMap(),
         subCommands = subCommands,
         guildId = guildId,
     )

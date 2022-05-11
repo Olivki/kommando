@@ -76,7 +76,7 @@ context(CommandContainerBuilder)
 
 context(CommandContainerBuilder, GuildSlashCommandBuilder)
         @KommandoDsl
-        public inline fun SlashCommandGroupBuilder<GuildSlashSubCommand>.subCommand(
+        public inline fun GuildSlashCommandGroupBuilder.subCommand(
     name: String,
     description: String,
     builder: GuildSlashSubCommandBuilder.() -> Unit,
@@ -91,7 +91,7 @@ context(CommandContainerBuilder, GuildSlashCommandBuilder)
 
 context(CommandContainerBuilder)
         @KommandoDsl
-        public inline fun SlashCommandGroupBuilder<GuildSlashSubCommand>.subCommand(
+        public inline fun GuildSlashCommandGroupBuilder.subCommand(
     name: String,
     description: String,
     guildId: Snowflake,

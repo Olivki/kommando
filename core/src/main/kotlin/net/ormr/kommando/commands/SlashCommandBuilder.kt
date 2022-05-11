@@ -29,9 +29,9 @@ import net.ormr.kommando.commands.arguments.slash.SlashArgument
 import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
 
 @KommandoDsl
-public sealed class SlashCommandBuilder<out C : SlashCommand<E, D, S>, S : SlashSubCommand<*, *>, E : SlashEvent, D : CommandData<E>> :
+public sealed class SlashCommandBuilder<out C : SlashCommand<E, D, S>, S : SlashSubCommand<*, *>, G : SlashCommandGroup<S>, E : SlashEvent, D : CommandData<E>> :
     ApplicationCommandBuilder<C, E, D>(), WithApplicationCommandPermissionsBuilder {
-    protected val groups: MutableMap<String, SlashCommandGroup<S>> = hashMapOf()
+    protected val groups: MutableMap<String, G> = hashMapOf()
     protected val subCommands: MutableMap<String, S> = hashMapOf()
     override var applicationPermissions: ApplicationCommandPermissions? = null
     override var defaultApplicationPermission: Boolean = true
@@ -43,7 +43,7 @@ public sealed class SlashCommandBuilder<out C : SlashCommand<E, D, S>, S : Slash
     }
 
     @PublishedApi
-    internal fun addGroup(group: SlashCommandGroup<S>) {
+    internal fun addGroup(group: G) {
         groups[group.name] = group
     }
 
