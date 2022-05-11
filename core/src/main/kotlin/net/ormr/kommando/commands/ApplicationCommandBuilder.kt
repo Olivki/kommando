@@ -39,5 +39,5 @@ public sealed class ApplicationCommandBuilder<out C : ApplicationCommand<E, D>, 
         this.executor = executor
     }
 
-    internal abstract fun build(category: String): C
+    internal abstract fun build(): C
 }

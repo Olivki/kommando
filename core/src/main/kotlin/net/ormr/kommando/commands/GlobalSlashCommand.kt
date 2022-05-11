@@ -36,7 +36,6 @@ internal typealias GlobalSlashEvent = ChatInputCommandInteractionCreateEvent
 internal typealias GlobalSlashInteraction = ChatInputCommandInteraction
 
 public data class GlobalSlashCommand(
-    override val category: String,
     override val name: String,
     override val description: String,
     override val defaultApplicationPermission: Boolean,
@@ -60,8 +59,7 @@ public class GlobalSlashCommandBuilder @PublishedApi internal constructor(
     private val description: String,
 ) : SlashCommandBuilder<GlobalSlashCommand, GlobalSlashSubCommand, GlobalSlashEvent, GlobalSlashCommandData>() {
     @PublishedApi
-    override fun build(category: String): GlobalSlashCommand = GlobalSlashCommand(
-        category = category,
+    override fun build(): GlobalSlashCommand = GlobalSlashCommand(
         name = name,
         description = description,
         defaultApplicationPermission = defaultApplicationPermission,
@@ -82,5 +80,5 @@ public inline fun CommandContainerBuilder.globalSlashCommand(
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    addCommand(GlobalSlashCommandBuilder(name, description).apply(builder).build(category))
+    addCommand(GlobalSlashCommandBuilder(name, description).apply(builder).build())
 }

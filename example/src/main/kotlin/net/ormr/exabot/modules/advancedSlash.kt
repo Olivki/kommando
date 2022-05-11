@@ -30,7 +30,7 @@ import net.ormr.kommando.commands.arguments.slash.LongSlashArgument
 import net.ormr.kommando.commands.arguments.slash.StringSlashArgument
 import net.ormr.kommando.utils.respondPublic
 
-fun advancedSlash() = commands("Baby!") {
+fun advancedSlash() = commands {
     globalSlashCommand("advanced", "Some more complex/advanced slash commands!") {
         group("type", "Basic group") {
             subCommand("int", "Accepts integers") {

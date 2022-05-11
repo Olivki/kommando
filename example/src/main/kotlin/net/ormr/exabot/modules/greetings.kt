@@ -38,7 +38,7 @@ import org.kodein.db.DB
 import org.kodein.db.getById
 import org.kodein.db.model.Id
 
-fun greetings(@Tag guildId: Snowflake, db: DB) = commands("Greetings") {
+fun greetings(@Tag guildId: Snowflake, db: DB) = commands {
     guildSlashCommand("greet", "Greet the bot!", guildId) {
         execute {
             val deferred = interaction.deferEphemeralResponse()

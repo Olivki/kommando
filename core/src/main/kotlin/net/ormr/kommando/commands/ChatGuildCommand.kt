@@ -36,7 +36,6 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 public data class ChatGuildCommand(
-    override val category: String,
     override val name: String,
     override val description: String,
     override val executor: ChatCommandExecutor<ChatGuildCommandData>,
@@ -68,8 +67,7 @@ public class ChatGuildCommandBuilder @PublishedApi internal constructor(
     private val description: String,
 ) : ChatCommandBuilder<ChatGuildCommand, ChatGuildCommandData>() {
     @PublishedApi
-    override fun build(category: String): ChatGuildCommand = ChatGuildCommand(
-        category = category,
+    override fun build(): ChatGuildCommand = ChatGuildCommand(
         name = name,
         description = description,
         executor = getNonNullExecutor(),
@@ -87,5 +85,5 @@ public inline fun CommandContainerBuilder.chatGuildCommand(
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    addCommand(ChatGuildCommandBuilder(name, description).apply(builder).build(category))
+    addCommand(ChatGuildCommandBuilder(name, description).apply(builder).build())
 }

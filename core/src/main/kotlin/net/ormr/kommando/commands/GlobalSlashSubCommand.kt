@@ -30,7 +30,6 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 public data class GlobalSlashSubCommand(
-    override val category: String,
     override val name: String,
     override val description: String,
     override val executor: ApplicationCommandExecutor<GlobalSlashEvent, GlobalSlashSubCommandData>,
@@ -50,8 +49,7 @@ public class GlobalSlashSubCommandBuilder @PublishedApi internal constructor(
     private val description: String,
 ) : ApplicationCommandBuilder<GlobalSlashSubCommand, GlobalSlashEvent, GlobalSlashSubCommandData>() {
     @PublishedApi
-    override fun build(category: String): GlobalSlashSubCommand = GlobalSlashSubCommand(
-        category = category,
+    override fun build(): GlobalSlashSubCommand = GlobalSlashSubCommand(
         name = name,
         description = description,
         executor = getNonNullExecutor(),
@@ -69,8 +67,7 @@ context(CommandContainerBuilder)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    val category = this@CommandContainerBuilder.category
-    addSubCommand(GlobalSlashSubCommandBuilder(name, description).apply(builder).build(category))
+    addSubCommand(GlobalSlashSubCommandBuilder(name, description).apply(builder).build())
 }
 
 context(CommandContainerBuilder)
@@ -84,6 +81,5 @@ context(CommandContainerBuilder)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    val category = this@CommandContainerBuilder.category
-    addSubCommand(GlobalSlashSubCommandBuilder(name, description).apply(builder).build(category))
+    addSubCommand(GlobalSlashSubCommandBuilder(name, description).apply(builder).build())
 }

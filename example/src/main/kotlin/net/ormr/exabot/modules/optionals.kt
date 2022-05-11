@@ -35,7 +35,7 @@ import net.ormr.kommando.commands.guildSlashCommand
 import net.ormr.kommando.processor.Tag
 import net.ormr.kommando.utils.respondEphemeral
 
-fun optionalCommand(@Tag guildId: Snowflake) = commands("Optionals") {
+fun optionalCommand(@Tag guildId: Snowflake) = commands {
     guildSlashCommand("optional", "A command with optional arguments", guildId) {
         execute(
             StringSlashArgument("not_optional", "A non optional argument."),

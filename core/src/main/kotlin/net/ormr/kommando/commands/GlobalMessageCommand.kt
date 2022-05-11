@@ -37,7 +37,6 @@ import kotlin.contracts.contract
 private typealias GlobalMessageEvent = MessageCommandInteractionCreateEvent
 
 public data class GlobalMessageCommand(
-    override val category: String,
     override val name: String,
     override val defaultApplicationPermission: Boolean,
     override val applicationPermissions: ApplicationCommandPermissions?,
@@ -58,8 +57,7 @@ public class GlobalMessageCommandBuilder @PublishedApi internal constructor(priv
     override fun getEmptyArgument(): MentionableSlashArgument = MentionableSlashArgument("", "")
 
     @PublishedApi
-    override fun build(category: String): GlobalMessageCommand = GlobalMessageCommand(
-        category = category,
+    override fun build(): GlobalMessageCommand = GlobalMessageCommand(
         name = name,
         defaultApplicationPermission = defaultApplicationPermission,
         applicationPermissions = applicationPermissions,
@@ -76,5 +74,5 @@ public inline fun CommandContainerBuilder.globalMessageCommand(
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    addCommand(GlobalMessageCommandBuilder(name).apply(builder).build(category))
+    addCommand(GlobalMessageCommandBuilder(name).apply(builder).build())
 }

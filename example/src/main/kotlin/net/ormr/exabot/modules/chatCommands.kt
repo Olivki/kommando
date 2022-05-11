@@ -30,7 +30,7 @@ import net.ormr.kommando.commands.chatGuildCommand
 import net.ormr.kommando.commands.commands
 import net.ormr.kommando.commands.execute
 
-fun chatCommands() = commands("Epic Things") {
+fun chatCommands() = commands {
     chatGuildCommand("test", "It's a test command.") {
         execute(IntChatArgument, BooleanChatArgument) { (int, bool) ->
             channel.createMessage("stinky lol: $int - $bool")

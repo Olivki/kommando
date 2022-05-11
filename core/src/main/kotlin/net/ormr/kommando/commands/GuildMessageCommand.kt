@@ -38,7 +38,6 @@ import kotlin.contracts.contract
 private typealias GuildMessageEvent = GuildMessageCommandInteractionCreateEvent
 
 public data class GuildMessageCommand(
-    override val category: String,
     override val name: String,
     override val defaultApplicationPermission: Boolean,
     override val applicationPermissions: ApplicationCommandPermissions?,
@@ -62,8 +61,7 @@ public class GuildMessageCommandBuilder @PublishedApi internal constructor(
     override fun getEmptyArgument(): MentionableSlashArgument = MentionableSlashArgument("", "")
 
     @PublishedApi
-    override fun build(category: String): GuildMessageCommand = GuildMessageCommand(
-        category = category,
+    override fun build(): GuildMessageCommand = GuildMessageCommand(
         name = name,
         defaultApplicationPermission = defaultApplicationPermission,
         applicationPermissions = applicationPermissions,
@@ -82,5 +80,5 @@ public inline fun CommandContainerBuilder.guildMessageCommand(
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    addCommand(GuildMessageCommandBuilder(name, guildId).apply(builder).build(category))
+    addCommand(GuildMessageCommandBuilder(name, guildId).apply(builder).build())
 }

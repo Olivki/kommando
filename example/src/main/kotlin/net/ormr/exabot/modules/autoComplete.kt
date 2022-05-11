@@ -31,7 +31,7 @@ import net.ormr.kommando.commands.arguments.slash.StringSlashArgument
 import net.ormr.kommando.processor.Tag
 import net.ormr.kommando.utils.respondPublic
 
-fun autoComplete(@Tag guildId: Snowflake) = commands("Auto Completes!") {
+fun autoComplete(@Tag guildId: Snowflake) = commands {
     guildSlashCommand("autocomplete", "It auto completes! Wow!", guildId) {
         group("grouped", "It's grouped wow!") {
             subCommand("auto", "auto") {

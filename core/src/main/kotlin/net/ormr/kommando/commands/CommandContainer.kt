@@ -28,9 +28,9 @@ import net.ormr.kommando.KommandoDsl
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-public data class CommandContainer(public val category: String, public val commands: List<Command>)
+public data class CommandContainer(public val commands: List<Command>)
 
-public class CommandContainerBuilder @PublishedApi internal constructor(@PublishedApi internal val category: String) {
+public class CommandContainerBuilder @PublishedApi internal constructor() {
     private val commands: MutableList<Command> = mutableListOf()
 
     @PublishedApi
@@ -39,14 +39,14 @@ public class CommandContainerBuilder @PublishedApi internal constructor(@Publish
     }
 
     @PublishedApi
-    internal fun build(): CommandContainer = CommandContainer(category, commands.toList())
+    internal fun build(): CommandContainer = CommandContainer(commands.toList())
 }
 
 @KommandoDsl
-public inline fun commands(category: String, builder: CommandContainerBuilder.() -> Unit): CommandContainer {
+public inline fun commands(builder: CommandContainerBuilder.() -> Unit): CommandContainer {
     contract {
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    return CommandContainerBuilder(category).apply(builder).build()
+    return CommandContainerBuilder().apply(builder).build()
 }

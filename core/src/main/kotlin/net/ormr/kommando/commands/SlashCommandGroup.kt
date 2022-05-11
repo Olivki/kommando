@@ -60,5 +60,5 @@ public inline fun <S : SlashSubCommand<*, *>> SlashCommandBuilder<*, S, *, *>.gr
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    addGroup(SlashCommandGroupBuilder<S>(name, description).apply(builder).build())
+    addGroup(SlashCommandGroupBuilder<S>(name, description, ).apply(builder).build())
 }

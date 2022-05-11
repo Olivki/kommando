@@ -35,7 +35,6 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 public data class ChatDmCommand(
-    override val category: String,
     override val name: String,
     override val description: String,
     override val executor: ChatCommandExecutor<ChatDmCommandData>,
@@ -65,8 +64,7 @@ public class ChatDmCommandBuilder @PublishedApi internal constructor(
     private val description: String,
 ) : ChatCommandBuilder<ChatDmCommand, ChatDmCommandData>() {
     @PublishedApi
-    override fun build(category: String): ChatDmCommand = ChatDmCommand(
-        category = category,
+    override fun build(): ChatDmCommand = ChatDmCommand(
         name = name,
         description = description,
         executor = getNonNullExecutor(),
@@ -84,5 +82,5 @@ public inline fun CommandContainerBuilder.chatDmCommand(
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    addCommand(ChatDmCommandBuilder(name, description).apply(builder).build(category))
+    addCommand(ChatDmCommandBuilder(name, description).apply(builder).build())
 }

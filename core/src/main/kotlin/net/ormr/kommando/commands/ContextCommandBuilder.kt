@@ -48,5 +48,5 @@ public sealed class ContextCommandBuilder<out C : ContextCommand<T, E, D>, T : A
 
     protected abstract fun getEmptyArgument(): SlashArgument<in T>
 
-    internal abstract fun build(category: String): C
+    internal abstract fun build(): C
 }

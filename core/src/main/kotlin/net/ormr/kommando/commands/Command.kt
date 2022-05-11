@@ -25,7 +25,5 @@
 package net.ormr.kommando.commands
 
 public sealed interface Command {
-    // TODO: do we want to actually force category for application commands?
-    public val category: String
     public val name: String
 }

@@ -31,7 +31,7 @@ import net.ormr.kommando.commands.guildUserCommand
 import net.ormr.kommando.processor.Tag
 import net.ormr.kommando.utils.respondEphemeral
 
-fun idChecker(@Tag guildId: Snowflake) = commands("ID Checker") {
+fun idChecker(@Tag guildId: Snowflake) = commands {
     guildUserCommand("Show ID", guildId) {
         execute { (user) ->
             interaction.respondEphemeral("${user.id}")

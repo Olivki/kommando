@@ -31,7 +31,6 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 public data class GuildSlashSubCommand(
-    override val category: String,
     override val name: String,
     override val description: String,
     override val executor: ApplicationCommandExecutor<GuildSlashEvent, GuildSlashSubCommandData>,
@@ -53,8 +52,7 @@ public class GuildSlashSubCommandBuilder @PublishedApi internal constructor(
     private val guildId: Snowflake,
 ) : ApplicationCommandBuilder<GuildSlashSubCommand, GuildSlashEvent, GuildSlashSubCommandData>() {
     @PublishedApi
-    override fun build(category: String): GuildSlashSubCommand = GuildSlashSubCommand(
-        category = category,
+    override fun build(): GuildSlashSubCommand = GuildSlashSubCommand(
         name = name,
         description = description,
         executor = getNonNullExecutor(),
@@ -73,8 +71,7 @@ context(CommandContainerBuilder)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    val category = this@CommandContainerBuilder.category
-    addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build(category))
+    addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build())
 }
 
 context(CommandContainerBuilder, GuildSlashCommandBuilder)
@@ -88,9 +85,8 @@ context(CommandContainerBuilder, GuildSlashCommandBuilder)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    val category = this@CommandContainerBuilder.category
     val guildId = this@GuildSlashCommandBuilder.guildId
-    addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build(category))
+    addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build())
 }
 
 context(CommandContainerBuilder)
@@ -105,6 +101,5 @@ context(CommandContainerBuilder)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    val category = this@CommandContainerBuilder.category
-    addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build(category))
+    addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build())
 }

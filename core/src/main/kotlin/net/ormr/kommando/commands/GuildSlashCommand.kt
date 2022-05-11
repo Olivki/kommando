@@ -39,7 +39,6 @@ internal typealias GuildSlashEvent = GuildChatInputCommandInteractionCreateEvent
 public typealias GuildSlashInteraction = GuildChatInputCommandInteraction
 
 public data class GuildSlashCommand(
-    override val category: String,
     override val name: String,
     override val description: String,
     override val defaultApplicationPermission: Boolean,
@@ -70,8 +69,7 @@ public class GuildSlashCommandBuilder @PublishedApi internal constructor(
     @PublishedApi internal val guildId: Snowflake,
 ) : SlashCommandBuilder<GuildSlashCommand, GuildSlashSubCommand, GuildSlashEvent, GuildSlashCommandData>() {
     @PublishedApi
-    override fun build(category: String): GuildSlashCommand = GuildSlashCommand(
-        category = category,
+    override fun build(): GuildSlashCommand = GuildSlashCommand(
         name = name,
         description = description,
         defaultApplicationPermission = defaultApplicationPermission,
@@ -94,5 +92,5 @@ public inline fun CommandContainerBuilder.guildSlashCommand(
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    addCommand(GuildSlashCommandBuilder(name, description, guildId).apply(builder).build(category))
+    addCommand(GuildSlashCommandBuilder(name, description, guildId).apply(builder).build())
 }

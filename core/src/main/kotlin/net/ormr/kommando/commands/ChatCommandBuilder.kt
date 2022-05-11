@@ -42,5 +42,5 @@ public sealed class ChatCommandBuilder<out C : ChatCommand<D>, D : ChatCommandDa
     }
 
     @PublishedApi
-    internal abstract fun build(category: String): C
+    internal abstract fun build(): C
 }

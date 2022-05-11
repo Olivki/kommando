@@ -37,7 +37,6 @@ import kotlin.contracts.contract
 private typealias GlobalUserEvent = UserCommandInteractionCreateEvent
 
 public data class GlobalUserCommand(
-    override val category: String,
     override val name: String,
     override val defaultApplicationPermission: Boolean,
     override val applicationPermissions: ApplicationCommandPermissions?,
@@ -58,8 +57,7 @@ public class GlobalUserCommandBuilder @PublishedApi internal constructor(private
     override fun getEmptyArgument(): UserSlashArgument = UserSlashArgument("", "")
 
     @PublishedApi
-    override fun build(category: String): GlobalUserCommand = GlobalUserCommand(
-        category = category,
+    override fun build(): GlobalUserCommand = GlobalUserCommand(
         name = name,
         defaultApplicationPermission = defaultApplicationPermission,
         applicationPermissions = applicationPermissions,
@@ -76,5 +74,5 @@ public inline fun CommandContainerBuilder.globalUserCommand(
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    addCommand(GlobalUserCommandBuilder(name).apply(builder).build(category))
+    addCommand(GlobalUserCommandBuilder(name).apply(builder).build())
 }
