@@ -23,29 +23,45 @@
  */
 
 plugins {
-    kotlin("plugin.serialization") version "1.6.21"
-    id("net.ormr.kommando.plugin") version "0.1.0"
+    `java-gradle-plugin`
+    `kotlin-dsl`
+    `maven-publish`
+    id("com.gradle.plugin-publish") version "1.0.0-rc-1"
 }
 
-kommando {
-    processor {
-        autoSearch = true
+version = "0.1.0"
+description = "Gradle plugin for the Kommando framework"
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+}
+
+dependencies {
+    compileOnly(kotlin("gradle-plugin-api"))
+    compileOnly(kotlin("gradle-plugin"))
+    compileOnly(gradleApi())
+
+    implementation("com.google.devtools.ksp:symbol-processing-gradle-plugin:1.6.21-1.0.5")
+}
+
+pluginBundle {
+    website = "https://github.com/Olivki/kommando"
+    vcsUrl = "https://github.com/Olivki/kommando"
+    tags = listOf("helper", "utility")
+}
+
+gradlePlugin {
+    plugins {
+        create("kommando-plugin") {
+            id = "net.ormr.kommando.plugin"
+            displayName = "Kommando Gradle Plugin"
+            description = project.description
+            implementationClass = "net.ormr.kommando.plugin.KommandoPlugin"
+        }
     }
 }
 
 kotlin {
     explicitApi = null
-}
-
-dependencies {
-    implementation("org.slf4j:slf4j-simple:1.7.36")
-    implementation("com.github.ajalt.clikt:clikt:3.4.2")
-
-    implementation("org.kodein.db:kodein-db-jvm:0.8.1-beta")
-    implementation("org.kodein.db:kodein-db-serializer-kotlinx:0.8.1-beta")
-    implementation("org.kodein.db:kodein-leveldb-jni-jvm:0.8.1-beta")
-}
-
-application {
-    mainClass.set("net.ormr.exabot.MainKt")
 }

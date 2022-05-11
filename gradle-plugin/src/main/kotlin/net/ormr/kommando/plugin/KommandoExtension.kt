@@ -22,7 +22,11 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.structures
+package net.ormr.kommando.plugin
 
-public class CommandPrecondition {
+open class KommandoExtension {
+    /**
+     * The version of the `core` dependency.
+     */
+    var version: String = "0.0.13"
 }
