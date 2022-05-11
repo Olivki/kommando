@@ -53,11 +53,3 @@ dependencies {
 ksp {
     arg("kommando.autoSearch", "true")
 }
-
-tasks {
-    compileKotlin {
-        kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + listOf("-Xcontext-receivers")
-        }
-    }
-}
