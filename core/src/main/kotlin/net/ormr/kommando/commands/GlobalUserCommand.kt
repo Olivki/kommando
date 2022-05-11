@@ -68,7 +68,7 @@ public class GlobalUserCommandBuilder @PublishedApi internal constructor(private
 }
 
 @KommandoDsl
-public inline fun CommandGroupBuilder.globalUserCommand(
+public inline fun CommandContainerBuilder.globalUserCommand(
     name: String,
     builder: GlobalUserCommandBuilder.() -> Unit,
 ) {

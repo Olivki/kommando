@@ -73,7 +73,7 @@ public class GuildMessageCommandBuilder @PublishedApi internal constructor(
 }
 
 @KommandoDsl
-public inline fun CommandGroupBuilder.guildMessageCommand(
+public inline fun CommandContainerBuilder.guildMessageCommand(
     name: String,
     guildId: Snowflake,
     builder: GuildMessageCommandBuilder.() -> Unit,

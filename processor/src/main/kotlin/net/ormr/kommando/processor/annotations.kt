@@ -25,7 +25,7 @@
 package net.ormr.kommando.processor
 
 import net.ormr.kommando.KommandoBuilder
-import net.ormr.kommando.commands.CommandGroup
+import net.ormr.kommando.commands.CommandContainer
 import net.ormr.kommando.structures.EventListener
 
 internal const val INCLUDE = "net.ormr.kommando.processor.Include"
@@ -34,7 +34,7 @@ internal const val INCLUDE = "net.ormr.kommando.processor.Include"
  * Includes the declaration in a module.
  *
  * The semantics of what an inclusion is depends on the return type of the declaration:
- * - **Kommando Type** *([EventListener], [CommandGroup])*: The declaration will be added to the appropriate collection
+ * - **Kommando Type** *([EventListener], [CommandContainer])*: The declaration will be added to the appropriate collection
  * *(i.e; `EventListener` goes into [eventListeners][KommandoBuilder.eventListeners])*. In case the declaration is a
  * function, then all of its parameters will be retrieved from the DI module tied to the builder.
  * - **Everything else**: The declaration will be bound as a **singleton** to the DI storage. In case the declaration
@@ -55,7 +55,7 @@ internal const val EXCLUDE = "net.ormr.kommando.processor.Exclude"
 /**
  * Excludes the declaration from a module.
  *
- * This only matters if the annotated declaration has a kommando type *([EventListener], [CommandGroup])* as its return
+ * This only matters if the annotated declaration has a kommando type *([EventListener], [CommandContainer])* as its return
  * type and the file its stored in is annotated with [Module].
  */
 @Retention(AnnotationRetention.SOURCE)
@@ -96,7 +96,7 @@ public annotation class BindingTag(val value: String)
  * Marks the entire file as a kommando module file.
  *
  * A Kommando module file will have all properties and functions that return a kommando type *([EventListener],
- * [CommandGroup])* automatically registered. It works the same if one were to manually annotate them
+ * [CommandContainer])* automatically registered. It works the same if one were to manually annotate them
  * all with the [Include] annotation.
  *
  * For more information on what inclusion entails, see [Include].

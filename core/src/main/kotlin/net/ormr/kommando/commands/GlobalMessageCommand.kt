@@ -68,7 +68,7 @@ public class GlobalMessageCommandBuilder @PublishedApi internal constructor(priv
 }
 
 @KommandoDsl
-public inline fun CommandGroupBuilder.globalMessageCommand(
+public inline fun CommandContainerBuilder.globalMessageCommand(
     name: String,
     builder: GlobalMessageCommandBuilder.() -> Unit,
 ) {

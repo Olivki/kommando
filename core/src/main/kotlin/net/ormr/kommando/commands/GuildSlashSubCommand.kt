@@ -62,7 +62,7 @@ public class GuildSlashSubCommandBuilder @PublishedApi internal constructor(
     )
 }
 
-context(CommandGroupBuilder)
+context(CommandContainerBuilder)
         @KommandoDsl
         public inline fun GuildSlashCommandBuilder.subCommand(
     name: String,
@@ -73,11 +73,11 @@ context(CommandGroupBuilder)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    val category = this@CommandGroupBuilder.category
+    val category = this@CommandContainerBuilder.category
     addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build(category))
 }
 
-context(CommandGroupBuilder, GuildSlashCommandBuilder)
+context(CommandContainerBuilder, GuildSlashCommandBuilder)
         @KommandoDsl
         public inline fun SlashCommandGroupBuilder<GuildSlashSubCommand>.subCommand(
     name: String,
@@ -88,12 +88,12 @@ context(CommandGroupBuilder, GuildSlashCommandBuilder)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    val category = this@CommandGroupBuilder.category
+    val category = this@CommandContainerBuilder.category
     val guildId = this@GuildSlashCommandBuilder.guildId
     addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build(category))
 }
 
-context(CommandGroupBuilder)
+context(CommandContainerBuilder)
         @KommandoDsl
         public inline fun SlashCommandGroupBuilder<GuildSlashSubCommand>.subCommand(
     name: String,
@@ -105,6 +105,6 @@ context(CommandGroupBuilder)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    val category = this@CommandGroupBuilder.category
+    val category = this@CommandContainerBuilder.category
     addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build(category))
 }

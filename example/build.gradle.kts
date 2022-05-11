@@ -23,8 +23,8 @@
  */
 
 plugins {
-    id("com.google.devtools.ksp") version "1.7.0-Beta-1.0.5"
-    kotlin("plugin.serialization") version "1.7.0-Beta"
+    id("com.google.devtools.ksp") version "1.6.21-1.0.5"
+    kotlin("plugin.serialization") version "1.6.21"
 }
 
 kotlin {

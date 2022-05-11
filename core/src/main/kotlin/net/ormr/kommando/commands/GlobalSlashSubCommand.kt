@@ -58,7 +58,7 @@ public class GlobalSlashSubCommandBuilder @PublishedApi internal constructor(
     )
 }
 
-context(CommandGroupBuilder)
+context(CommandContainerBuilder)
         @KommandoDsl
         public inline fun GlobalSlashCommandBuilder.subCommand(
     name: String,
@@ -69,11 +69,11 @@ context(CommandGroupBuilder)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    val category = this@CommandGroupBuilder.category
+    val category = this@CommandContainerBuilder.category
     addSubCommand(GlobalSlashSubCommandBuilder(name, description).apply(builder).build(category))
 }
 
-context(CommandGroupBuilder)
+context(CommandContainerBuilder)
         @KommandoDsl
         public inline fun SlashCommandGroupBuilder<GlobalSlashSubCommand>.subCommand(
     name: String,
@@ -84,6 +84,6 @@ context(CommandGroupBuilder)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    val category = this@CommandGroupBuilder.category
+    val category = this@CommandContainerBuilder.category
     addSubCommand(GlobalSlashSubCommandBuilder(name, description).apply(builder).build(category))
 }

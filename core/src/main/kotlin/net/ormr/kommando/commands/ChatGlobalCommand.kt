@@ -74,7 +74,7 @@ public class ChatGlobalCommandBuilder @PublishedApi internal constructor(
 }
 
 @KommandoDsl
-public inline fun CommandGroupBuilder.chatGlobalCommand(
+public inline fun CommandContainerBuilder.chatGlobalCommand(
     name: String,
     description: String,
     builder: ChatGlobalCommandBuilder.() -> Unit,

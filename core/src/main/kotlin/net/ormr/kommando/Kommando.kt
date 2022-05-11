@@ -34,7 +34,7 @@ import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.gateway.builder.PresenceBuilder
 import net.ormr.kommando.commands.ChatCommand
-import net.ormr.kommando.commands.CommandGroup
+import net.ormr.kommando.commands.CommandContainer
 import net.ormr.kommando.commands.TopLevelApplicationCommand
 import net.ormr.kommando.commands.prefix.CommandPrefix
 import net.ormr.kommando.commands.prefix.CommandPrefixBuilder
@@ -58,7 +58,7 @@ public class Kommando internal constructor(
     public val kord: Kord,
     public val intents: Intents,
     override val di: DI,
-    public val commands: List<CommandGroup>,
+    public val commands: List<CommandContainer>,
     public val commandPreconditions: List<CommandPrecondition>,
     public val eventListeners: List<EventListener>,
     public val messageFilters: List<MessageFilter>,
@@ -103,7 +103,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
         private val logger = InlineLogger()
     }
 
-    public val commands: MutableList<CommandGroup> = mutableListOf()
+    public val commands: MutableList<CommandContainer> = mutableListOf()
 
     public val commandPreconditions: MutableList<CommandPrecondition> = mutableListOf()
 
@@ -153,6 +153,14 @@ public class KommandoBuilder @PublishedApi internal constructor(
         prefix = builder(CommandPrefixBuilder(kord))
     }
 
+    public operator fun MessageFilter.unaryPlus() {
+        messageFilters += this
+    }
+
+    public operator fun MessageFilter.unaryMinus() {
+        messageFilters -= this
+    }
+
     // TODO: throw exception if chatCommands are registered but no 'prefix' has been set
     @PublishedApi
     @OptIn(ExperimentalTime::class)
@@ -196,16 +204,6 @@ public class KommandoBuilder @PublishedApi internal constructor(
 
         return kommando
     }
-}
-
-context(KommandoBuilder)
-        public operator fun MessageFilter.unaryPlus() {
-    messageFilters += this
-}
-
-context(KommandoBuilder)
-        public operator fun MessageFilter.unaryMinus() {
-    messageFilters -= this
 }
 
 @KommandoDsl

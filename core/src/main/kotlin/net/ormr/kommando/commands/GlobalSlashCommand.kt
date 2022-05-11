@@ -73,7 +73,7 @@ public class GlobalSlashCommandBuilder @PublishedApi internal constructor(
 }
 
 @KommandoDsl
-public inline fun CommandGroupBuilder.globalSlashCommand(
+public inline fun CommandContainerBuilder.globalSlashCommand(
     name: String,
     description: String,
     builder: GlobalSlashCommandBuilder.() -> Unit,

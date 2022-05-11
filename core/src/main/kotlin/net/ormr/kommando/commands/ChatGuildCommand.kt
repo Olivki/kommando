@@ -78,7 +78,7 @@ public class ChatGuildCommandBuilder @PublishedApi internal constructor(
 }
 
 @KommandoDsl
-public inline fun CommandGroupBuilder.chatGuildCommand(
+public inline fun CommandContainerBuilder.chatGuildCommand(
     name: String,
     description: String,
     builder: ChatGuildCommandBuilder.() -> Unit,

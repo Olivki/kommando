@@ -84,7 +84,7 @@ public class GuildSlashCommandBuilder @PublishedApi internal constructor(
 }
 
 @KommandoDsl
-public inline fun CommandGroupBuilder.guildSlashCommand(
+public inline fun CommandContainerBuilder.guildSlashCommand(
     name: String,
     description: String,
     guildId: Snowflake,
