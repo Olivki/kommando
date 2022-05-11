@@ -31,7 +31,7 @@ version = "0.5.0"
 dependencies {
     implementation("com.squareup:kotlinpoet-ksp:1.11.0")
     implementation("com.google.devtools.ksp:symbol-processing-api:1.6.21-1.0.5")
-    implementation(project(":core"))
+    implementation("net.ormr.kommando:core:0.0.7")
     kapt("com.google.auto.service:auto-service:1.0.1")
     compileOnly("com.google.auto.service:auto-service:1.0.1")
 }
