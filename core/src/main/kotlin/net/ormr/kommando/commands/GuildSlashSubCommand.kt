@@ -60,9 +60,8 @@ public class GuildSlashSubCommandBuilder @PublishedApi internal constructor(
     )
 }
 
-context(CommandContainerBuilder)
-        @KommandoDsl
-        public inline fun GuildSlashCommandBuilder.subCommand(
+@KommandoDsl
+public inline fun GuildSlashCommandBuilder.subCommand(
     name: String,
     description: String,
     builder: GuildSlashSubCommandBuilder.() -> Unit,
@@ -74,9 +73,8 @@ context(CommandContainerBuilder)
     addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build())
 }
 
-context(CommandContainerBuilder, GuildSlashCommandBuilder)
-        @KommandoDsl
-        public inline fun GuildSlashCommandGroupBuilder.subCommand(
+@KommandoDsl
+public inline fun GuildSlashCommandGroupBuilder.subCommand(
     name: String,
     description: String,
     builder: GuildSlashSubCommandBuilder.() -> Unit,
@@ -85,13 +83,11 @@ context(CommandContainerBuilder, GuildSlashCommandBuilder)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    val guildId = this@GuildSlashCommandBuilder.guildId
     addSubCommand(GuildSlashSubCommandBuilder(name, description, guildId).apply(builder).build())
 }
 
-context(CommandContainerBuilder)
-        @KommandoDsl
-        public inline fun GuildSlashCommandGroupBuilder.subCommand(
+@KommandoDsl
+public inline fun GuildSlashCommandGroupBuilder.subCommand(
     name: String,
     description: String,
     guildId: Snowflake,

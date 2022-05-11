@@ -28,4 +28,8 @@ import dev.kord.core.Kord
 import net.ormr.kommando.KommandoDsl
 
 @KommandoDsl
-public class CommandPrefixBuilder(public val kord: Kord)
+public class CommandPrefixBuilder(public val kord: Kord) {
+    @KommandoDsl
+    public infix fun <L : CommandPrefix, R : CommandPrefix> L.or(right: R): CommandPrefix =
+        EitherCommandPrefix(this, right)
+}

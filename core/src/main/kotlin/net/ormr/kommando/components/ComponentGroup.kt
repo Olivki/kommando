@@ -41,7 +41,7 @@ import dev.kord.rest.builder.message.modify.actionRow
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.ormr.kommando.KommandoAware
+import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.storage.minusAssign
 import kotlin.contracts.InvocationKind
@@ -121,20 +121,20 @@ public fun ComponentGroup.copyWithAllDisabled(): ComponentGroup {
     return copy(components = disabledComponents)
 }
 
-context(KommandoAware)
-        public suspend fun Message.disableComponentsIn(
+public suspend fun Message.disableComponentsIn(
+    kommando: Kommando,
     duration: Duration,
     components: ComponentGroup,
     shouldUnregister: Boolean = false,
 ): Job = kommando.kord.launch {
     delay(duration)
     edit {
-        components.disableAllAndApplyToMessage(shouldUnregister = shouldUnregister)
+        components.disableAllAndApplyToMessage(kommando, this, shouldUnregister = shouldUnregister)
     }
 }
 
-context(KommandoAware)
-        public suspend fun Message.disableComponentsIn(
+public suspend fun Message.disableComponentsIn(
+    kommando: Kommando,
     duration: Duration,
     shouldUnregister: Boolean = true,
 ): Job = kommando.kord.launch {
@@ -187,8 +187,8 @@ context(KommandoAware)
     }
 }
 
-context(KommandoAware)
-        public suspend fun Message.removeComponentsIn(
+public suspend fun Message.removeComponentsIn(
+    kommando: Kommando,
     duration: Duration,
     components: ComponentGroup,
     shouldUnregister: Boolean = false,
@@ -200,8 +200,8 @@ context(KommandoAware)
     if (shouldUnregister) kommando.componentStorage -= components
 }
 
-context(KommandoAware)
-        public suspend fun Message.removeComponentsIn(
+public suspend fun Message.removeComponentsIn(
+    kommando: Kommando,
     duration: Duration,
     shouldUnregister: Boolean = true,
 ): Job = kommando.kord.launch {
@@ -225,71 +225,46 @@ private fun List<ActionRowComponent>.getCustomIds(): List<String> = flatMap { it
         }
     }
 
-context(KommandoAware)
-        public suspend fun PublicFollowupMessage.disableComponentsIn(
+public suspend fun PublicFollowupMessage.disableComponentsIn(
+    kommando: Kommando,
     duration: Duration,
     components: ComponentGroup,
     shouldUnregister: Boolean = false,
-): Job = message.disableComponentsIn(duration, components, shouldUnregister)
+): Job = message.disableComponentsIn(kommando, duration, components, shouldUnregister)
 
-context(KommandoAware)
-        public suspend fun PublicFollowupMessage.disableComponentsIn(
+public suspend fun PublicFollowupMessage.disableComponentsIn(
+    kommando: Kommando,
     duration: Duration,
     shouldUnregister: Boolean = true,
-): Job = message.disableComponentsIn(duration, shouldUnregister)
+): Job = message.disableComponentsIn(kommando, duration, shouldUnregister)
 
-context(KommandoAware)
-        public suspend fun PublicFollowupMessage.removeComponentsIn(
+public suspend fun PublicFollowupMessage.removeComponentsIn(
+    kommando: Kommando,
     duration: Duration,
     components: ComponentGroup,
     shouldUnregister: Boolean = false,
-): Job = message.removeComponentsIn(duration, components, shouldUnregister)
+): Job = message.removeComponentsIn(kommando, duration, components, shouldUnregister)
 
-context(KommandoAware)
-        public suspend fun PublicFollowupMessage.removeComponentsIn(
+public suspend fun PublicFollowupMessage.removeComponentsIn(
+    kommando: Kommando,
     duration: Duration,
     shouldUnregister: Boolean = true,
-): Job = message.removeComponentsIn(duration, shouldUnregister)
+): Job = message.removeComponentsIn(kommando, duration, shouldUnregister)
 
-context(KommandoAware)
-        public suspend fun PublicMessageInteractionResponseBehavior.disableComponentsIn(
+public suspend fun PublicMessageInteractionResponseBehavior.disableComponentsIn(
+    kommando: Kommando,
     duration: Duration,
     components: ComponentGroup,
     shouldUnregister: Boolean = false,
 ): Job = kommando.kord.launch {
     delay(duration)
     edit {
-        components.disableAllAndApplyToMessage(shouldUnregister = shouldUnregister)
+        components.disableAllAndApplyToMessage(kommando, this, shouldUnregister = shouldUnregister)
     }
 }
 
-context(KommandoAware)
-        public suspend fun PublicMessageInteractionResponseBehavior.removeComponentsIn(
-    duration: Duration,
-    components: ComponentGroup,
-    shouldUnregister: Boolean = false,
-): Job = kommando.kord.launch {
-    delay(duration)
-    edit {
-        this.components = mutableListOf()
-    }
-    if (shouldUnregister) kommando.componentStorage -= components
-}
-
-context(KommandoAware)
-        public suspend fun EphemeralMessageInteractionResponseBehavior.disableComponentsIn(
-    duration: Duration,
-    components: ComponentGroup,
-    shouldUnregister: Boolean = false,
-): Job = kommando.kord.launch {
-    delay(duration)
-    edit {
-        components.disableAllAndApplyToMessage(shouldUnregister = shouldUnregister)
-    }
-}
-
-context(KommandoAware)
-        public suspend fun EphemeralMessageInteractionResponseBehavior.removeComponentsIn(
+public suspend fun PublicMessageInteractionResponseBehavior.removeComponentsIn(
+    kommando: Kommando,
     duration: Duration,
     components: ComponentGroup,
     shouldUnregister: Boolean = false,
@@ -301,20 +276,20 @@ context(KommandoAware)
     if (shouldUnregister) kommando.componentStorage -= components
 }
 
-context(KommandoAware)
-        public suspend fun EphemeralFollowupMessage.disableComponentsIn(
+public suspend fun EphemeralMessageInteractionResponseBehavior.disableComponentsIn(
+    kommando: Kommando,
     duration: Duration,
     components: ComponentGroup,
     shouldUnregister: Boolean = false,
 ): Job = kommando.kord.launch {
     delay(duration)
     edit {
-        components.disableAllAndApplyToMessage(shouldUnregister = shouldUnregister)
+        components.disableAllAndApplyToMessage(kommando, this, shouldUnregister = shouldUnregister)
     }
 }
 
-context(KommandoAware)
-        public suspend fun EphemeralFollowupMessage.removeComponentsIn(
+public suspend fun EphemeralMessageInteractionResponseBehavior.removeComponentsIn(
+    kommando: Kommando,
     duration: Duration,
     components: ComponentGroup,
     shouldUnregister: Boolean = false,
@@ -326,8 +301,33 @@ context(KommandoAware)
     if (shouldUnregister) kommando.componentStorage -= components
 }
 
-context(KommandoAware)
-        public suspend fun ComponentGroup.disableAllAndApplyToMessage(
+public suspend fun EphemeralFollowupMessage.disableComponentsIn(
+    kommando: Kommando,
+    duration: Duration,
+    components: ComponentGroup,
+    shouldUnregister: Boolean = false,
+): Job = kommando.kord.launch {
+    delay(duration)
+    edit {
+        components.disableAllAndApplyToMessage(kommando, this, shouldUnregister = shouldUnregister)
+    }
+}
+
+public suspend fun EphemeralFollowupMessage.removeComponentsIn(
+    kommando: Kommando,
+    duration: Duration,
+    components: ComponentGroup,
+    shouldUnregister: Boolean = false,
+): Job = kommando.kord.launch {
+    delay(duration)
+    edit {
+        this.components = mutableListOf()
+    }
+    if (shouldUnregister) kommando.componentStorage -= components
+}
+
+public suspend fun ComponentGroup.disableAllAndApplyToMessage(
+    kommando: Kommando,
     message: Message,
     shouldUnregister: Boolean = false,
 ): ComponentGroup {
@@ -336,8 +336,8 @@ context(KommandoAware)
     return newGroup
 }
 
-context(KommandoAware)
-        public suspend fun ComponentGroup.disableAllAndApplyToEphemeralMessage(
+public suspend fun ComponentGroup.disableAllAndApplyToEphemeralMessage(
+    kommando: Kommando,
     message: EphemeralMessageInteractionResponseBehavior,
     shouldUnregister: Boolean = false,
 ): ComponentGroup {
@@ -346,32 +346,42 @@ context(KommandoAware)
     return newGroup
 }
 
-context(KommandoAware, MessageCreateBuilder)
-        public fun ComponentGroup.disableAllAndApplyToMessage(shouldUnregister: Boolean = false): ComponentGroup {
-    val newGroup = copyWithAllDisabled().applyToMessage()
+public fun ComponentGroup.disableAllAndApplyToMessage(
+    kommando: Kommando,
+    message: MessageCreateBuilder,
+    shouldUnregister: Boolean = false,
+): ComponentGroup {
+    val newGroup = copyWithAllDisabled().applyToMessage(message)
     if (shouldUnregister) kommando.componentStorage -= this
     return newGroup
 }
 
-context(KommandoAware, MessageModifyBuilder)
-        public fun ComponentGroup.disableAllAndApplyToMessage(shouldUnregister: Boolean = false): ComponentGroup {
-    val newGroup = copyWithAllDisabled().applyToMessage()
+public fun ComponentGroup.disableAllAndApplyToMessage(
+    kommando: Kommando,
+    message: MessageModifyBuilder,
+    shouldUnregister: Boolean = false,
+): ComponentGroup {
+    val newGroup = copyWithAllDisabled().applyToMessage(message)
     if (shouldUnregister) kommando.componentStorage -= this
     return newGroup
 }
 
-context(KommandoAware, MessageCreateBuilder)
-        public fun ComponentGroup.applyToMessageAndRegister(): ComponentGroup = apply {
-    this@MessageCreateBuilder.components.clear()
+public fun ComponentGroup.applyToMessageAndRegister(
+    kommando: Kommando,
+    message: MessageCreateBuilder,
+): ComponentGroup = apply {
+    message.components.clear()
     kommando.componentStorage += this
-    applyToMessage()
+    applyToMessage(message)
 }
 
-context(KommandoAware, MessageModifyBuilder)
-        public fun ComponentGroup.applyToMessageAndRegister(): ComponentGroup = apply {
-    this@MessageModifyBuilder.components = mutableListOf()
+public fun ComponentGroup.applyToMessageAndRegister(
+    kommando: Kommando,
+    message: MessageModifyBuilder,
+): ComponentGroup = apply {
+    message.components = mutableListOf()
     kommando.componentStorage += this
-    applyToMessage()
+    applyToMessage(message)
 }
 
 public suspend fun ComponentGroup.applyToEphemeralMessage(
@@ -402,11 +412,10 @@ public suspend fun ComponentGroup.applyToMessage(message: Message): ComponentGro
     }
 }
 
-context(MessageCreateBuilder)
-        public fun ComponentGroup.applyToMessage(): ComponentGroup = apply {
+public fun ComponentGroup.applyToMessage(message: MessageCreateBuilder): ComponentGroup = apply {
     for (row in componentRows) {
         if (row.isEmpty()) continue
-        actionRow {
+        message.actionRow {
             for (component in row) {
                 with(component) { buildComponent() }
             }
@@ -414,11 +423,10 @@ context(MessageCreateBuilder)
     }
 }
 
-context(MessageModifyBuilder)
-        public fun ComponentGroup.applyToMessage(): ComponentGroup = apply {
+public fun ComponentGroup.applyToMessage(message: MessageModifyBuilder): ComponentGroup = apply {
     for (row in componentRows) {
         if (row.isEmpty()) continue
-        actionRow {
+        message.actionRow {
             for (component in row) {
                 with(component) { buildComponent() }
             }
@@ -426,26 +434,30 @@ context(MessageModifyBuilder)
     }
 }
 
-context(KommandoAware)
-        @KommandoDsl
-        public inline fun MessageCreateBuilder.components(builder: ComponentGroupBuilder.() -> Unit): ComponentGroup {
+@KommandoDsl
+public inline fun MessageCreateBuilder.components(
+    kommando: Kommando,
+    builder: ComponentGroupBuilder.() -> Unit,
+): ComponentGroup {
     contract {
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
     val group = ComponentGroupBuilder().apply(builder).build()
-    group.applyToMessageAndRegister()
+    group.applyToMessageAndRegister(kommando, this)
     return group
 }
 
-context(KommandoAware)
-        @KommandoDsl
-        public inline fun MessageModifyBuilder.components(builder: ComponentGroupBuilder.() -> Unit): ComponentGroup {
+@KommandoDsl
+public inline fun MessageModifyBuilder.components(
+    kommando: Kommando,
+    builder: ComponentGroupBuilder.() -> Unit,
+): ComponentGroup {
     contract {
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
     val group = ComponentGroupBuilder().apply(builder).build()
-    group.applyToMessageAndRegister()
+    group.applyToMessageAndRegister(kommando, this)
     return group
 }

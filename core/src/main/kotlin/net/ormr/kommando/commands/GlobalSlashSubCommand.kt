@@ -56,9 +56,8 @@ public class GlobalSlashSubCommandBuilder @PublishedApi internal constructor(
     )
 }
 
-context(CommandContainerBuilder)
-        @KommandoDsl
-        public inline fun GlobalSlashCommandBuilder.subCommand(
+@KommandoDsl
+public inline fun GlobalSlashCommandBuilder.subCommand(
     name: String,
     description: String,
     builder: GlobalSlashSubCommandBuilder.() -> Unit,
@@ -70,9 +69,8 @@ context(CommandContainerBuilder)
     addSubCommand(GlobalSlashSubCommandBuilder(name, description).apply(builder).build())
 }
 
-context(CommandContainerBuilder)
-        @KommandoDsl
-        public inline fun GlobalSlashCommandGroupBuilder.subCommand(
+@KommandoDsl
+public inline fun GlobalSlashCommandGroupBuilder.subCommand(
     name: String,
     description: String,
     builder: GlobalSlashSubCommandBuilder.() -> Unit,

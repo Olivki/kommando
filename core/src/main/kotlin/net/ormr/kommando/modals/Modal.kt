@@ -126,9 +126,10 @@ public class ModalBuilder @PublishedApi internal constructor(
  * Responds to the interaction with a [popup modal][Modal] configured by [builder].
  */
 // TODO: we can't make this 'inline' because it generates faulty bytecode and crashes at runtime
-context(KommandoAware)
-        @KommandoDsl
-        public suspend fun ModalParentInteractionBehavior.openModal(
+//context(KommandoAware)
+@KommandoDsl
+public suspend fun ModalParentInteractionBehavior.openModal(
+    kommando: Kommando,
     title: String,
     builder: ModalBuilder.() -> Unit,
 ): ModalResponse {

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 
 package net.ormr.kommando.commands.arguments.slash
 
@@ -31,43 +31,35 @@ import net.ormr.kommando.commands.arguments.EnumChoiceArgumentAdapter
 
 private typealias SlashContext = ApplicationCommandBuilder<*, *, *>
 
-context(SlashContext)
-        public inline fun attachment(name: String, description: String): AttachmentSlashArgument =
+// TODO: replace receiver parameter with context receiver once they're actually usable in a library
+
+public inline fun SlashContext.attachment(name: String, description: String): AttachmentSlashArgument =
     AttachmentSlashArgument(name, description)
 
-context(SlashContext)
-        public inline fun boolean(name: String, description: String): BooleanSlashArgument =
+public inline fun SlashContext.boolean(name: String, description: String): BooleanSlashArgument =
     BooleanSlashArgument(name, description)
 
-context(SlashContext)
-        public fun channel(name: String, description: String): ChannelSlashArgument =
+public fun SlashContext.channel(name: String, description: String): ChannelSlashArgument =
     ChannelSlashArgument(name, description)
 
-context(SlashContext)
-        public inline fun double(name: String, description: String): DoubleSlashArgument =
+public inline fun SlashContext.double(name: String, description: String): DoubleSlashArgument =
     DoubleSlashArgument(name, description)
 
-context(SlashContext)
-        public inline fun <reified T> enumChoice(name: String, description: String): EnumChoiceSlashArgument<T>
+public inline fun <reified T> SlashContext.enumChoice(name: String, description: String): EnumChoiceSlashArgument<T>
         where T : Enum<T>,
               T : EnumChoiceArgumentAdapter = EnumChoiceSlashArgument(name, description)
 
-context(SlashContext)
-        public inline fun long(name: String, description: String): LongSlashArgument =
+public inline fun SlashContext.long(name: String, description: String): LongSlashArgument =
     LongSlashArgument(name, description)
 
-context(SlashContext)
-        public inline fun mentionable(name: String, description: String): MentionableSlashArgument =
+public inline fun SlashContext.mentionable(name: String, description: String): MentionableSlashArgument =
     MentionableSlashArgument(name, description)
 
-context(SlashContext)
-        public inline fun role(name: String, description: String): RoleSlashArgument =
+public inline fun SlashContext.role(name: String, description: String): RoleSlashArgument =
     RoleSlashArgument(name, description)
 
-context(SlashContext)
-        public inline fun string(name: String, description: String): StringSlashArgument =
+public inline fun SlashContext.string(name: String, description: String): StringSlashArgument =
     StringSlashArgument(name, description)
 
-context(SlashContext)
-        public inline fun user(name: String, description: String): UserSlashArgument =
+public inline fun SlashContext.user(name: String, description: String): UserSlashArgument =
     UserSlashArgument(name, description)
