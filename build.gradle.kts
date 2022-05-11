@@ -24,7 +24,7 @@
 
 plugins {
     id("me.him188.maven-central-publish") version "1.0.0-dev-3"
-    kotlin("jvm") version "1.7.0-Beta"
+    kotlin("jvm") version "1.6.21"
 }
 
 val kotestVersion: String by project

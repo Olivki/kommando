@@ -23,33 +23,30 @@
  */
 
 plugins {
-    id("com.google.devtools.ksp") version "1.7.0-Beta-1.0.5"
-    kotlin("plugin.serialization") version "1.7.0-Beta"
+    kotlin("plugin.serialization") version "1.6.21"
+    id("net.ormr.kommando.plugin") version "0.0.32"
+}
+
+kommando {
+    version = "0.0.12"
+    processor {
+        autoSearch = true
+    }
 }
 
 kotlin {
     explicitApi = null
-
-    sourceSets {
-        main {
-            kotlin.srcDir("build/generated/ksp/main/kotlin")
-        }
-    }
 }
 
 dependencies {
     implementation("org.slf4j:slf4j-simple:1.7.36")
     implementation("com.github.ajalt.clikt:clikt:3.4.2")
-    implementation(project(":core"))
+    //implementation(project(":core"))
 
     implementation("org.kodein.db:kodein-db-jvm:0.8.1-beta")
     implementation("org.kodein.db:kodein-db-serializer-kotlinx:0.8.1-beta")
     implementation("org.kodein.db:kodein-leveldb-jni-jvm:0.8.1-beta")
 
-    compileOnly(project(":processor"))
-    ksp(project(":processor"))
-}
-
-ksp {
-    arg("kommando.autoSearch", "true")
+    //compileOnly(project(":processor"))
+    //ksp(project(":processor"))
 }

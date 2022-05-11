@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-version = "0.0.9"
+version = "0.0.12"
 
 dependencies {
     api(kotlin("reflect"))
