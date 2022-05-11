@@ -37,8 +37,6 @@ import kotlinx.coroutines.runBlocking
 import net.ormr.kommando.bot
 import net.ormr.kommando.commands.prefix.context
 import net.ormr.kommando.commands.prefix.literal
-import net.ormr.kommando.generated.setupDI
-import net.ormr.kommando.generated.setupKommando
 import org.kodein.db.DB
 import org.kodein.db.Value
 import org.kodein.db.ValueConverter
@@ -65,7 +63,6 @@ class ExabotCli : CliktCommand() {
             token = botToken,
             intents = Intents.nonPrivileged + Intent.MessageContent,
             di = {
-                setupDI()
                 bindSingleton { this@ExabotCli }
                 bindSingleton(tag = "guildId") { Snowflake(919240592813359105) }
                 bindSingleton {
@@ -80,7 +77,6 @@ class ExabotCli : CliktCommand() {
                 }
             },
         ) {
-            setupKommando()
             prefix { context { literal("!") } }
             Runtime.getRuntime().addShutdownHook(Thread { directDI.instance<DB>().close() })
         }

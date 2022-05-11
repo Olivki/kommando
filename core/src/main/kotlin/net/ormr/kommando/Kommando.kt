@@ -47,6 +47,7 @@ import net.ormr.kommando.structures.EventListener
 import net.ormr.kommando.structures.MessageFilter
 import net.ormr.kommando.structures.messageFilter
 import org.kodein.di.*
+import java.lang.invoke.MethodHandles.lookup
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.time.Duration
@@ -226,14 +227,18 @@ public suspend inline fun bot(
 ) {
     contract {
         callsInPlace(presence, InvocationKind.EXACTLY_ONCE)
+        callsInPlace(di, InvocationKind.AT_LEAST_ONCE)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
+    val lookup = lookup()
+    val (diSetup, kommandoSetup) = readProcessorMetadata(lookup)
     val kodein = DI.direct {
         bindSingleton { kord }
+        diSetup?.invoke(this)
         di()
     }
-    KommandoBuilder(kord, intents, kodein).apply(builder).build()
+    KommandoBuilder(kord, intents, kodein).apply { kommandoSetup?.invoke(this) }.apply(builder).build()
     kord.login {
         this.intents = intents
         this.presence = PresenceBuilder().apply(presence).toPresence()

@@ -24,7 +24,7 @@
 
 plugins {
     kotlin("plugin.serialization") version "1.6.21"
-    id("net.ormr.kommando.plugin") version "0.0.32"
+    id("net.ormr.kommando.plugin") version "0.0.36"
 }
 
 kommando {
@@ -45,4 +45,8 @@ dependencies {
     implementation("org.kodein.db:kodein-db-jvm:0.8.1-beta")
     implementation("org.kodein.db:kodein-db-serializer-kotlinx:0.8.1-beta")
     implementation("org.kodein.db:kodein-leveldb-jni-jvm:0.8.1-beta")
+}
+
+application {
+    mainClass.set("net.ormr.exabot.MainKt")
 }
