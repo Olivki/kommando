@@ -26,7 +26,7 @@ plugins {
     kotlin("kapt")
 }
 
-version = "0.7.0"
+version = "0.8.0"
 
 dependencies {
     implementation("com.squareup:kotlinpoet-ksp:1.11.0")
