@@ -26,12 +26,12 @@ plugins {
     kotlin("kapt")
 }
 
-version = "0.6.0"
+version = "0.7.0"
 
 dependencies {
     implementation("com.squareup:kotlinpoet-ksp:1.11.0")
     implementation("com.google.devtools.ksp:symbol-processing-api:1.7.0-Beta-1.0.5")
-    implementation("net.ormr.kommando:core:0.0.7")
+    implementation("net.ormr.kommando:core:0.0.9")
     kapt("com.google.auto.service:auto-service:1.0.1")
     compileOnly("com.google.auto.service:auto-service:1.0.1")
 }
