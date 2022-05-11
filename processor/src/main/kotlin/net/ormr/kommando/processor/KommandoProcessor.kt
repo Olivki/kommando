@@ -33,7 +33,6 @@ import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
 import com.squareup.kotlinpoet.ksp.writeTo
 import net.ormr.kommando.KommandoBuilder
 import net.ormr.kommando.commands.CommandContainer
-import net.ormr.kommando.structures.CommandPrecondition
 import net.ormr.kommando.structures.EventListener
 import net.ormr.kommando.structures.MessageFilter
 import org.kodein.di.DI
@@ -46,7 +45,6 @@ private val BIND_SINGLETON = ClassName("org.kodein.di", "bindSingleton")
 private enum class KommandoType(val clazz: KClass<*>, val collectionName: String) {
     EVENT_LISTENER(EventListener::class, "eventListeners"),
     MESSAGE_FILTER(MessageFilter::class, "messageFilters"),
-    COMMAND_PRECONDITION(CommandPrecondition::class, "commandPreconditions"),
     COMMAND_GROUP(CommandContainer::class, "commands");
 
     val qualifiedName: String by lazy { clazz.qualifiedName ?: error("$clazz has no qualified name!") }

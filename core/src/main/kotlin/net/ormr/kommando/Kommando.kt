@@ -43,7 +43,6 @@ import net.ormr.kommando.components.ExecutableComponent
 import net.ormr.kommando.internal.*
 import net.ormr.kommando.modals.Modal
 import net.ormr.kommando.modals.ModalStorage
-import net.ormr.kommando.structures.CommandPrecondition
 import net.ormr.kommando.structures.EventListener
 import net.ormr.kommando.structures.MessageFilter
 import net.ormr.kommando.structures.messageFilter
@@ -59,7 +58,6 @@ public class Kommando internal constructor(
     public val intents: Intents,
     override val di: DI,
     public val commands: List<CommandContainer>,
-    public val commandPreconditions: List<CommandPrecondition>,
     public val eventListeners: List<EventListener>,
     public val messageFilters: List<MessageFilter>,
     public val chatCommands: Map<String, ChatCommand<*>>,
@@ -105,14 +103,12 @@ public class KommandoBuilder @PublishedApi internal constructor(
 
     public val commands: MutableList<CommandContainer> = mutableListOf()
 
-    public val commandPreconditions: MutableList<CommandPrecondition> = mutableListOf()
-
     public val eventListeners: MutableList<EventListener> = mutableListOf()
 
     public val messageFilters: MutableList<MessageFilter> = mutableListOf()
 
     /**
-     * How long until any stored [modals][Kommando.registeredModals] should be expired after write, if `null` then no expiration
+     * How long until any stored [modals][Kommando.modalStorage] should be expired after write, if `null` then no expiration
      * duration is set.
      */
     public var modalExpirationDuration: Duration? = null
@@ -166,7 +162,6 @@ public class KommandoBuilder @PublishedApi internal constructor(
     @OptIn(ExperimentalTime::class)
     internal suspend fun build(): Kommando {
         val commands = commands.toList()
-        val commandPreconditions = commandPreconditions.toList()
         val eventListeners = eventListeners.toList()
         val messageFilters = messageFilters.toList()
         val flattenedCommands = commands.flatMap { it.commands }
@@ -188,7 +183,6 @@ public class KommandoBuilder @PublishedApi internal constructor(
             intents = intents,
             di = directDI.di,
             commands = commands,
-            commandPreconditions = commandPreconditions,
             eventListeners = eventListeners,
             messageFilters = messageFilters,
             chatCommands = chatCommands,
