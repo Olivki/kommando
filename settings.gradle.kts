@@ -29,6 +29,6 @@ pluginManagement {
     }
 }
 
-include("core", "processor", "example", "humbaba", "gradle-plugin")
+include("core", "processor", "example", "gradle-plugin")
 
 rootProject.name = "kommando"
