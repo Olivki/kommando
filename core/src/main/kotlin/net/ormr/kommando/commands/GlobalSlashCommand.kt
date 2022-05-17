@@ -43,7 +43,7 @@ public data class GlobalSlashCommand(
     override val groups: Map<String, GlobalSlashCommandGroup>,
     override val subCommands: Map<String, GlobalSlashSubCommand>,
 ) : SlashCommand<GlobalSlashEvent, GlobalSlashCommandData, GlobalSlashSubCommand, GlobalCommandPermission>,
-    GlobalApplicationCommand
+    TopLevelGlobalApplicationCommand
 
 public data class GlobalSlashCommandData(
     override val kommando: Kommando,

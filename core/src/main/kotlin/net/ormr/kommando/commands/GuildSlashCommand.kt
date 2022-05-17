@@ -47,7 +47,7 @@ public data class GuildSlashCommand(
     override val subCommands: Map<String, GuildSlashSubCommand>,
     override val guildId: Snowflake,
 ) : SlashCommand<GuildSlashEvent, GuildSlashCommandData, GuildSlashSubCommand, GuildCommandPermission>,
-    GuildApplicationCommand
+    TopLevelGuildApplicationCommand
 
 public data class GuildSlashCommandData(
     override val kommando: Kommando,

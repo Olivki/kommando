@@ -41,7 +41,7 @@ public data class GlobalMessageCommand(
     override val permission: GlobalCommandPermission?,
     override val executor: ContextCommandExecutor<Message, GlobalMessageEvent, GlobalMessageCommandData>,
 ) : ContextCommand<Message, GlobalMessageEvent, GlobalMessageCommandData, GlobalCommandPermission>,
-    GlobalApplicationCommand
+    TopLevelGlobalApplicationCommand
 
 public data class GlobalMessageCommandData(
     override val kommando: Kommando,

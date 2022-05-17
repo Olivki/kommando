@@ -40,7 +40,8 @@ public data class GlobalUserCommand(
     override val name: String,
     override val permission: GlobalCommandPermission?,
     override val executor: ContextCommandExecutor<User, GlobalUserEvent, GlobalUserCommandData>,
-) : ContextCommand<User, GlobalUserEvent, GlobalUserCommandData, GlobalCommandPermission>, GlobalApplicationCommand
+) : ContextCommand<User, GlobalUserEvent, GlobalUserCommandData, GlobalCommandPermission>,
+    TopLevelGlobalApplicationCommand
 
 public data class GlobalUserCommandData(
     override val kommando: Kommando,

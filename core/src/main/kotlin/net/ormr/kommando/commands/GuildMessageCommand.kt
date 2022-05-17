@@ -42,7 +42,8 @@ public data class GuildMessageCommand(
     override val permission: GuildCommandPermission?,
     override val executor: ContextCommandExecutor<Message, GuildMessageEvent, GuildMessageCommandData>,
     override val guildId: Snowflake,
-) : ContextCommand<Message, GuildMessageEvent, GuildMessageCommandData, GuildCommandPermission>, GuildApplicationCommand
+) : ContextCommand<Message, GuildMessageEvent, GuildMessageCommandData, GuildCommandPermission>,
+    TopLevelGuildApplicationCommand
 
 public data class GuildMessageCommandData(
     override val kommando: Kommando,
