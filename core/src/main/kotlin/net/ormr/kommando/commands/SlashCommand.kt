@@ -25,9 +25,10 @@
 package net.ormr.kommando.commands
 
 import dev.kord.core.event.Event
+import net.ormr.kommando.commands.permissions.CommandPermission
 
-public sealed interface SlashCommand<E : Event, D : CommandData<E>, S : SlashSubCommand<*, *>> :
-    TopLevelApplicationCommand<E, D>, DescribableCommand {
+public sealed interface SlashCommand<E : Event, D : CommandData<E>, S : SlashSubCommand<*, *>, P : CommandPermission> :
+    TopLevelApplicationCommand<E, D, P>, DescribableCommand {
     public val groups: Map<String, SlashCommandGroup<S>>
 
     public val subCommands: Map<String, S>

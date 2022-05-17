@@ -30,7 +30,7 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.slash.UserSlashArgument
-import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
+import net.ormr.kommando.commands.permissions.GlobalCommandPermission
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -38,10 +38,9 @@ private typealias GlobalUserEvent = UserCommandInteractionCreateEvent
 
 public data class GlobalUserCommand(
     override val name: String,
-    override val defaultApplicationPermission: Boolean,
-    override val applicationPermissions: ApplicationCommandPermissions?,
+    override val permission: GlobalCommandPermission?,
     override val executor: ContextCommandExecutor<User, GlobalUserEvent, GlobalUserCommandData>,
-) : ContextCommand<User, GlobalUserEvent, GlobalUserCommandData>, GlobalApplicationCommand
+) : ContextCommand<User, GlobalUserEvent, GlobalUserCommandData, GlobalCommandPermission>, GlobalApplicationCommand
 
 public data class GlobalUserCommandData(
     override val kommando: Kommando,
@@ -53,14 +52,13 @@ public data class GlobalUserCommandData(
 
 @KommandoDsl
 public class GlobalUserCommandBuilder @PublishedApi internal constructor(private val name: String) :
-    ContextCommandBuilder<GlobalUserCommand, User, GlobalUserEvent, GlobalUserCommandData>() {
+    ContextCommandBuilder<GlobalUserCommand, User, GlobalUserEvent, GlobalUserCommandData, GlobalCommandPermission>() {
     override fun getEmptyArgument(): UserSlashArgument = UserSlashArgument("", "")
 
     @PublishedApi
     override fun build(): GlobalUserCommand = GlobalUserCommand(
         name = name,
-        defaultApplicationPermission = defaultApplicationPermission,
-        applicationPermissions = applicationPermissions,
+        permission = permission,
         executor = getNonNullExecutor(),
     )
 }

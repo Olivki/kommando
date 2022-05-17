@@ -28,14 +28,13 @@ import dev.kord.core.event.interaction.ApplicationCommandInteractionCreateEvent
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.CommandExecutorArguments
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
-import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
+import net.ormr.kommando.commands.permissions.CommandPermission
 
 @KommandoDsl
-public sealed class ContextCommandBuilder<out C : ContextCommand<T, E, D>, T : Any, E : ApplicationCommandInteractionCreateEvent, D : CommandData<E>> :
-    WithApplicationCommandPermissionsBuilder {
+public sealed class ContextCommandBuilder<out C : ContextCommand<T, E, D, P>, T : Any, E : ApplicationCommandInteractionCreateEvent, D : CommandData<E>, P : CommandPermission> :
+    WithCommandPermissionBuilder<P> {
     private var executor: ContextCommandExecutor<T, E, D>? = null
-    override var applicationPermissions: ApplicationCommandPermissions? = null
-    override var defaultApplicationPermission: Boolean = true
+    override var permission: P? = null
 
     protected fun getNonNullExecutor(): ContextCommandExecutor<T, E, D> =
         executor ?: throw IllegalArgumentException("Missing required 'execute' block.")

@@ -28,7 +28,7 @@ import dev.kord.core.entity.interaction.ChatInputCommandInteraction
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
+import net.ormr.kommando.commands.permissions.GlobalCommandPermission
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -38,12 +38,12 @@ internal typealias GlobalSlashInteraction = ChatInputCommandInteraction
 public data class GlobalSlashCommand(
     override val name: String,
     override val description: String,
-    override val defaultApplicationPermission: Boolean,
-    override val applicationPermissions: ApplicationCommandPermissions?,
+    override val permission: GlobalCommandPermission?,
     override val executor: ApplicationCommandExecutor<GlobalSlashEvent, GlobalSlashCommandData>?,
     override val groups: Map<String, GlobalSlashCommandGroup>,
     override val subCommands: Map<String, GlobalSlashSubCommand>,
-) : SlashCommand<GlobalSlashEvent, GlobalSlashCommandData, GlobalSlashSubCommand>, GlobalApplicationCommand
+) : SlashCommand<GlobalSlashEvent, GlobalSlashCommandData, GlobalSlashSubCommand, GlobalCommandPermission>,
+    GlobalApplicationCommand
 
 public data class GlobalSlashCommandData(
     override val kommando: Kommando,
@@ -57,13 +57,12 @@ public data class GlobalSlashCommandData(
 public class GlobalSlashCommandBuilder @PublishedApi internal constructor(
     private val name: String,
     private val description: String,
-) : SlashCommandBuilder<GlobalSlashCommand, GlobalSlashSubCommand, GlobalSlashCommandGroup, GlobalSlashEvent, GlobalSlashCommandData>() {
+) : SlashCommandBuilder<GlobalSlashCommand, GlobalSlashSubCommand, GlobalSlashCommandGroup, GlobalSlashEvent, GlobalSlashCommandData, GlobalCommandPermission>() {
     @PublishedApi
     override fun build(): GlobalSlashCommand = GlobalSlashCommand(
         name = name,
         description = description,
-        defaultApplicationPermission = defaultApplicationPermission,
-        applicationPermissions = applicationPermissions,
+        permission = permission,
         executor = getExecutorSafe(),
         groups = groups.toMap(),
         subCommands = subCommands.toMap(),

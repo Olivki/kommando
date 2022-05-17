@@ -22,21 +22,10 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.commands.permissions
+package net.ormr.kommando.commands
 
-import dev.kord.common.entity.Snowflake
+import net.ormr.kommando.commands.permissions.CommandPermission
 
-public sealed class ApplicationCommandPermission {
-    public abstract val id: Snowflake
-    public abstract val mode: ApplicationPermissionMode
-
-    public data class Role(
-        override val id: Snowflake,
-        override val mode: ApplicationPermissionMode,
-    ) : ApplicationCommandPermission()
-
-    public data class User(
-        override val id: Snowflake,
-        override val mode: ApplicationPermissionMode,
-    ) : ApplicationCommandPermission()
+public sealed interface WithCommandPermissionBuilder<P : CommandPermission> {
+    public var permission: P?
 }

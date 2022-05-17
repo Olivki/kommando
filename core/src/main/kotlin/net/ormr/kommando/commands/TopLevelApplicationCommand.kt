@@ -25,9 +25,9 @@
 package net.ormr.kommando.commands
 
 import dev.kord.core.event.Event
-import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
+import net.ormr.kommando.commands.permissions.CommandPermission
 
-public sealed interface TopLevelApplicationCommand<E : Event, D : CommandData<E>> : ApplicationCommand<E, D> {
-    public val defaultApplicationPermission: Boolean
-    public val applicationPermissions: ApplicationCommandPermissions?
+public sealed interface TopLevelApplicationCommand<E : Event, D : CommandData<E>, P : CommandPermission> :
+    ApplicationCommand<E, D> {
+    public val permission: P?
 }

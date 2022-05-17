@@ -25,8 +25,9 @@
 package net.ormr.kommando.commands
 
 import dev.kord.core.event.interaction.ApplicationCommandInteractionCreateEvent
+import net.ormr.kommando.commands.permissions.CommandPermission
 
-public sealed interface ContextCommand<T : Any, E : ApplicationCommandInteractionCreateEvent, D : CommandData<E>> :
-    TopLevelApplicationCommand<E, D> {
+public sealed interface ContextCommand<T : Any, E : ApplicationCommandInteractionCreateEvent, D : CommandData<E>, P : CommandPermission> :
+    TopLevelApplicationCommand<E, D, P> {
     override val executor: ContextCommandExecutor<T, E, D>
 }

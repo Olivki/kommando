@@ -22,11 +22,37 @@
  * SOFTWARE.
  */
 
-package net.ormr.kommando.commands
+package net.ormr.kommando.commands.permissions
 
-import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
+import dev.kord.common.entity.Permissions
+import net.ormr.kommando.KommandoDsl
+import net.ormr.kommando.commands.WithCommandPermissionBuilder
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
-public sealed interface WithApplicationCommandPermissionsBuilder {
-    public var applicationPermissions: ApplicationCommandPermissions?
-    public var defaultApplicationPermission: Boolean
+public data class GlobalCommandPermission(
+    override val defaultRequiredPermissions: Permissions,
+    public val isAllowedInDms: Boolean,
+) : CommandPermission
+
+@KommandoDsl
+public class GlobalCommandPermissionBuilder @PublishedApi internal constructor() :
+    CommandPermissionBuilder<GlobalCommandPermission>() {
+    public var isAllowedInDms: Boolean = true
+
+    @PublishedApi
+    override fun build(): GlobalCommandPermission =
+        GlobalCommandPermission(defaultPermissions, isAllowedInDms)
+}
+
+@KommandoDsl
+@JvmName("globalCommandPermissions")
+public inline fun WithCommandPermissionBuilder<GlobalCommandPermission>.permission(
+    builder: GlobalCommandPermissionBuilder.() -> Unit,
+) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
+    permission = GlobalCommandPermissionBuilder().apply(builder).build()
 }

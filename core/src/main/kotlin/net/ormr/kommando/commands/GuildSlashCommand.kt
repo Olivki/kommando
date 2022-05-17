@@ -31,7 +31,7 @@ import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
+import net.ormr.kommando.commands.permissions.GuildCommandPermission
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -41,13 +41,13 @@ public typealias GuildSlashInteraction = GuildChatInputCommandInteraction
 public data class GuildSlashCommand(
     override val name: String,
     override val description: String,
-    override val defaultApplicationPermission: Boolean,
-    override val applicationPermissions: ApplicationCommandPermissions?,
+    override val permission: GuildCommandPermission?,
     override val executor: ApplicationCommandExecutor<GuildSlashEvent, GuildSlashCommandData>?,
     override val groups: Map<String, GuildSlashCommandGroup>,
     override val subCommands: Map<String, GuildSlashSubCommand>,
     override val guildId: Snowflake,
-) : SlashCommand<GuildSlashEvent, GuildSlashCommandData, GuildSlashSubCommand>, GuildApplicationCommand
+) : SlashCommand<GuildSlashEvent, GuildSlashCommandData, GuildSlashSubCommand, GuildCommandPermission>,
+    GuildApplicationCommand
 
 public data class GuildSlashCommandData(
     override val kommando: Kommando,
@@ -67,13 +67,12 @@ public class GuildSlashCommandBuilder @PublishedApi internal constructor(
     private val name: String,
     private val description: String,
     @PublishedApi internal val guildId: Snowflake,
-) : SlashCommandBuilder<GuildSlashCommand, GuildSlashSubCommand, GuildSlashCommandGroup, GuildSlashEvent, GuildSlashCommandData>() {
+) : SlashCommandBuilder<GuildSlashCommand, GuildSlashSubCommand, GuildSlashCommandGroup, GuildSlashEvent, GuildSlashCommandData, GuildCommandPermission>() {
     @PublishedApi
     override fun build(): GuildSlashCommand = GuildSlashCommand(
         name = name,
         description = description,
-        defaultApplicationPermission = defaultApplicationPermission,
-        applicationPermissions = applicationPermissions,
+        permission = permission,
         executor = getExecutorSafe(),
         groups = groups.toMap(),
         subCommands = subCommands,

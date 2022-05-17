@@ -25,18 +25,17 @@
 package net.ormr.kommando.internal
 
 import dev.kord.common.entity.Snowflake
-import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import dev.kord.rest.builder.interaction.RootInputChatBuilder
-import dev.kord.rest.builder.interaction.group
-import dev.kord.rest.builder.interaction.subCommand
+import dev.kord.rest.builder.interaction.*
 import net.ormr.kommando.KommandoBuilder
 import net.ormr.kommando.commands.*
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
+import net.ormr.kommando.commands.permissions.GlobalCommandPermission
+import net.ormr.kommando.commands.permissions.GuildCommandPermission
 
 // TODO: this gets relatively slow, but only for guild commands?
 internal suspend fun KommandoBuilder.registerSlashCommands(
-    applicationCommands: List<TopLevelApplicationCommand<*, *>>,
-): Map<Snowflake, TopLevelApplicationCommand<*, *>> = buildMap {
+    applicationCommands: List<TopLevelApplicationCommand<*, *, *>>,
+): Map<Snowflake, TopLevelApplicationCommand<*, *, *>> = buildMap {
     for (command in applicationCommands) {
         when (command) {
             is GlobalSlashCommand -> {
@@ -44,20 +43,20 @@ internal suspend fun KommandoBuilder.registerSlashCommands(
                     command.name,
                     command.description,
                 ) {
-                    defaultPermission = command.defaultApplicationPermission
+                    applyPermissions(command)
                     buildCommand(command)
                 }
                 put(registeredCommand.id, command)
             }
             is GlobalUserCommand -> {
                 val registeredCommand = kord.createGlobalUserCommand(command.name) {
-                    defaultPermission = command.defaultApplicationPermission
+                    applyPermissions(command)
                 }
                 put(registeredCommand.id, command)
             }
             is GlobalMessageCommand -> {
                 val registeredCommand = kord.createGlobalMessageCommand(command.name) {
-                    defaultPermission = command.defaultApplicationPermission
+                    applyPermissions(command)
                 }
                 put(registeredCommand.id, command)
             }
@@ -67,20 +66,20 @@ internal suspend fun KommandoBuilder.registerSlashCommands(
                     command.name,
                     command.description,
                 ) {
-                    defaultPermission = command.defaultApplicationPermission
+                    applyPermissions(command)
                     buildCommand(command)
                 }
                 put(registeredCommand.id, command)
             }
             is GuildUserCommand -> {
                 val registeredCommand = kord.createGuildUserCommand(command.guildId, command.name) {
-                    defaultPermission = command.defaultApplicationPermission
+                    applyPermissions(command)
                 }
                 put(registeredCommand.id, command)
             }
             is GuildMessageCommand -> {
                 val registeredCommand = kord.createGuildMessageCommand(command.guildId, command.name) {
-                    defaultPermission = command.defaultApplicationPermission
+                    applyPermissions(command)
                 }
                 put(registeredCommand.id, command)
             }
@@ -88,7 +87,20 @@ internal suspend fun KommandoBuilder.registerSlashCommands(
     }
 }
 
-private fun RootInputChatBuilder.buildCommand(command: SlashCommand<*, *, *>) {
+private fun GlobalApplicationCommandCreateBuilder.applyPermissions(
+    command: TopLevelApplicationCommand<*, *, GlobalCommandPermission>,
+) {
+    defaultMemberPermissions = command.permission?.defaultRequiredPermissions
+    dmPermission = command.permission?.isAllowedInDms
+}
+
+private fun ApplicationCommandCreateBuilder.applyPermissions(
+    command: TopLevelApplicationCommand<*, *, GuildCommandPermission>,
+) {
+    defaultMemberPermissions = command.permission?.defaultRequiredPermissions
+}
+
+private fun RootInputChatBuilder.buildCommand(command: SlashCommand<*, *, *, *>) {
     buildArguments(command.executor?.arguments ?: emptyList())
 
     for ((_, group) in command.groups) {

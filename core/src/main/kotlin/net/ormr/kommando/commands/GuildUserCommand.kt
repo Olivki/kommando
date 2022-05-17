@@ -31,7 +31,7 @@ import dev.kord.core.event.interaction.GuildUserCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.slash.UserSlashArgument
-import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
+import net.ormr.kommando.commands.permissions.GuildCommandPermission
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -39,11 +39,10 @@ private typealias GuildUserEvent = GuildUserCommandInteractionCreateEvent
 
 public data class GuildUserCommand(
     override val name: String,
-    override val defaultApplicationPermission: Boolean,
-    override val applicationPermissions: ApplicationCommandPermissions?,
+    override val permission: GuildCommandPermission?,
     override val executor: ContextCommandExecutor<User, GuildUserEvent, GuildUserCommandData>,
     override val guildId: Snowflake,
-) : ContextCommand<User, GuildUserEvent, GuildUserCommandData>, GuildApplicationCommand
+) : ContextCommand<User, GuildUserEvent, GuildUserCommandData, GuildCommandPermission>, GuildApplicationCommand
 
 public data class GuildUserCommandData(
     override val kommando: Kommando,
@@ -57,14 +56,13 @@ public data class GuildUserCommandData(
 public class GuildUserCommandBuilder @PublishedApi internal constructor(
     private val name: String,
     private val guildId: Snowflake,
-) : ContextCommandBuilder<GuildUserCommand, User, GuildUserEvent, GuildUserCommandData>() {
+) : ContextCommandBuilder<GuildUserCommand, User, GuildUserEvent, GuildUserCommandData, GuildCommandPermission>() {
     override fun getEmptyArgument(): UserSlashArgument = UserSlashArgument("", "")
 
     @PublishedApi
     override fun build(): GuildUserCommand = GuildUserCommand(
         name = name,
-        defaultApplicationPermission = defaultApplicationPermission,
-        applicationPermissions = applicationPermissions,
+        permission = permission,
         executor = getNonNullExecutor(),
         guildId = guildId,
     )

@@ -62,9 +62,9 @@ public class Kommando internal constructor(
     public val eventListeners: List<EventListener>,
     public val messageFilters: List<MessageFilter>,
     public val chatCommands: Map<String, ChatCommand<*>>,
-    public val applicationCommands: List<TopLevelApplicationCommand<*, *>>,
+    public val applicationCommands: List<TopLevelApplicationCommand<*, *, *>>,
     public val prefix: CommandPrefix?,
-    internal val registeredApplicationCommands: Map<Snowflake, TopLevelApplicationCommand<*, *>>,
+    internal val registeredApplicationCommands: Map<Snowflake, TopLevelApplicationCommand<*, *, *>>,
     internal val config: KommandoConfig,
 ) : DIAware, KommandoAware {
     /**
@@ -84,7 +84,6 @@ public class Kommando internal constructor(
     public val componentStorage: ComponentStorage = ComponentStorage(this)
 
     internal suspend fun initialize() {
-        registerApplicationCommandPermissions()
         handleApplicationCommands()
         handleChatCommands()
         handleComponents()
@@ -174,7 +173,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
                     it.aliases.forEach { alias -> put(alias, it) }
                 }
         }
-        val applicationCommands = flattenedCommands.filterIsInstance<TopLevelApplicationCommand<*, *>>()
+        val applicationCommands = flattenedCommands.filterIsInstance<TopLevelApplicationCommand<*, *, *>>()
         // TODO: should we log this if 'applicationCommands' is empty?
         logger.info { "Registering ${applicationCommands.size} application commands." }
         val (registeredApplicationCommands, duration) = measureTimedValue { registerSlashCommands(applicationCommands) }
@@ -211,6 +210,7 @@ public suspend inline fun bot(
 ) {
     contract {
         callsInPlace(presence, InvocationKind.EXACTLY_ONCE)
+        callsInPlace(di, InvocationKind.AT_LEAST_ONCE)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 

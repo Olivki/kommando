@@ -24,39 +24,31 @@
 
 package net.ormr.kommando.commands.permissions
 
+import dev.kord.common.entity.Permissions
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.commands.WithApplicationCommandPermissionsBuilder
+import net.ormr.kommando.commands.WithCommandPermissionBuilder
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-public data class ApplicationCommandPermissions(public val guildPermissions: List<GuildApplicationCommandPermissions>)
+public data class GuildCommandPermission(
+    override val defaultRequiredPermissions: Permissions,
+) : CommandPermission
 
 @KommandoDsl
-public class ApplicationCommandPermissionsBuilder @PublishedApi internal constructor() {
-    private val permissions = mutableListOf<GuildApplicationCommandPermissions>()
-
+public class GuildCommandPermissionBuilder @PublishedApi internal constructor() :
+    CommandPermissionBuilder<GuildCommandPermission>() {
     @PublishedApi
-    internal fun addPermission(permission: GuildApplicationCommandPermissions) {
-        permissions += permission
-    }
-
-    @PublishedApi
-    internal fun build(): ApplicationCommandPermissions = ApplicationCommandPermissions(permissions.toList())
+    override fun build(): GuildCommandPermission = GuildCommandPermission(defaultPermissions)
 }
 
 @KommandoDsl
-public inline fun applicationPermissions(builder: ApplicationCommandPermissionsBuilder.() -> Unit): ApplicationCommandPermissions =
-    ApplicationCommandPermissionsBuilder().apply(builder).build()
-
-@KommandoDsl
-public inline fun WithApplicationCommandPermissionsBuilder.applicationPermissions(
-    builder: ApplicationCommandPermissionsBuilder.() -> Unit,
-): ApplicationCommandPermissions {
+@JvmName("guildCommandPermissions")
+public inline fun WithCommandPermissionBuilder<GuildCommandPermission>.permission(
+    builder: GuildCommandPermissionBuilder.() -> Unit,
+) {
     contract {
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    val perms = ApplicationCommandPermissionsBuilder().apply(builder).build()
-    applicationPermissions = perms
-    return perms
+    permission = GuildCommandPermissionBuilder().apply(builder).build()
 }

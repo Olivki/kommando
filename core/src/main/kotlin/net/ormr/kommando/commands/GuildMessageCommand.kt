@@ -31,7 +31,7 @@ import dev.kord.core.event.interaction.GuildMessageCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.slash.MentionableSlashArgument
-import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
+import net.ormr.kommando.commands.permissions.GuildCommandPermission
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -39,11 +39,10 @@ private typealias GuildMessageEvent = GuildMessageCommandInteractionCreateEvent
 
 public data class GuildMessageCommand(
     override val name: String,
-    override val defaultApplicationPermission: Boolean,
-    override val applicationPermissions: ApplicationCommandPermissions?,
+    override val permission: GuildCommandPermission?,
     override val executor: ContextCommandExecutor<Message, GuildMessageEvent, GuildMessageCommandData>,
     override val guildId: Snowflake,
-) : ContextCommand<Message, GuildMessageEvent, GuildMessageCommandData>, GuildApplicationCommand
+) : ContextCommand<Message, GuildMessageEvent, GuildMessageCommandData, GuildCommandPermission>, GuildApplicationCommand
 
 public data class GuildMessageCommandData(
     override val kommando: Kommando,
@@ -57,14 +56,13 @@ public data class GuildMessageCommandData(
 public class GuildMessageCommandBuilder @PublishedApi internal constructor(
     private val name: String,
     private val guildId: Snowflake,
-) : ContextCommandBuilder<GuildMessageCommand, Message, GuildMessageEvent, GuildMessageCommandData>() {
+) : ContextCommandBuilder<GuildMessageCommand, Message, GuildMessageEvent, GuildMessageCommandData, GuildCommandPermission>() {
     override fun getEmptyArgument(): MentionableSlashArgument = MentionableSlashArgument("", "")
 
     @PublishedApi
     override fun build(): GuildMessageCommand = GuildMessageCommand(
         name = name,
-        defaultApplicationPermission = defaultApplicationPermission,
-        applicationPermissions = applicationPermissions,
+        permission = permission,
         executor = getNonNullExecutor(),
         guildId = guildId,
     )

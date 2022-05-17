@@ -168,7 +168,7 @@ internal suspend fun Kommando.handleApplicationCommands() {
         val commandId = interaction.command.rootId
         val command = getCommand(commandId)
         // TODO: throw exception?
-        if (command !is SlashCommand<*, *, *>) return@on
+        if (command !is SlashCommand<*, *, *, *>) return@on
         when (val interactionCommand = interaction.command) {
             is RootCommand -> {
                 val argument = command.executor!!.getArgument(focusedCommandName)
@@ -199,13 +199,13 @@ internal suspend fun Kommando.handleApplicationCommands() {
 private fun invalidArgumentForAutoComplete(): Nothing = error("Found argument does not have auto complete support.")
 
 // TODO: make into a normal function?
-private fun <S : SlashSubCommand<*, *>> SlashCommand<*, *, S>.getGroup(
+private fun <S : SlashSubCommand<*, *>> SlashCommand<*, *, S, *>.getGroup(
     name: String,
     id: Snowflake,
 ): SlashCommandGroup<S> = groups[name] ?: noSuchCommandGroup(name, id)
 
 // TODO: make into a normal function?
-private fun <S : SlashSubCommand<*, *>> SlashCommand<*, *, S>.getSubCommand(
+private fun <S : SlashSubCommand<*, *>> SlashCommand<*, *, S, *>.getSubCommand(
     name: String,
     id: Snowflake,
 ): S = subCommands[name] ?: noSuchSubCommand(name, id)
@@ -223,7 +223,7 @@ private fun SlashArgumentWithChoice<*>.getAutoComplete(): AutoCompleteAction =
 private fun CommandExecutor<SlashArgument<*>, *, *, *>.getArgument(name: String): SlashArgument<*> =
     arguments.single { it.name == name }
 
-private fun Kommando.getCommand(id: Snowflake): TopLevelApplicationCommand<*, *> =
+private fun Kommando.getCommand(id: Snowflake): TopLevelApplicationCommand<*, *, *> =
     registeredApplicationCommands[id] ?: noCommandFound(id)
 
 private suspend fun <E : Event, D : CommandData<E>> ApplicationCommand<E, D>.getArgs(

@@ -30,7 +30,7 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.commands.arguments.slash.MentionableSlashArgument
-import net.ormr.kommando.commands.permissions.ApplicationCommandPermissions
+import net.ormr.kommando.commands.permissions.GlobalCommandPermission
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -38,10 +38,10 @@ private typealias GlobalMessageEvent = MessageCommandInteractionCreateEvent
 
 public data class GlobalMessageCommand(
     override val name: String,
-    override val defaultApplicationPermission: Boolean,
-    override val applicationPermissions: ApplicationCommandPermissions?,
+    override val permission: GlobalCommandPermission?,
     override val executor: ContextCommandExecutor<Message, GlobalMessageEvent, GlobalMessageCommandData>,
-) : ContextCommand<Message, GlobalMessageEvent, GlobalMessageCommandData>, GlobalApplicationCommand
+) : ContextCommand<Message, GlobalMessageEvent, GlobalMessageCommandData, GlobalCommandPermission>,
+    GlobalApplicationCommand
 
 public data class GlobalMessageCommandData(
     override val kommando: Kommando,
@@ -53,14 +53,13 @@ public data class GlobalMessageCommandData(
 
 @KommandoDsl
 public class GlobalMessageCommandBuilder @PublishedApi internal constructor(private val name: String) :
-    ContextCommandBuilder<GlobalMessageCommand, Message, GlobalMessageEvent, GlobalMessageCommandData>() {
+    ContextCommandBuilder<GlobalMessageCommand, Message, GlobalMessageEvent, GlobalMessageCommandData, GlobalCommandPermission>() {
     override fun getEmptyArgument(): MentionableSlashArgument = MentionableSlashArgument("", "")
 
     @PublishedApi
     override fun build(): GlobalMessageCommand = GlobalMessageCommand(
         name = name,
-        defaultApplicationPermission = defaultApplicationPermission,
-        applicationPermissions = applicationPermissions,
+        permission = permission,
         executor = getNonNullExecutor(),
     )
 }

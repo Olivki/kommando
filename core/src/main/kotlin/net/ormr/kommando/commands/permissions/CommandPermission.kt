@@ -24,17 +24,8 @@
 
 package net.ormr.kommando.commands.permissions
 
-/**
- * The mode of a permission.
- */
-public enum class ApplicationPermissionMode {
-    /**
-     * Allows access to the command.
-     */
-    ALLOW,
+import dev.kord.common.entity.Permissions
 
-    /**
-     * Denies access to the command.
-     */
-    DENY,
+public sealed interface CommandPermission {
+    public val defaultRequiredPermissions: Permissions
 }
