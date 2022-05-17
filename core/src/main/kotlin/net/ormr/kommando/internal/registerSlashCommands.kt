@@ -29,13 +29,14 @@ import dev.kord.rest.builder.interaction.*
 import net.ormr.kommando.KommandoBuilder
 import net.ormr.kommando.commands.*
 import net.ormr.kommando.commands.arguments.slash.SlashArgument
-import net.ormr.kommando.commands.permissions.GlobalCommandPermission
-import net.ormr.kommando.commands.permissions.GuildCommandPermission
+import net.ormr.kommando.commands.permissions.*
 
 // TODO: this gets relatively slow, but only for guild commands?
 internal suspend fun KommandoBuilder.registerSlashCommands(
     applicationCommands: List<TopLevelApplicationCommand<*, *, *>>,
 ): Map<Snowflake, TopLevelApplicationCommand<*, *, *>> = buildMap {
+    val globalFactory = defaultCommandPermissions?.globalPermissionFactory
+    val guildFactory = defaultCommandPermissions?.guildPermissionFactory
     for (command in applicationCommands) {
         when (command) {
             is GlobalSlashCommand -> {
@@ -43,20 +44,20 @@ internal suspend fun KommandoBuilder.registerSlashCommands(
                     command.name,
                     command.description,
                 ) {
-                    applyPermissions(command)
+                    applyPermissions(globalFactory, command)
                     buildCommand(command)
                 }
                 put(registeredCommand.id, command)
             }
             is GlobalUserCommand -> {
                 val registeredCommand = kord.createGlobalUserCommand(command.name) {
-                    applyPermissions(command)
+                    applyPermissions(globalFactory, command)
                 }
                 put(registeredCommand.id, command)
             }
             is GlobalMessageCommand -> {
                 val registeredCommand = kord.createGlobalMessageCommand(command.name) {
-                    applyPermissions(command)
+                    applyPermissions(globalFactory, command)
                 }
                 put(registeredCommand.id, command)
             }
@@ -66,20 +67,20 @@ internal suspend fun KommandoBuilder.registerSlashCommands(
                     command.name,
                     command.description,
                 ) {
-                    applyPermissions(command)
+                    applyPermissions(guildFactory, command)
                     buildCommand(command)
                 }
                 put(registeredCommand.id, command)
             }
             is GuildUserCommand -> {
                 val registeredCommand = kord.createGuildUserCommand(command.guildId, command.name) {
-                    applyPermissions(command)
+                    applyPermissions(guildFactory, command)
                 }
                 put(registeredCommand.id, command)
             }
             is GuildMessageCommand -> {
                 val registeredCommand = kord.createGuildMessageCommand(command.guildId, command.name) {
-                    applyPermissions(command)
+                    applyPermissions(guildFactory, command)
                 }
                 put(registeredCommand.id, command)
             }
@@ -87,17 +88,25 @@ internal suspend fun KommandoBuilder.registerSlashCommands(
     }
 }
 
-private fun GlobalApplicationCommandCreateBuilder.applyPermissions(
+private suspend fun GlobalApplicationCommandCreateBuilder.applyPermissions(
+    factory: GlobalCommandPermissionFactory?,
     command: TopLevelApplicationCommand<*, *, GlobalCommandPermission>,
 ) {
-    defaultMemberPermissions = command.permission?.defaultRequiredPermissions
-    dmPermission = command.permission?.isAllowedInDms
+    check(command is TopLevelGlobalApplicationCommand)
+    val permission =
+        command.permission ?: factory?.let { GlobalCommandPermissionBuilder().apply { it(this, command) }.build() }
+    defaultMemberPermissions = permission?.defaultRequiredPermissions
+    dmPermission = permission?.isAllowedInDms
 }
 
-private fun ApplicationCommandCreateBuilder.applyPermissions(
+private suspend fun ApplicationCommandCreateBuilder.applyPermissions(
+    factory: GuildCommandPermissionFactory?,
     command: TopLevelApplicationCommand<*, *, GuildCommandPermission>,
 ) {
-    defaultMemberPermissions = command.permission?.defaultRequiredPermissions
+    check(command is TopLevelGuildApplicationCommand)
+    val permission =
+        command.permission ?: factory?.let { GuildCommandPermissionBuilder().apply { it(this, command) }.build() }
+    defaultMemberPermissions = permission?.defaultRequiredPermissions
 }
 
 private fun RootInputChatBuilder.buildCommand(command: SlashCommand<*, *, *, *>) {

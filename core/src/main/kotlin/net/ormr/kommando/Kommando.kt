@@ -36,6 +36,7 @@ import dev.kord.gateway.builder.PresenceBuilder
 import net.ormr.kommando.commands.ChatCommand
 import net.ormr.kommando.commands.CommandContainer
 import net.ormr.kommando.commands.TopLevelApplicationCommand
+import net.ormr.kommando.commands.permissions.DefaultCommandPermissions
 import net.ormr.kommando.commands.prefix.CommandPrefix
 import net.ormr.kommando.commands.prefix.CommandPrefixBuilder
 import net.ormr.kommando.components.ComponentStorage
@@ -64,6 +65,7 @@ public class Kommando internal constructor(
     public val chatCommands: Map<String, ChatCommand<*>>,
     public val applicationCommands: List<TopLevelApplicationCommand<*, *, *>>,
     public val prefix: CommandPrefix?,
+    public val defaultCommandPermissions: DefaultCommandPermissions?,
     internal val registeredApplicationCommands: Map<Snowflake, TopLevelApplicationCommand<*, *, *>>,
     internal val config: KommandoConfig,
 ) : DIAware, KommandoAware {
@@ -129,6 +131,11 @@ public class KommandoBuilder @PublishedApi internal constructor(
     @KommandoDsl
     public val ignoreBots: MessageFilter = messageFilter { message.author?.isBot != true }
 
+    /**
+     * The command permissions to apply to application commands which have not defined an explicit permission block.
+     */
+    public var defaultCommandPermissions: DefaultCommandPermissions? = null
+
     @PublishedApi
     internal var prefix: CommandPrefix? = null
 
@@ -188,6 +195,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
             chatCommands = chatCommands,
             applicationCommands = applicationCommands,
             prefix = prefix,
+            defaultCommandPermissions = defaultCommandPermissions,
             registeredApplicationCommands = registeredApplicationCommands,
             config = KommandoConfig(
                 modalExpirationDuration = modalExpirationDuration,
