@@ -29,9 +29,10 @@ plugins {
 version = "0.10.0"
 
 dependencies {
+    implementation("net.ormr.kommando:kommando-core:0.0.15")
+
     implementation("com.squareup:kotlinpoet-ksp:1.11.0")
     implementation("com.google.devtools.ksp:symbol-processing-api:1.6.21-1.0.5")
-    implementation("net.ormr.kommando:core:0.0.13")
     kapt("com.google.auto.service:auto-service:1.0.1")
     compileOnly("com.google.auto.service:auto-service:1.0.1")
 }
