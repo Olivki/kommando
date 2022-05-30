@@ -35,7 +35,9 @@ repositories {
 }
 
 subprojects {
-    apply(plugin = "me.him188.maven-central-publish")
+    if (name == "core" || name == "processor") {
+        apply(plugin = "me.him188.maven-central-publish")
+    }
     apply(plugin = "kotlin")
 
     group = "net.ormr.kommando"
@@ -45,11 +47,13 @@ subprojects {
         mavenCentral()
     }
 
-    mavenCentralPublish {
-        artifactId = "kommando-${project.name}"
-        useCentralS01()
-        singleDevGithubProject("Olivki", "kommando")
-        licenseFromGitHubProject("mit")
+    pluginManager.withPlugin("me.him188.maven-central-publish") {
+        mavenCentralPublish {
+            artifactId = "kommando-${project.name}"
+            useCentralS01()
+            singleDevGithubProject("Olivki", "kommando")
+            licenseFromGitHubProject("mit")
+        }
     }
 
     kotlin {
