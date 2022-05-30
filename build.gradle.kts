@@ -46,6 +46,7 @@ subprojects {
     }
 
     mavenCentralPublish {
+        artifactId = "kommando-${project.name}"
         useCentralS01()
         singleDevGithubProject("Olivki", "kommando")
         licenseFromGitHubProject("mit")

@@ -38,7 +38,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 
 class KommandoPlugin : Plugin<Project> {
     private companion object {
-        private const val PROCESSOR_VERSION = "0.9.0"
+        private const val PROCESSOR_VERSION = "0.10.0"
     }
 
     override fun apply(project: Project) {
@@ -59,14 +59,14 @@ class KommandoPlugin : Plugin<Project> {
         }
 
         project.dependencies {
-            val processorDependency = "net.ormr.kommando:processor:${PROCESSOR_VERSION}"
+            val processorDependency = "net.ormr.kommando:kommando-processor:${PROCESSOR_VERSION}"
             add("compileOnly", processorDependency)
             add("ksp", processorDependency)
         }
 
         project.afterEvaluate {
             project.dependencies {
-                add("implementation", "net.ormr.kommando:core:${extension.version}")
+                add("implementation", "net.ormr.kommando:kommando-core:${extension.version}")
             }
 
             project.extensions.configure<KspExtension> {
