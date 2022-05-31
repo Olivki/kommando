@@ -39,7 +39,7 @@ private typealias GlobalMessageEvent = MessageCommandInteractionCreateEvent
 public data class GlobalMessageCommand(
     override val name: String,
     override val permission: GlobalCommandPermission?,
-    override val executor: ContextCommandExecutor<Message, GlobalMessageEvent, GlobalMessageCommandData>,
+    override val executor: MessageCommandExecutor<GlobalMessageEvent, GlobalMessageCommandData>,
 ) : ContextCommand<Message, GlobalMessageEvent, GlobalMessageCommandData, GlobalCommandPermission>,
     TopLevelGlobalApplicationCommand
 

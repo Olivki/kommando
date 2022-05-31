@@ -40,7 +40,7 @@ private typealias GuildMessageEvent = GuildMessageCommandInteractionCreateEvent
 public data class GuildMessageCommand(
     override val name: String,
     override val permission: GuildCommandPermission?,
-    override val executor: ContextCommandExecutor<Message, GuildMessageEvent, GuildMessageCommandData>,
+    override val executor: MessageCommandExecutor<GuildMessageEvent, GuildMessageCommandData>,
     override val guildId: Snowflake,
 ) : ContextCommand<Message, GuildMessageEvent, GuildMessageCommandData, GuildCommandPermission>,
     TopLevelGuildApplicationCommand

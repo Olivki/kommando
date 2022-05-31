@@ -39,7 +39,7 @@ private typealias GlobalUserEvent = UserCommandInteractionCreateEvent
 public data class GlobalUserCommand(
     override val name: String,
     override val permission: GlobalCommandPermission?,
-    override val executor: ContextCommandExecutor<User, GlobalUserEvent, GlobalUserCommandData>,
+    override val executor: UserCommandExecutor<GlobalUserEvent, GlobalUserCommandData>,
 ) : ContextCommand<User, GlobalUserEvent, GlobalUserCommandData, GlobalCommandPermission>,
     TopLevelGlobalApplicationCommand
 
