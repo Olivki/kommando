@@ -42,15 +42,21 @@ public inline fun SlashContext.boolean(name: String, description: String): Boole
 public fun SlashContext.channel(name: String, description: String): ChannelSlashArgument =
     ChannelSlashArgument(name, description)
 
-public inline fun SlashContext.double(name: String, description: String): DoubleSlashArgument =
-    DoubleSlashArgument(name, description)
+public inline fun SlashContext.double(
+    name: String,
+    description: String,
+    noinline autoComplete: AutoCompleteAction? = null,
+): DoubleSlashArgument = DoubleSlashArgument(name, description, autoComplete)
 
 public inline fun <reified T> SlashContext.enumChoice(name: String, description: String): EnumChoiceSlashArgument<T>
         where T : Enum<T>,
               T : EnumChoiceArgumentAdapter = EnumChoiceSlashArgument(name, description)
 
-public inline fun SlashContext.long(name: String, description: String): LongSlashArgument =
-    LongSlashArgument(name, description)
+public inline fun SlashContext.long(
+    name: String,
+    description: String,
+    noinline autoComplete: AutoCompleteAction? = null,
+): LongSlashArgument = LongSlashArgument(name, description, autoComplete)
 
 public inline fun SlashContext.mentionable(name: String, description: String): MentionableSlashArgument =
     MentionableSlashArgument(name, description)
@@ -58,8 +64,11 @@ public inline fun SlashContext.mentionable(name: String, description: String): M
 public inline fun SlashContext.role(name: String, description: String): RoleSlashArgument =
     RoleSlashArgument(name, description)
 
-public inline fun SlashContext.string(name: String, description: String): StringSlashArgument =
-    StringSlashArgument(name, description)
+public inline fun SlashContext.string(
+    name: String,
+    description: String,
+    noinline autoComplete: AutoCompleteAction? = null,
+): StringSlashArgument = StringSlashArgument(name, description, autoComplete)
 
 public inline fun SlashContext.user(name: String, description: String): UserSlashArgument =
     UserSlashArgument(name, description)
