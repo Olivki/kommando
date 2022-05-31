@@ -33,9 +33,7 @@ import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.gateway.builder.PresenceBuilder
-import net.ormr.kommando.commands.ChatCommand
-import net.ormr.kommando.commands.CommandContainer
-import net.ormr.kommando.commands.TopLevelApplicationCommand
+import net.ormr.kommando.commands.*
 import net.ormr.kommando.commands.permissions.DefaultCommandPermissions
 import net.ormr.kommando.commands.prefix.CommandPrefix
 import net.ormr.kommando.commands.prefix.CommandPrefixBuilder
@@ -66,6 +64,8 @@ public class Kommando internal constructor(
     public val applicationCommands: List<TopLevelApplicationCommand<*, *, *>>,
     public val prefix: CommandPrefix?,
     public val defaultCommandPermissions: DefaultCommandPermissions?,
+    public val devGuildId: Snowflake?,
+    public val isDevMode: Boolean,
     internal val registeredApplicationCommands: Map<Snowflake, TopLevelApplicationCommand<*, *, *>>,
     internal val config: KommandoConfig,
 ) : DIAware, KommandoAware {
@@ -136,6 +136,24 @@ public class KommandoBuilder @PublishedApi internal constructor(
      */
     public var defaultCommandPermissions: DefaultCommandPermissions? = null
 
+    /**
+     * The guild id to the development guild for the bot.
+     *
+     * If this is not `null` and [registerDevCommands] is `true`, then for every `globalXxx` command registered, an
+     * equivalent `guildXxx` command will be registered to this guild.
+     */
+    public var devGuildId: Snowflake? = null
+
+    /**
+     * Whether a copy of a global command as a guild command should be registered to [devGuildId] if it is not `null`.
+     */
+    public var registerDevCommands: Boolean = false
+
+    /**
+     * Whether the bot is currently in dev mode.
+     */
+    public var isDevMode: Boolean = false
+
     @PublishedApi
     internal var prefix: CommandPrefix? = null
 
@@ -180,7 +198,38 @@ public class KommandoBuilder @PublishedApi internal constructor(
                     it.aliases.forEach { alias -> put(alias, it) }
                 }
         }
-        val applicationCommands = flattenedCommands.filterIsInstance<TopLevelApplicationCommand<*, *, *>>()
+        val applicationCommands = flattenedCommands
+            .asSequence()
+            .filterIsInstance<TopLevelApplicationCommand<*, *, *>>()
+            .let { entries ->
+                buildList {
+                    entries.forEach {
+                        val id = devGuildId
+                        if (id != null && isDevMode) {
+                            when (it) {
+                                is GlobalSlashCommand -> {
+                                    add(it)
+                                    logger.info { "Registering global slash command '${it.name}' to dev guild $id" }
+                                    add(it.toGuildSlashCommand(id))
+                                }
+                                is GlobalMessageCommand -> {
+                                    add(it)
+                                    logger.info { "Registering global message command '${it.name}' to dev guild $id" }
+                                    add(it.toGuildMessageCommand(id))
+                                }
+                                is GlobalUserCommand -> {
+                                    add(it)
+                                    logger.info { "Registering global user command '${it.name}' to dev guild $id" }
+                                    add(it.toGuildUserCommand(id))
+                                }
+                                else -> add(it)
+                            }
+                        } else {
+                            add(it)
+                        }
+                    }
+                }
+            }
         // TODO: should we log this if 'applicationCommands' is empty?
         logger.info { "Registering ${applicationCommands.size} application commands." }
         val (registeredApplicationCommands, duration) = measureTimedValue { registerSlashCommands(applicationCommands) }
@@ -196,6 +245,8 @@ public class KommandoBuilder @PublishedApi internal constructor(
             applicationCommands = applicationCommands,
             prefix = prefix,
             defaultCommandPermissions = defaultCommandPermissions,
+            devGuildId = devGuildId,
+            isDevMode = isDevMode,
             registeredApplicationCommands = registeredApplicationCommands,
             config = KommandoConfig(
                 modalExpirationDuration = modalExpirationDuration,

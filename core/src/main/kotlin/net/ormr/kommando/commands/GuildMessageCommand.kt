@@ -35,7 +35,7 @@ import net.ormr.kommando.commands.permissions.GuildCommandPermission
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-private typealias GuildMessageEvent = GuildMessageCommandInteractionCreateEvent
+internal typealias GuildMessageEvent = GuildMessageCommandInteractionCreateEvent
 
 public data class GuildMessageCommand(
     override val name: String,
