@@ -46,6 +46,11 @@ public class CommandExecutor<out A : CommandArgument<*>, EA : CommandExecutorArg
 
 public typealias ApplicationCommandExecutor<E, D> = CommandExecutor<SlashArgument<*>, *, E, D>
 public typealias ContextCommandExecutor<T, E, D> = CommandExecutor<SlashArgument<*>, Args1<T>, E, D>
-public typealias MessageCommandExecutor<E, D> = ContextCommandExecutor<Message, E, D>
-public typealias UserCommandExecutor<E, D> = ContextCommandExecutor<User, E, D>
+// we can't do 'ContextCommandExecutor<Message, E, D>' as for some reason that causes the typealias to be expanded
+// incorrectly in functions, while it works like it should on class properties.
+// For example, trying to use 'MessageCommandExecutor<GuildMessageEvent, GuildMessageCommandData>' would result in a
+// type arguments out of bounds error, stating that 'GuildMessageEvent' was not a 'CommandExecutorArguments'.
+// The same behavior applies to 'UserCommandExecutor'.
+public typealias MessageCommandExecutor<E, D> = CommandExecutor<SlashArgument<*>, Args1<Message>, E, D>
+public typealias UserCommandExecutor<E, D> = CommandExecutor<SlashArgument<*>, Args1<User>, E, D>
 public typealias ChatCommandExecutor<D> = CommandExecutor<ChatArgument<*>, *, MessageCreateEvent, D>
