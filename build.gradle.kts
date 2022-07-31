@@ -37,10 +37,10 @@ subprojects {
     }
 
     dependencies {
-        testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
-        testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
-        testImplementation("io.kotest:kotest-property:$kotestVersion")
-        testImplementation("io.mockk:mockk:1.12.2")
+        testImplementation(Dependencies.kotest.runnerJUnit5)
+        testImplementation(Dependencies.kotest.assertionsCore)
+        testImplementation(Dependencies.kotest.property)
+        testImplementation(Dependencies.mockk)
     }
 
     tasks {
