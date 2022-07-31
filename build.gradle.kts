@@ -48,7 +48,6 @@ subprojects {
             kotlinOptions {
                 jvmTarget = "17"
                 freeCompilerArgs = freeCompilerArgs + listOf(
-                    "-opt-in=kotlin.RequiresOptIn",
                     "-opt-in=kotlin.contracts.ExperimentalContracts",
                 )
             }
