@@ -46,6 +46,7 @@ tasks {
             jvmTarget = "17"
             freeCompilerArgs = freeCompilerArgs + listOf(
                 "-opt-in=kotlin.contracts.ExperimentalContracts",
+                "-Xcontext-receivers",
             )
         }
     }
