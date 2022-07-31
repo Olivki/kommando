@@ -3,57 +3,54 @@ plugins {
     kotlin("jvm") version "1.7.20-Beta"
 }
 
-val kotestVersion: String by project
+group = "net.ormr.kommando"
+version = "0.0.17-dev-1"
 
 repositories {
     mavenLocal()
     mavenCentral()
 }
 
-subprojects {
-    if (name == "core" || name == "processor") {
-        apply(plugin = "me.him188.maven-central-publish")
-    }
-    apply(plugin = "kotlin")
+mavenCentralPublish {
+    artifactId = "kommando-core"
+    useCentralS01()
+    singleDevGithubProject("Olivki", "kommando")
+    licenseApacheV2()
+}
 
-    group = "net.ormr.kommando"
+kotlin {
+    explicitApi()
+}
 
-    repositories {
-        mavenLocal()
-        mavenCentral()
-    }
+dependencies {
+    api(kotlin("reflect"))
 
-    pluginManager.withPlugin("me.him188.maven-central-publish") {
-        mavenCentralPublish {
-            artifactId = "kommando-${project.name}"
-            useCentralS01()
-            singleDevGithubProject("Olivki", "kommando")
-            licenseFromGitHubProject("mit")
+    api(Dependencies.kodein.di.di)
+    api(Dependencies.kodein.di.diConf)
+
+    api(Dependencies.kord.core)
+    api(Dependencies.kord.x.emoji)
+
+    implementation(Dependencies.kotlinInlineLogger)
+
+    testImplementation(Dependencies.kotest.runnerJUnit5)
+    testImplementation(Dependencies.kotest.assertionsCore)
+    testImplementation(Dependencies.kotest.property)
+
+    testImplementation(Dependencies.mockk)
+}
+
+tasks {
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "17"
+            freeCompilerArgs = freeCompilerArgs + listOf(
+                "-opt-in=kotlin.contracts.ExperimentalContracts",
+            )
         }
     }
 
-    kotlin {
-        explicitApi()
-    }
-
-    dependencies {
-        testImplementation(Dependencies.kotest.runnerJUnit5)
-        testImplementation(Dependencies.kotest.assertionsCore)
-        testImplementation(Dependencies.kotest.property)
-        testImplementation(Dependencies.mockk)
-    }
-
-    tasks {
-        compileKotlin {
-            kotlinOptions {
-                jvmTarget = "17"
-                freeCompilerArgs = freeCompilerArgs + listOf(
-                    "-opt-in=kotlin.contracts.ExperimentalContracts",
-                )
-            }
-        }
-        test {
-            useJUnitPlatform()
-        }
+    test {
+        useJUnitPlatform()
     }
 }
