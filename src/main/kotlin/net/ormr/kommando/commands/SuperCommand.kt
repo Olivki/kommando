@@ -21,12 +21,7 @@ import net.ormr.kommando.commands.permissions.CommandPermissions
 import net.ormr.kommando.localization.LocalizedString
 import net.ormr.kommando.resolve
 
-public sealed class SuperCommand<
-        Self : SuperCommand<Self, I, Sub, Perms>,
-        out I : ChatInputCommandInteraction,
-        Sub : SubCommand<Sub, I, Self>,
-        Perms : CommandPermissions,
-        >(
+public sealed class SuperCommand<out I : ChatInputCommandInteraction, Perms : CommandPermissions>(
     name: String,
 ) : TopLevelCommand<I, Perms>(name), CustomizableCommand, DescribableCommand {
     public override val description: LocalizedString by lazy { localization.resolve("description") }

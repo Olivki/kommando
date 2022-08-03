@@ -21,20 +21,15 @@ import net.ormr.kommando.KommandoComponentPath
 import net.ormr.kommando.extend
 import net.ormr.kommando.localization.LocalizedString
 import net.ormr.kommando.resolve
-import kotlin.reflect.KClass
 
-public sealed class SubCommand<
-        Self : SubCommand<Self, I, Super>,
-        out I : ChatInputCommandInteraction,
-        Super : SuperCommand<Super, I, Self, *>,
-        >(
-    internal val parentClass: KClass<out Super>,
+public sealed class SubCommand<out I : ChatInputCommandInteraction, out Super : SuperCommand<*, *>>(
     name: String,
 ) : Command<I>(name), CustomizableCommand, DescribableCommand {
     public override val description: LocalizedString by lazy { localization.resolve("description") }
 
     // TODO: set this when 'subCommands' in the builder block
-    public lateinit var parent: Super
+    // the setter is not available to the user, so @UnsafeVariance is *relatively* safe here
+    public lateinit var parent: @UnsafeVariance Super
         internal set
 
     final override val componentPath: KommandoComponentPath by lazy {
@@ -45,6 +40,6 @@ public sealed class SubCommand<
 // to circumvent 'setter for property is removed by type projection' error while still keeping the type information
 // for the end user on 'parent'
 @PublishedApi
-internal fun SubCommand<*, *, *>.setParent(parent: SuperCommand<*, *, *, *>) {
+internal fun SubCommand<*, *>.setParent(parent: SuperCommand<*, *>) {
     this::parent.set(parent)
 }

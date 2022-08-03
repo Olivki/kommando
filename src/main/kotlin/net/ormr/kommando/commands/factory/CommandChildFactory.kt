@@ -27,11 +27,11 @@ public sealed interface CommandChildFactory<R : KommandoComponent> {
     public operator fun invoke(di: DirectDI): R = factory(di)
 }
 
-public class SubCommandFactory internal constructor(override val factory: DirectDI.() -> SubCommand<*, *, *>) :
-    CommandChildFactory<SubCommand<*, *, *>>
+public class SubCommandFactory internal constructor(override val factory: DirectDI.() -> SubCommand<*, *>) :
+    CommandChildFactory<SubCommand<*, *>>
 
 public class CommandGroupFactory internal constructor(
     override val factory: DirectDI.() -> CommandGroup,
-    public val factories: List<DirectDI.() -> SubCommand<*, *, *>>,
+    public val factories: List<DirectDI.() -> SubCommand<*, *>>,
 ) : CommandChildFactory<CommandGroup>
 

@@ -32,8 +32,8 @@ public class SingleCommandFactory internal constructor(override val factory: Dir
 }
 
 public class ParentCommandFactory internal constructor(
-    override val factory: DirectDI.() -> SuperCommand<*, *, *, *>,
+    override val factory: DirectDI.() -> SuperCommand<*, *>,
     public val children: List<CommandChildFactory<*>>,
 ) : CommandFactory {
-    override fun invoke(di: DirectDI): SuperCommand<*, *, *, *> = factory(di)
+    override fun invoke(di: DirectDI): SuperCommand<*, *> = factory(di)
 }

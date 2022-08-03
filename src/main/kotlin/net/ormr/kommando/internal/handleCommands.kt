@@ -51,7 +51,7 @@ context(Kommando)
 }
 
 context(Kommando, ChatInputCommandInteractionCreateEvent)
-        private suspend inline fun <reified C : SuperCommand<*, *, *, *>> inputCommand() {
+        private suspend inline fun <reified C : SuperCommand<*, *>> inputCommand() {
     val interactionCommand = interaction.command
     val id = interactionCommand.rootId
     val command = registeredCommands[id] ?: throw NoSuchCommandException(

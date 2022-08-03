@@ -16,10 +16,13 @@
 
 package net.ormr.kommando.commands.factory
 
+import dev.kord.core.entity.interaction.ChatInputCommandInteraction
 import net.ormr.kommando.KommandoBuilder
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.bot
-import net.ormr.kommando.commands.*
+import net.ormr.kommando.commands.CommandGroup
+import net.ormr.kommando.commands.SubCommand
+import net.ormr.kommando.commands.SuperCommand
+import net.ormr.kommando.commands.TopLevelCommand
 import net.ormr.kommando.commands.permissions.CommandPermissions
 import org.kodein.di.DirectDI
 import kotlin.contracts.InvocationKind
@@ -27,16 +30,16 @@ import kotlin.contracts.contract
 
 @KommandoDsl
 public class CommandFactoryBuilder<
-        Cmd : SuperCommand<Cmd, *, Sub, Perms>,
-        Sub : SubCommand<Sub, *, Cmd>,
+        Cmd : SuperCommand<I, Perms>,
+        I : ChatInputCommandInteraction,
         Perms : CommandPermissions,
         >(private val factory: DirectDI.() -> Cmd) {
     private val children = mutableListOf<CommandChildFactory<*>>()
 
     @KommandoDsl
     public fun subCommands(
-        factory: DirectDI.() -> Sub,
-        vararg moreFactories: DirectDI.() -> Sub,
+        factory: DirectDI.() -> SubCommand<I, Cmd>,
+        vararg moreFactories: DirectDI.() -> SubCommand<I, Cmd>,
     ) {
         val factories = buildList(moreFactories.size + 1) {
             add(SubCommandFactory(factory))
@@ -49,8 +52,8 @@ public class CommandFactoryBuilder<
     @KommandoDsl
     public fun group(
         group: DirectDI.() -> CommandGroup,
-        factory: DirectDI.() -> Sub,
-        vararg moreFactories: DirectDI.() -> Sub,
+        factory: DirectDI.() -> SubCommand<I, Cmd>,
+        vararg moreFactories: DirectDI.() -> SubCommand<I, Cmd>,
     ) {
         val factories = buildList(moreFactories.size + 1) {
             add(factory)
@@ -70,12 +73,12 @@ public class CommandFactoryBuilder<
 context(KommandoBuilder)
         @KommandoDsl
         public inline fun <
-        Cmd : SuperCommand<Cmd, *, Sub, Perms>,
-        Sub : SubCommand<Sub, *, Cmd>,
+        Cmd : SuperCommand<I, Perms>,
+        I : ChatInputCommandInteraction,
         Perms : CommandPermissions,
         > commandFactory(
     noinline factory: DirectDI.() -> Cmd,
-    builder: CommandFactoryBuilder<Cmd, Sub, Perms>.() -> Unit,
+    builder: CommandFactoryBuilder<Cmd, I, Perms>.() -> Unit,
 ): CommandFactory {
     contract {
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
@@ -88,21 +91,3 @@ context(KommandoBuilder)
         @KommandoDsl
         public fun commandFactory(factory: DirectDI.() -> TopLevelCommand<*, *>): CommandFactory =
     SingleCommandFactory(factory)
-
-public suspend fun main() {
-    bot("thing") {
-        commands += commandFactory({ PingCommand() }) {
-            subCommands({ ThingSubCommand() }, { PingSubCommand() })
-        }
-    }
-}
-
-public class PingCommand : GlobalCommand("ping")
-
-public class PingSubCommand : GlobalSubCommand(PingCommand::class, "thing")
-
-public class BabyCommand : GlobalMessageCommand("Baby")
-
-public class ThingCommand : GlobalCommand("gamer")
-
-public class ThingSubCommand : GlobalSubCommand(ThingCommand::class, "baby")

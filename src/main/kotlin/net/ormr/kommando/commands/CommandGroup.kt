@@ -28,7 +28,7 @@ public abstract class CommandGroup(public val defaultName: String) : KommandoCom
         localization.resolveOrNull("name") ?: LocalizedString(defaultName)
     }
 
-    internal lateinit var parent: SuperCommand<*, *, *, *>
+    internal lateinit var parent: SuperCommand<*, *>
 
     final override val componentPath: KommandoComponentPath by lazy {
         parent.componentPath.extend("groups", defaultName)

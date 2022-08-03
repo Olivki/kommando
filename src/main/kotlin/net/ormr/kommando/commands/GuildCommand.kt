@@ -19,7 +19,6 @@ package net.ormr.kommando.commands
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import net.ormr.kommando.commands.permissions.GuildCommandPermissions
-import kotlin.reflect.KClass
 
 public typealias GuildCommandInteraction = GuildChatInputCommandInteraction
 
@@ -28,13 +27,12 @@ public sealed interface GuildApplicationCommand : GuildCentricCommand
 public abstract class GuildCommand(
     name: String,
     override val guildId: Snowflake,
-) : SuperCommand<GuildCommand, GuildCommandInteraction, GuildSubCommand, GuildCommandPermissions>(name),
+) : SuperCommand<GuildCommandInteraction, GuildCommandPermissions>(name),
     GuildApplicationCommand, GuildTopLevelCommand
 
-public abstract class GuildSubCommand(
-    parent: KClass<out GuildCommand>,
+public abstract class GuildSubCommand<out Super : GuildCommand>(
     name: String,
-) : SubCommand<GuildSubCommand, GuildCommandInteraction, GuildCommand>(parent, name), GuildApplicationCommand {
+) : SubCommand<GuildCommandInteraction, Super>(name), GuildApplicationCommand {
     final override val guildId: Snowflake
         get() = parent.guildId
 }

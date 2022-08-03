@@ -18,7 +18,6 @@ package net.ormr.kommando.commands
 
 import dev.kord.core.entity.interaction.ChatInputCommandInteraction
 import net.ormr.kommando.commands.permissions.GlobalCommandPermissions
-import kotlin.reflect.KClass
 
 public typealias GlobalCommandInteraction = ChatInputCommandInteraction
 
@@ -26,10 +25,9 @@ public sealed interface GlobalApplicationCommand : GlobalCentricCommand
 
 public abstract class GlobalCommand(
     name: String,
-) : SuperCommand<GlobalCommand, GlobalCommandInteraction, GlobalSubCommand, GlobalCommandPermissions>(name),
-    GlobalApplicationCommand, GlobalTopLevelCommand
+) : SuperCommand<GlobalCommandInteraction, GlobalCommandPermissions>(name), GlobalApplicationCommand,
+    GlobalTopLevelCommand
 
-public abstract class GlobalSubCommand(
-    parent: KClass<out GlobalCommand>,
+public abstract class GlobalSubCommand<out Super : GlobalCommand>(
     name: String,
-) : SubCommand<GlobalSubCommand, GlobalCommandInteraction, GlobalCommand>(parent, name), GlobalApplicationCommand
+) : SubCommand<GlobalCommandInteraction, Super>(name), GlobalApplicationCommand

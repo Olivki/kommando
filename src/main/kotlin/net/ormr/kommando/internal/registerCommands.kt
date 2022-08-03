@@ -120,11 +120,11 @@ private fun RootInputChatBuilder.buildCommand(
         nameLocalizations = command.name.toMutableMap()
     }
 
-    if (command is SuperCommand<*, *, *, *> && this is LocalizedDescriptionBuilder) {
+    if (command is SuperCommand<*, *> && this is LocalizedDescriptionBuilder) {
         descriptionLocalizations = command.description.toMutableMap()
     }
 
-    fun SubCommandBuilder.buildSubCommand(subCommand: SubCommand<*, *, *>) {
+    fun SubCommandBuilder.buildSubCommand(subCommand: SubCommand<*, *>) {
         buildArguments(subCommand.arguments.values, resolver)
     }
 
@@ -248,12 +248,12 @@ private data class ParentCommandWrapper(
 private sealed interface CommandChildWrapper
 
 private data class SubCommandWrapper(
-    val instance: SubCommand<*, *, *>,
+    val instance: SubCommand<*, *>,
     val factory: SubCommandFactory,
 ) : CommandChildWrapper
 
 private data class CommandGroupWrapper(
     val instance: CommandGroup,
-    val subCommands: List<SubCommand<*, *, *>>,
+    val subCommands: List<SubCommand<*, *>>,
     val factory: CommandGroupFactory,
 ) : CommandChildWrapper
