@@ -31,7 +31,7 @@ public class SubCommandFactory internal constructor(override val factory: Direct
     CommandChildFactory<SubCommand<*, *>>
 
 public class CommandGroupFactory internal constructor(
-    override val factory: DirectDI.() -> CommandGroup,
+    override val factory: DirectDI.() -> CommandGroup<*>,
     public val factories: List<DirectDI.() -> SubCommand<*, *>>,
-) : CommandChildFactory<CommandGroup>
+) : CommandChildFactory<CommandGroup<*>>
 

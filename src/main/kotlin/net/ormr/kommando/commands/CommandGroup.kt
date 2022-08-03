@@ -21,16 +21,26 @@ import net.ormr.kommando.localization.LocalizedString
 
 // TODO: in the annotation processor we need to check both if any members extending CommandGroup have nested subcommand
 //       instances, and check if any explicitly marked subcommands are nested within a member extending CommandGroup
-public abstract class CommandGroup(public val defaultName: String) : KommandoComponent(), DescribableCommand {
+public abstract class CommandGroup<out Super : SuperCommand<*, *>>(
+    public val defaultName: String,
+) : KommandoComponent(), DescribableCommand {
     public override val description: LocalizedString by lazy { localization.resolve("description") }
 
     public open val name: LocalizedString by lazy {
         localization.resolveOrNull("name") ?: LocalizedString(defaultName)
     }
 
-    internal lateinit var parent: SuperCommand<*, *>
+    public lateinit var parent: @UnsafeVariance Super
+        internal set
 
     final override val componentPath: KommandoComponentPath by lazy {
         parent.componentPath.extend("groups", defaultName)
     }
+}
+
+// to circumvent 'setter for property is removed by type projection' error while still keeping the type information
+// for the end user on 'parent'
+@PublishedApi
+internal fun CommandGroup<*>.setParent(parent: SuperCommand<*, *>) {
+    this::parent.set(parent)
 }

@@ -51,7 +51,7 @@ public class CommandFactoryBuilder<
 
     @KommandoDsl
     public fun group(
-        group: DirectDI.() -> CommandGroup,
+        group: DirectDI.() -> CommandGroup<Cmd>,
         factory: DirectDI.() -> SubCommand<I, Cmd>,
         vararg moreFactories: DirectDI.() -> SubCommand<I, Cmd>,
     ) {

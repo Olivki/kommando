@@ -196,7 +196,7 @@ private fun createWrappers(
                     when (child) {
                         is CommandGroupFactory -> {
                             val group = child(di)
-                            group.parent = instance
+                            group.setParent(instance)
                             CommandGroupWrapper(
                                 instance = group,
                                 subCommands = child.factories.map { it(di).also { sub -> sub.setParent(instance) } },
@@ -253,7 +253,7 @@ private data class SubCommandWrapper(
 ) : CommandChildWrapper
 
 private data class CommandGroupWrapper(
-    val instance: CommandGroup,
+    val instance: CommandGroup<*>,
     val subCommands: List<SubCommand<*, *>>,
     val factory: CommandGroupFactory,
 ) : CommandChildWrapper
