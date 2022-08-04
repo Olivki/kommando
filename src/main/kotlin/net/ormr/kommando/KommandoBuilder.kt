@@ -54,15 +54,18 @@ public class KommandoBuilder @PublishedApi internal constructor(
         pathResolver = DEFAULT_PATH_RESOLVER,
     )
 
+    public var exceptionHandler: KommandoExceptionHandler? = null
+
     @PublishedApi
     internal suspend fun build(): Kommando {
         val kommando = Kommando(
             kord = kord,
             localization = localization,
             defaultCommandPermissions = defaultCommandPermissions,
+            exceptionHandler = exceptionHandler,
         )
 
-        if (localization.container === EmptyLocalizationContainer) {
+        if (localization.container == EmptyLocalizationContainer) {
             logger.warn { "'localization.container' is currently set to 'empty'." }
         }
 

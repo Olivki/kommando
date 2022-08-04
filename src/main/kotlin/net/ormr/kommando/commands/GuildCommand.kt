@@ -22,17 +22,17 @@ import net.ormr.kommando.commands.permissions.GuildCommandPermissions
 
 public typealias GuildCommandInteraction = GuildChatInputCommandInteraction
 
-public sealed interface GuildApplicationCommand : GuildCentricCommand
+public sealed interface GuildChatInputCommand : GuildCentricCommand, ChatInputCommand
 
 public abstract class GuildCommand(
     name: String,
     override val guildId: Snowflake,
 ) : SuperCommand<GuildCommandInteraction, GuildCommandPermissions>(name),
-    GuildApplicationCommand, GuildTopLevelCommand
+    GuildChatInputCommand, GuildTopLevelCommand, TopLevelChatInputCommand
 
 public abstract class GuildSubCommand<out Super : GuildCommand>(
     name: String,
-) : SubCommand<GuildCommandInteraction, Super>(name), GuildApplicationCommand {
+) : SubCommand<GuildCommandInteraction, Super>(name), GuildChatInputCommand {
     final override val guildId: Snowflake
         get() = parent.guildId
 }

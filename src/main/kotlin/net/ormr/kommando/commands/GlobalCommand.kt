@@ -21,13 +21,13 @@ import net.ormr.kommando.commands.permissions.GlobalCommandPermissions
 
 public typealias GlobalCommandInteraction = ChatInputCommandInteraction
 
-public sealed interface GlobalApplicationCommand : GlobalCentricCommand
+public sealed interface GlobalChatInputCommand : GlobalCentricCommand, ChatInputCommand
 
 public abstract class GlobalCommand(
     name: String,
-) : SuperCommand<GlobalCommandInteraction, GlobalCommandPermissions>(name), GlobalApplicationCommand,
-    GlobalTopLevelCommand
+) : SuperCommand<GlobalCommandInteraction, GlobalCommandPermissions>(name), GlobalChatInputCommand,
+    GlobalTopLevelCommand, TopLevelChatInputCommand
 
 public abstract class GlobalSubCommand<out Super : GlobalCommand>(
     name: String,
-) : SubCommand<GlobalCommandInteraction, Super>(name), GlobalApplicationCommand
+) : SubCommand<GlobalCommandInteraction, Super>(name), GlobalChatInputCommand

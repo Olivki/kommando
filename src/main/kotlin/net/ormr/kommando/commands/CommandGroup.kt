@@ -26,9 +26,15 @@ public abstract class CommandGroup<out Super : SuperCommand<*, *>>(
 ) : KommandoComponent(), DescribableCommand {
     public override val description: LocalizedString by lazy { localization.resolve("description") }
 
+    // TODO: use
+    protected open val descriptionArguments: Map<String, String>? = null
+
     public open val name: LocalizedString by lazy {
         localization.resolveOrNull("name") ?: LocalizedString(defaultName)
     }
+
+    // TODO: use
+    protected open val nameArguments: Map<String, String>? = null
 
     public lateinit var parent: @UnsafeVariance Super
         internal set

@@ -14,55 +14,194 @@
  * limitations under the License.
  */
 
+@file:Suppress("NOTHING_TO_INLINE")
+
 package net.ormr.kommando.internal
 
 import com.github.michaelbull.logging.InlineLogger
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.interaction.InteractionCommand
 import dev.kord.core.event.interaction.*
 import dev.kord.core.on
-import net.ormr.kommando.Kommando
-import net.ormr.kommando.KommandoException
-import net.ormr.kommando.NoSuchCommandException
+import net.ormr.kommando.*
 import net.ormr.kommando.commands.*
-import net.ormr.kommando.commands.factory.CommandFactory
+import net.ormr.kommando.commands.arguments.AutoCompletableArgument
+import net.ormr.kommando.commands.factory.ParentCommandFactory
+import net.ormr.kommando.commands.factory.SingleCommandFactory
 import org.kodein.di.DirectDI
 import org.kodein.di.direct
+import dev.kord.core.entity.interaction.GroupCommand as KordGroupCommand
+import dev.kord.core.entity.interaction.RootCommand as KordRootCommand
+import dev.kord.core.entity.interaction.SubCommand as KordSubCommand
 
 private val logger = InlineLogger()
 
 context(Kommando)
         internal suspend fun handleCommands() {
     val direct = direct
+
+    // TODO: is the error logging format for cause correct? will it double log the messages?
+
     kord.on<ApplicationCommandInteractionCreateEvent> {
         try {
             when (this) {
-                is GlobalChatInputCommandInteractionCreateEvent -> TODO()
+                is GlobalChatInputCommandInteractionCreateEvent -> inputCommand<GlobalCommand>(direct)
                 is GlobalMessageCommandInteractionCreateEvent -> messageCommand<GlobalMessageCommand>(direct)
                 is GlobalUserCommandInteractionCreateEvent -> userCommand<GlobalUserCommand>(direct)
-                is GuildChatInputCommandInteractionCreateEvent -> TODO()
+                is GuildChatInputCommandInteractionCreateEvent -> inputCommand<TopLevelChatInputCommand>(direct)
                 is GuildMessageCommandInteractionCreateEvent -> messageCommand<GuildMessageCommand>(direct)
                 is GuildUserCommandInteractionCreateEvent -> userCommand<GuildUserCommand>(direct)
             }
-        } catch (e: KommandoException) {
-            // TODO: is this the correct logging format? 'error(e)' might already print the message?
+        } catch (e: KommandoException) { // union types where :sob:
             logger.error(e) { e.message!! }
+            exceptionHandler?.slashCommandInvoke?.invoke(e, this)
+        } catch (e: IllegalArgumentException) {
+            logger.error(e) { e.message!! }
+            exceptionHandler?.slashCommandInvoke?.invoke(e, this)
+        }
+    }
+
+    kord.on<AutoCompleteInteractionCreateEvent> {
+        try {
+            val argumentName = interaction.command.options.entries.single { it.value.focused }.key
+            val commandName = interaction.command.rootName
+            val commandId = interaction.command.rootId
+            val registeredCommand = getRegisteredCommand(commandId, commandName)
+            val command = registeredCommand.factory(direct)
+
+            if (command is SuperCommand<*, *>) {
+                when (val interactionCommand = interaction.command) {
+                    is KordRootCommand -> command.autoComplete(argumentName, commandId, commandName)
+                    is KordSubCommand -> {
+                        val subCommand = registeredCommand.getSubCommand(direct, command, interactionCommand.name)
+                        subCommand.autoComplete(argumentName, commandId, commandName)
+                    }
+                    is KordGroupCommand -> {
+                        val registeredGroup =
+                            registeredCommand.getRegisteredGroup(command, interactionCommand.groupName)
+                        registeredGroup.createGroup(direct, command)
+                        val subCommand = registeredGroup.getSubCommand(direct, command, interactionCommand.name)
+                        subCommand.autoComplete(argumentName, commandId, commandName)
+                    }
+                }
+            } else {
+                invalidCommandType(SuperCommand::class, command::class, CommandRequestInfo(commandId, commandName))
+            }
+        } catch (e: KommandoException) {
+            logger.error(e) { e.message!! }
+            exceptionHandler?.autoCompleteInvoke?.invoke(e, this)
+        } catch (e: IllegalArgumentException) {
+            logger.error(e) { e.message!! }
+            exceptionHandler?.autoCompleteInvoke?.invoke(e, this)
         }
     }
 }
 
+context(AutoCompleteInteractionCreateEvent)
+        private suspend inline fun Command<*>.autoComplete(name: String, commandId: Snowflake, commandName: String) {
+    val event = this@AutoCompleteInteractionCreateEvent
+    val argument = getArgument(name)
+
+    if (argument is AutoCompletableArgument) {
+        val autoComplete = argument.autoComplete ?: noAutoCompleteDefined(
+            argument,
+            CommandArgumentRequestInfo(name, CommandRequestInfo(commandId, commandName)),
+        )
+        autoComplete(event.interaction, event)
+    } else {
+        invalidCommandArgumentType(
+            AutoCompletableArgument::class,
+            argument::class,
+            CommandArgumentRequestInfo(name, CommandRequestInfo(commandId, commandName)),
+        )
+    }
+}
+
 context(Kommando, ChatInputCommandInteractionCreateEvent)
-        private suspend inline fun <reified C : SuperCommand<*, *>> inputCommand() {
+        private suspend inline fun <reified C : TopLevelChatInputCommand> inputCommand(
+    di: DirectDI,
+) {
     val interactionCommand = interaction.command
     val id = interactionCommand.rootId
-    val command = registeredCommands[id] ?: throw NoSuchCommandException(
-        id,
-        interaction.invokedCommandName,
-    )
+    val rootName = interactionCommand.rootName
+    val registeredCommand = getRegisteredCommand(id, rootName)
+    val event = this@ChatInputCommandInteractionCreateEvent
+    val command = registeredCommand.factory(di)
     if (command is C) {
-        TODO()
+        check(command is SuperCommand<*, *>)
+        when (interactionCommand) {
+            is KordRootCommand -> {
+                command.registerArguments(interactionCommand, event)
+                runCommand(event, command)
+            }
+            is KordSubCommand -> {
+                val subCommand = registeredCommand.getSubCommand(di, command, interactionCommand.name)
+                subCommand.registerArguments(interactionCommand, event)
+                runCommand(event, subCommand)
+            }
+            is KordGroupCommand -> {
+                val registeredGroup = registeredCommand.getRegisteredGroup(command, interactionCommand.groupName)
+                registeredGroup.createGroup(di, command)
+                val subCommand = registeredGroup.getSubCommand(di, command, interactionCommand.name)
+                subCommand.registerArguments(interactionCommand, event)
+                runCommand(event, subCommand)
+            }
+        }
     } else {
-        logger.error { "Command under id $id was requested to be type '${C::class.qualifiedName!!}', but was type '${command::class.qualifiedName!!}'." }
+        invalidCommandType(C::class, command::class, CommandRequestInfo(id, rootName))
     }
+}
+
+private fun RegisteredGroup.createGroup(di: DirectDI, command: SuperCommand<*, *>): CommandGroup<*> {
+    val group = this.factory(di)
+    group.setParent(command)
+    return group
+}
+
+private fun RegisteredCommand.getRegisteredGroup(
+    command: Command<*>,
+    name: String,
+): RegisteredGroup = when (factory) {
+    is ParentCommandFactory -> groups[name] ?: noSuchCommandGroup(name, command)
+    is SingleCommandFactory -> noSuchCommandGroup(name, command)
+}
+
+private fun RegisteredSubCommandContainer.getSubCommand(
+    di: DirectDI,
+    command: SuperCommand<*, *>,
+    name: String,
+): SubCommand<*, *> = subCommands[name]?.invoke(di)?.also { it.setParent(command) } ?: noSuchSubCommand(name, command)
+
+private suspend fun runCommand(
+    event: ChatInputCommandInteractionCreateEvent,
+    command: ChatInputCommand,
+) {
+    when (event) {
+        is GuildChatInputCommandInteractionCreateEvent -> when (command) {
+            is GlobalChatInputCommand -> command.fix().run(event.interaction)
+            is GuildChatInputCommand -> command.fix().run(event.interaction)
+        }
+        else -> if (command is GlobalChatInputCommand) command.fix().run(event.interaction)
+    }
+}
+
+// kotlin can't really determine that this should in fact just be valid, as the only implementations of
+// 'GlobalChatInputCommand' are Command<GlobalCommandInteraction> instances, so this cast is actually completely safe
+@Suppress("UNCHECKED_CAST")
+private inline fun GlobalChatInputCommand.fix(): Command<GlobalCommandInteraction> =
+    this as Command<GlobalCommandInteraction>
+
+@Suppress("UNCHECKED_CAST")
+private inline fun GuildChatInputCommand.fix(): Command<GuildCommandInteraction> =
+    this as Command<GuildCommandInteraction>
+
+private suspend fun Command<*>.registerArguments(
+    interactionCommand: InteractionCommand,
+    event: ChatInputCommandInteractionCreateEvent,
+) {
+    val arguments =
+        registeredArguments?.mapValuesTo(hashMapOf()) { (_, arg) -> arg.getValue(interactionCommand, event) }
+    resolvedArguments = arguments
 }
 
 context(Kommando, MessageCommandInteractionCreateEvent)
@@ -84,14 +223,15 @@ context(Kommando, UserCommandInteractionCreateEvent)
 context(Kommando, ApplicationCommandInteractionCreateEvent)
         private inline fun <reified C : Command<*>> withCommand(di: DirectDI, block: (command: C) -> Unit) {
     val id = interaction.invokedCommandId
-    val command = getCommandFactory(id, interaction.invokedCommandName)(di)
+    val registeredCommand = getRegisteredCommand(id, interaction.invokedCommandName)
+    val command = registeredCommand.factory(di)
     if (command is C) {
         block(command)
     } else {
-        logger.error { "Command under id $id was requested to be type '${C::class.qualifiedName!!}', but was type '${command::class.qualifiedName!!}'." }
+        invalidCommandType(C::class, command::class, CommandRequestInfo(id, interaction.invokedCommandName))
     }
 }
 
 context(Kommando)
-        private fun getCommandFactory(id: Snowflake, name: String): CommandFactory =
-    registeredCommands[id] ?: throw NoSuchCommandException(id, name)
+        private fun getRegisteredCommand(id: Snowflake, name: String): RegisteredCommand =
+    registeredCommands[id] ?: noSuchCommand(id, name)

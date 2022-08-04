@@ -24,14 +24,17 @@ import net.ormr.kommando.resolve
 
 public sealed class SubCommand<out I : ChatInputCommandInteraction, out Super : SuperCommand<*, *>>(
     name: String,
-) : Command<I>(name), CustomizableCommand, DescribableCommand {
+) : Command<I>(name), CustomizableCommand, DescribableCommand, ChatInputCommand {
     public override val description: LocalizedString by lazy { localization.resolve("description") }
 
-    // TODO: set this when 'subCommands' in the builder block
+    // TODO: use
+    protected open val descriptionArguments: Map<String, String>? = null
+
     // the setter is not available to the user, so @UnsafeVariance is *relatively* safe here
     public lateinit var parent: @UnsafeVariance Super
         internal set
 
+    // TODO: this needs to take the group into account
     final override val componentPath: KommandoComponentPath by lazy {
         parent.componentPath.extend("subCommands", defaultName)
     }

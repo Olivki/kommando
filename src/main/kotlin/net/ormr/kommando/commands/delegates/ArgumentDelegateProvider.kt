@@ -17,7 +17,6 @@
 package net.ormr.kommando.commands.delegates
 
 import net.ormr.kommando.commands.Command
-import net.ormr.kommando.commands.CommandArgumentCache
 import net.ormr.kommando.commands.CustomizableCommand
 import net.ormr.kommando.commands.arguments.Argument
 import kotlin.properties.PropertyDelegateProvider
@@ -30,20 +29,12 @@ public class ArgumentDelegateProvider<Cmd, T, Arg : Argument<T, *>>(
 ) : PropertyDelegateProvider<Cmd, ReadOnlyProperty<Cmd, T>>
         where Cmd : CustomizableCommand,
               Cmd : Command<*> {
-    @Suppress("UNCHECKED_CAST")
+
     override fun provideDelegate(thisRef: Cmd, property: KProperty<*>): ReadOnlyProperty<Cmd, T> {
         val name = this.name ?: property.name
-        return when {
-            CommandArgumentCache.isHydrated(thisRef.javaClass) -> {
-                val argument = CommandArgumentCache.getArgument(thisRef.javaClass, name) as Arg
-                ArgumentPropertyDelegate(argument)
-            }
-            else -> {
-                val argument = argumentCreator(name)
-                CommandArgumentCache.addArgument(thisRef.javaClass, argument)
-                ArgumentPropertyDelegate(argument)
-            }
-        }
+        val argument = argumentCreator(name)
+        thisRef.registerArgument(name, argument)
+        return ArgumentPropertyDelegate(argument)
     }
 }
 

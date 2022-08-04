@@ -20,6 +20,7 @@ import com.github.michaelbull.logging.InlineLogger
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.entity.Guild
+import dev.kord.core.entity.application.ApplicationCommand
 import dev.kord.rest.builder.interaction.*
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.commands.*
@@ -35,14 +36,47 @@ private val logger = InlineLogger()
 context(Kommando)
         internal suspend fun registerCommands(
     factories: List<CommandFactory>,
-): Map<Snowflake, CommandFactory> {
+): Map<Snowflake, RegisteredCommand> {
     val commands = createWrappers(direct, factories)
     val globalCommands = commands.filter { it.instance is GlobalTopLevelCommand }
     val guildCommands = commands.filter { it.instance is GuildTopLevelCommand }.mergeGuildCommands(kord)
     check(globalCommands.size + guildCommands.size == factories.size) { unknownCommandType(commands) }
     val commandsCache = commands.associateBy({ CommandKey(it.instance) }, CommandWrapper::factory)
+    val commandGroupsCache = commands.filterIsInstance<ParentCommandWrapper>()
+        .associateBy(
+            { CommandKey(it.instance) },
+            { p ->
+                p.children.filterIsInstance<CommandGroupWrapper>()
+                    .associateBy(
+                        { it.instance.defaultName },
+                        {
+                            RegisteredGroup(
+                                it.factory,
+                                (it.subCommands.asSequence() zip it.subCommandFactories.asSequence())
+                                    .associate { (command, factory) -> command.defaultName to factory },
+                            )
+                        },
+                    )
+            }
+        )
+    val subCommandsCache = commands.filterIsInstance<ParentCommandWrapper>()
+        .associateBy(
+            { CommandKey(it.instance) },
+            { p ->
+                p.children.filterIsInstance<SubCommandWrapper>()
+                    .associateBy({ it.instance.defaultName }, { it.factory })
+            }
+        )
     val globalPerms = defaultCommandPermissions?.globalPermissionsFactory
     val guildPerms = defaultCommandPermissions?.guildPermissionsFactory
+
+    fun MutableMap<Snowflake, RegisteredCommand>.collectCommands(command: ApplicationCommand) {
+        val key = CommandKey(command)
+        val factory = commandsCache.getValue(key)
+        val groups = commandGroupsCache[key] ?: emptyMap()
+        val subCommands = subCommandsCache[key] ?: emptyMap()
+        put(command.id, RegisteredCommand(factory, groups, subCommands))
+    }
 
     return buildMap {
         kord.createGlobalApplicationCommands {
@@ -60,10 +94,7 @@ context(Kommando)
                     }
                 }
             }
-        }.collect {
-            val factory = commandsCache.getValue(CommandKey(it))
-            put(it.id, factory)
-        }
+        }.collect(::collectCommands)
 
         for ((guildId, commandData) in guildCommands) {
             val (_, wrappers) = commandData
@@ -82,10 +113,7 @@ context(Kommando)
                         }
                     }
                 }
-            }.collect {
-                val factory = commandsCache.getValue(CommandKey(it))
-                put(it.id, factory)
-            }
+            }.collect(::collectCommands)
         }
     }
 }
@@ -200,6 +228,7 @@ private fun createWrappers(
                             CommandGroupWrapper(
                                 instance = group,
                                 subCommands = child.factories.map { it(di).also { sub -> sub.setParent(instance) } },
+                                subCommandFactories = child.factories.map { SubCommandFactory(it) },
                                 factory = child,
                             )
                         }
@@ -255,5 +284,6 @@ private data class SubCommandWrapper(
 private data class CommandGroupWrapper(
     val instance: CommandGroup<*>,
     val subCommands: List<SubCommand<*, *>>,
+    val subCommandFactories: List<SubCommandFactory>,
     val factory: CommandGroupFactory,
 ) : CommandChildWrapper

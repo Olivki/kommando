@@ -16,16 +16,4 @@
 
 package net.ormr.kommando.commands
 
-import dev.kord.core.entity.interaction.ChatInputCommandInteraction
-import net.ormr.kommando.commands.permissions.CommandPermissions
-import net.ormr.kommando.localization.LocalizedString
-import net.ormr.kommando.resolve
-
-public sealed class SuperCommand<out I : ChatInputCommandInteraction, Perms : CommandPermissions>(
-    name: String,
-) : TopLevelCommand<I, Perms>(name), CustomizableCommand, DescribableCommand, ChatInputCommand {
-    public override val description: LocalizedString by lazy { localization.resolve("description") }
-
-    // TODO: use
-    protected open val descriptionArguments: Map<String, String>? = null
-}
+public sealed interface TopLevelChatInputCommand : ChatInputCommand

@@ -24,9 +24,10 @@ import kotlin.reflect.KProperty
 
 // general design of this is heavily based on 'SynchronizedLazyImpl' from the Kotlin std-lib
 @Suppress("ClassName")
-internal class ArgumentPropertyDelegate<Cmd, T>(private val argument: Argument<T, *>) : ReadOnlyProperty<Cmd, T>
+internal class ArgumentPropertyDelegate<Cmd, T>(argument: Argument<T, *>) : ReadOnlyProperty<Cmd, T>
         where Cmd : CustomizableCommand,
               Cmd : Command<*> {
+    private var argument: Argument<T, *>? = argument
     private val lock = this
 
     private var value: Any? = NOT_SET
@@ -47,8 +48,9 @@ internal class ArgumentPropertyDelegate<Cmd, T>(private val argument: Argument<T
             if (v2 !== NOT_SET) {
                 v2 as T
             } else {
-                val retrievedValue = thisRef.getResolvedArgument(property, argument.name) as T
+                val retrievedValue = thisRef.getResolvedArgument(property, argument!!.name) as T
                 value = retrievedValue
+                argument = null
                 retrievedValue
             }
         }
