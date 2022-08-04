@@ -11,4 +11,4 @@ The main motivation behind changing away from the DSL syntax is because the DSL 
 With a structure like that of `Clikt` the larger chunks would be split up into separate classes and as such it would be
 easier to see the different functionalities.
 
-This rewrite is currently on an indefinite pause because it *heavily* relies on [context receivers](https://github.com/Kotlin/KEEP/blob/master/proposals/context-receivers.md) to create a nice API for the user. While context receivers no longer poison the binaries as of 1.70-Beta, the IDE will still start spewing *a lot* of errors when one attempts to use an external library built with context receivers, so until that is fixed, this is on hold. 
+This rewrite is currently on an indefinite pause because it *heavily* relies on [context receivers](https://github.com/Kotlin/KEEP/blob/master/proposals/context-receivers.md) to create a nice API for the user. While context receivers no longer poison the binaries as of Kotlin 1.7.20-Beta, the IDE will still start spewing *a lot* of errors when one attempts to use an external library built with context receivers, so until that is fixed, this is on hold. 
