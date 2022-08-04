@@ -20,6 +20,7 @@ package net.ormr.kommando
 
 import dev.kord.common.entity.Snowflake
 import net.ormr.kommando.commands.Command
+import net.ormr.kommando.commands.CommandArgumentRequestInfo
 import net.ormr.kommando.commands.CommandRequestInfo
 import net.ormr.kommando.commands.arguments.Argument
 import net.ormr.kommando.utils.fullName

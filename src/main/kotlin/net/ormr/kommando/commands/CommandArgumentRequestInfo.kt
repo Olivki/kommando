@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando
-
-import net.ormr.kommando.commands.CommandRequestInfo
+package net.ormr.kommando.commands
 
 public data class CommandArgumentRequestInfo(public val name: String, public val commandInfo: CommandRequestInfo)
