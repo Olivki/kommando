@@ -5,6 +5,6 @@ pluginManagement {
     }
 }
 
-include("core", "processor")
+include("core")
 
 rootProject.name = "kommando"
