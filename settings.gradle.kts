@@ -5,6 +5,6 @@ pluginManagement {
     }
 }
 
-include("core", "processor", "gradle-plugin")
+include("core", "processor")
 
 rootProject.name = "kommando"
