@@ -16,7 +16,7 @@ object Dependencies {
 
     object kodein {
         object di {
-            private const val version = "7.14.0"
+            private const val version = "7.20.2"
 
             val di = create()
             val diConf = create("conf")
@@ -26,14 +26,14 @@ object Dependencies {
     }
 
     object kord {
-        private const val version = "0.8.0-M15"
+        private const val version = "0.10.0"
 
         val core = create("core")
 
         private fun create(name: String) = "dev.kord:kord-$name:$version"
 
         object x {
-            val emoji = "dev.kord.x:emoji:0.5.0"
+            val emoji = "dev.kord.x:emoji:0.6.0"
         }
     }
 }
