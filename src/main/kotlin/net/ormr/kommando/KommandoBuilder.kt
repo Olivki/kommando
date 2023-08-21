@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Oliver Berg
+ * Copyright 2023 Oliver Berg
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,7 +104,7 @@ public suspend inline fun bot(
 ) {
     contract {
         callsInPlace(presence, InvocationKind.EXACTLY_ONCE)
-        callsInPlace(di, InvocationKind.AT_LEAST_ONCE)
+        callsInPlace(di, InvocationKind.EXACTLY_ONCE)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 

@@ -1,10 +1,10 @@
 plugins {
     id("me.him188.maven-central-publish") version "1.0.0-dev-3"
-    kotlin("jvm") version "1.7.20-Beta"
+    kotlin("jvm") version "1.7.20"
 }
 
 group = "net.ormr.kommando"
-version = "0.0.17-dev-1"
+version = "0.0.17-dev-3"
 
 repositories {
     mavenLocal()

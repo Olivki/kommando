@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Oliver Berg
+ * Copyright 2023 Oliver Berg
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -195,6 +195,7 @@ private inline fun GlobalChatInputCommand.fix(): Command<GlobalCommandInteractio
 private inline fun GuildChatInputCommand.fix(): Command<GuildCommandInteraction> =
     this as Command<GuildCommandInteraction>
 
+// TODO: make 'arg.getValue' suspend
 private suspend fun Command<*>.registerArguments(
     interactionCommand: InteractionCommand,
     event: ChatInputCommandInteractionCreateEvent,
