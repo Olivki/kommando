@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Oliver Berg
+ * Copyright 2023 Oliver Berg
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.application.ApplicationCommand
+import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.rest.builder.interaction.*
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.commands.*
@@ -197,10 +198,10 @@ private suspend fun List<CommandWrapper>.mergeGuildCommands(
         for (wrapper in this@mergeGuildCommands) {
             val command = wrapper.instance as GuildTopLevelCommand
             val id = command.guildId
-            val guild = kord.getGuild(id)
-
-            if (guild == null) {
-                logger.error {
+            val guild = try {
+                kord.getGuild(id)
+            } catch (e: EntityNotFoundException) {
+                logger.error(e) {
                     "Bot is not in guild with id $id, but it still attempted to register guild command ${command::class.qualifiedName ?: command::class}"
                 }
                 continue
