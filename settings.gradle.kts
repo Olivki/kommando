@@ -1,10 +1,15 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
     }
 }
 
-include()
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
+}
+
+include("kommando-core")
 
 rootProject.name = "kommando"

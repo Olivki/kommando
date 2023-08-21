@@ -1,0 +1,17 @@
+[versions]
+kotlin = "1.9.0"
+kodein = "7.20.2"
+kord = "0.10.0"
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+mavenCentralPublish = { id = "me.him188.maven-central-publish", version = "1.0.0-dev-3" }
+
+[libraries]
+kodein-di = { group = "org.kodein.di", name = "kodein-di", version.ref = "kodein" }
+kodein-di-conf = { group = "org.kodein.di", name = "kodein-di-conf", version.ref = "kodein" }
+kord-core = { group = "dev.kord", name = "kord-core", version.ref = "kord" }
+
+[bundles]
+kodein = ["kodein-di", "kodein-di-conf"]
+kord = ["kord-core"]
