@@ -33,7 +33,7 @@ object Dependencies {
         private fun create(name: String) = "dev.kord:kord-$name:$version"
 
         object x {
-            val emoji = "dev.kord.x:emoji:0.6.0"
+            val emoji = "dev.kord.x:emoji:0.5.0"
         }
     }
 }
