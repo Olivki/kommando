@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "net.ormr.kommando"
-version = "0.0.17-dev-3"
+version = "0.0.17-dev-4"
 
 repositories {
     mavenLocal()
