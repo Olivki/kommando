@@ -22,10 +22,10 @@ import net.ormr.kommando.localeBundle
 import net.ormr.kommando.localization.Message
 
 public sealed interface SuperCommand<Context, Perms> : RootCommand<Context, Perms>, CustomizableCommand<Context>,
-    DescribableCommandComponent<Context>, ChatInputCommand<Context>
+    DescribableCommandComponent, ChatInputCommand<Context>
         where Context : CommandContext<*>,
               Perms : CommandPermissions {
-    override val commandDescription: Message
+    override val componentDescription: Message
         get() = localeBundle.getMessage("description")
 }
 

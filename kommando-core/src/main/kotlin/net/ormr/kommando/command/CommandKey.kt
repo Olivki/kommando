@@ -33,9 +33,13 @@ public sealed interface CommandKey {
 public fun RootCommand<*, *>.toCommandKey(): CommandKey = when (this) {
     is GuildRootCommand -> CommandKey.Guild(defaultCommandName, commandGuildId)
     is GlobalRootCommand -> CommandKey.Global(defaultCommandName)
+    // the 'when' expression *is* actually exhaustive, but Kotlin seems to be running into problems trying to resolve it
+    else -> error("Should never happen")
 }
 
 internal fun RootCommand<*, *>.formatAsCommandKey(): String = when (this) {
     is GuildRootCommand -> "$defaultCommandName @$commandGuildId"
     is GlobalRootCommand -> defaultCommandName
+    // the 'when' expression *is* actually exhaustive, but Kotlin seems to be running into problems trying to resolve it
+    else -> error("Should never happen")
 }
