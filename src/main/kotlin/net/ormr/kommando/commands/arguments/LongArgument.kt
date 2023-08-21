@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Oliver Berg
+ * Copyright 2023 Oliver Berg
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package net.ormr.kommando.commands.arguments
 
 import dev.kord.common.entity.optional.Optional
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import dev.kord.rest.builder.interaction.int
+import dev.kord.rest.builder.interaction.integer
 import net.ormr.kommando.commands.Command
 import net.ormr.kommando.commands.CustomizableCommand
 import net.ormr.kommando.commands.delegates.ArgumentDelegateProvider
@@ -42,7 +42,7 @@ public class LongArgument(
     override fun convertChoiceValue(value: Long): Long = value
 
     override fun BaseInputChatBuilder.buildArgument(resolver: LocalizationResolver, isRequired: Boolean) {
-        int(name, resolver[description]) {
+        integer(name, resolver[description]) {
             this.autocomplete = autoComplete != null
             this.required = isRequired
             this.minValue = min
@@ -55,7 +55,7 @@ public class LongArgument(
         choices: List<ArgumentChoice<Long>>,
         isRequired: Boolean,
     ) {
-        int(name, resolver[description]) {
+        integer(name, resolver[description]) {
             this.required = isRequired
             // TODO: do we add min & max for choice ones?
             this.minValue = min
