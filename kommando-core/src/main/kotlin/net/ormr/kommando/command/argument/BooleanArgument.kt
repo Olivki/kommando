@@ -18,6 +18,7 @@ package net.ormr.kommando.command.argument
 
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.boolean
+import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.*
 
@@ -46,6 +47,7 @@ public class BooleanArgument(
 }
 
 context(Cmd)
+@KommandoDsl
 public fun <Cmd> boolean(
     name: Message? = null,
     description: String,
@@ -56,6 +58,7 @@ public fun <Cmd> boolean(
     }
 
 context(Cmd)
+@KommandoDsl
 public fun <Cmd> boolean(
     name: Message? = null,
     description: LocalizedMessage? = null,

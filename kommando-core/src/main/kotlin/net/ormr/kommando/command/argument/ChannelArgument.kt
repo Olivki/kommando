@@ -19,6 +19,7 @@ package net.ormr.kommando.command.argument
 import dev.kord.core.entity.channel.ResolvedChannel
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.channel
+import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.*
 
@@ -47,6 +48,7 @@ public class ChannelArgument(
 }
 
 context(Cmd)
+@KommandoDsl
 public fun <Cmd> channel(
     name: Message? = null,
     description: String,
@@ -57,6 +59,7 @@ public fun <Cmd> channel(
     }
 
 context(Cmd)
+@KommandoDsl
 public fun <Cmd> channel(
     name: Message? = null,
     description: LocalizedMessage? = null,
