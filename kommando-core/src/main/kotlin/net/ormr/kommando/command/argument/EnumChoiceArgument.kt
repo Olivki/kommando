@@ -19,15 +19,15 @@ package net.ormr.kommando.command.argument
 import dev.kord.common.entity.optional.Optional
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.string
+import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localeBundle
 import net.ormr.kommando.localization.*
-import kotlin.enums.EnumEntries
 
 public class EnumChoiceArgument<Value>(
     override val key: String,
     override val name: Message,
     override val description: Message,
-    public val entries: EnumEntries<Value>,
+    private val entries: List<Value>, // TODO: use EnumEntries once they have an intrinsic like 'enumValues' available
 ) : Argument<Value, String, ArgumentType.String>
         where Value : Enum<Value>,
               Value : EnumArgumentChoice {
@@ -44,7 +44,7 @@ public class EnumChoiceArgument<Value>(
     override fun convertArgumentValue(value: String): Value = nameToEntry.getValue(value)
 
     override fun convertNullableArgumentValue(value: String?): Value? = value?.let(nameToEntry::getValue)
-    
+
     context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
         val bundle = parentCommand.localeBundle
@@ -62,3 +62,27 @@ public class EnumChoiceArgument<Value>(
         }
     }
 }
+
+context(Cmd)
+public inline fun <reified Value, Cmd> enum(
+    name: Message? = null,
+    description: String,
+): ArgumentBuilder<Cmd, Value, EnumChoiceArgument<Value>>
+        where Value : Enum<Value>,
+              Value : EnumArgumentChoice,
+              Cmd : CustomizableCommand<Cmd> =
+    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
+        EnumChoiceArgument(key, resolvedName, desc, enumValues<Value>().asList())
+    }
+
+context(Cmd)
+public inline fun <reified Value, Cmd> enum(
+    name: Message? = null,
+    description: Message? = null,
+): ArgumentBuilder<Cmd, Value, EnumChoiceArgument<Value>>
+        where Value : Enum<Value>,
+              Value : EnumArgumentChoice,
+              Cmd : CustomizableCommand<Cmd> =
+    ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
+        EnumChoiceArgument(key, resolvedName, desc, enumValues<Value>().asList())
+    }
