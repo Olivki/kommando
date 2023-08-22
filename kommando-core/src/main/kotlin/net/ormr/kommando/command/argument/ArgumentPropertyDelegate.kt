@@ -17,6 +17,7 @@
 package net.ormr.kommando.command.argument
 
 import net.ormr.kommando.command.CustomizableCommand
+import net.ormr.kommando.command.asAbstractCommand
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -46,8 +47,8 @@ internal class ArgumentPropertyDelegate<Cmd, Value>(argument: Argument<Value, *,
             if (v2 !== NOT_SET) {
                 v2 as Value
             } else {
-                val retrievedValue = TODO("getResolvedArgument")
-                //val retrievedValue = thisRef.getResolvedArgument(property, argument!!.name) as Value
+                val fixedCmd = thisRef.asAbstractCommand()
+                val retrievedValue = fixedCmd.registry.findValue(argument!!.key, property) as Value
                 value = retrievedValue
                 argument = null
                 retrievedValue

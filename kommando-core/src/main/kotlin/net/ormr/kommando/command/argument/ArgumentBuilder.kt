@@ -17,6 +17,7 @@
 package net.ormr.kommando.command.argument
 
 import net.ormr.kommando.command.CustomizableCommand
+import net.ormr.kommando.command.asAbstractCommand
 import net.ormr.kommando.localeBundle
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
@@ -46,8 +47,8 @@ public class ArgumentBuilder<Cmd, Value, Arg>(
             ?: BasicMessage(property.name)
         val description = this.description ?: bundle.getMessage(thisRef, argPath, "description")
         val argument = argumentFactory.create(key, name, description)
-        TODO("registerArgument")
-        //thisRef.registerArgument(name, argument)
+        val fixedCmd = thisRef.asAbstractCommand()
+        fixedCmd.registry.registerArgument(key, argument)
         return ArgumentPropertyDelegate(argument)
     }
 }

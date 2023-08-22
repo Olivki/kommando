@@ -36,6 +36,10 @@ public sealed class AbstractCommand<Context>(
     override val defaultCommandName: String,
 ) : AbstractKommandoComponent(), Command<Context>
         where Context : CommandContext<*> {
+    internal val registry: CommandArgumentRegistry by lazy {
+        CommandArgumentRegistry(this)
+    }
+
     override val commandName: Message
         get() = localeBundle.getMessageOrNull("name") ?: BasicMessage(defaultCommandName)
 }
