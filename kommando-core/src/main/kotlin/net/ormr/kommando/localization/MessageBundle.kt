@@ -14,24 +14,86 @@
  * limitations under the License.
  */
 
+@file:Suppress("NOTHING_TO_INLINE")
+
 package net.ormr.kommando.localization
 
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.toPersistentHashMap
+import net.ormr.kommando.util.toPersistentHashMap
+
+/**
+ * A bundle of [Message]s.
+ *
+ * May be represented as a [Map] of [String] to [Message], or some other data structure.
+ *
+ * Users are encouraged to implement this interface if they wish to use a different data structure than what's provided
+ * by default.
+ */
 public interface MessageBundle {
+    /**
+     * Returns the [Message] associated with the given [key], or throws a [NoSuchElementException] if no such message
+     * exists.
+     *
+     * @throws [NoSuchElementException] if no message exists for the given [key]
+     */
     public fun getMessage(key: String): Message =
         getMessageOrNull(key) ?: throw NoSuchElementException("No message found for key '$key'")
 
+    /**
+     * Returns the [Message] associated with the given [key], or `null` if no such message exists.
+     */
     public fun getMessageOrNull(key: String): Message?
 
+    /**
+     * Returns `true` if this bundle contains a message for the given [key].
+     */
     public operator fun contains(key: String): Boolean
 
+    /**
+     * Returns `true` if this bundle contains no messages.
+     */
     public fun isEmpty(): Boolean
-
-    public companion object {
-        public fun empty(): MessageBundle = EmptyMessageBundle
-    }
 }
 
-public fun MessageBundle.isNotEmpty(): Boolean = !isEmpty()
+/**
+ * Returns an empty [MessageBundle].
+ */
+public fun emptyMessageBundle(): MessageBundle = EmptyMessageBundle
+
+/**
+ * Returns an empty [MessageBundle].
+ */
+public fun messageBundleOf(): MessageBundle = emptyMessageBundle()
+
+/**
+ * Returns a [MessageBundle] containing the given [messages].
+ */
+public fun messageBundleOf(vararg messages: Pair<String, Message>): MessageBundle = when (messages.size) {
+    0 -> emptyMessageBundle()
+    else -> MapMessageBundle(messages.toPersistentHashMap())
+}
+
+/**
+ * Returns a [MessageBundle] containing the messages in `this` map.
+ */
+public fun Map<String, Message>.toMessageBundle(): MessageBundle = when (size) {
+    0 -> emptyMessageBundle()
+    else -> MapMessageBundle(toPersistentHashMap())
+}
+
+/**
+ * Returns `true` if this bundle contains any messages.
+ */
+public inline fun MessageBundle.isNotEmpty(): Boolean = !isEmpty()
+
+private class MapMessageBundle(private val delegate: PersistentMap<String, Message>) : MessageBundle {
+    override fun getMessageOrNull(key: String): Message? = delegate[key]
+
+    override fun contains(key: String): Boolean = key in delegate
+
+    override fun isEmpty(): Boolean = delegate.isEmpty()
+}
 
 private data object EmptyMessageBundle : MessageBundle {
     override fun getMessage(key: String): Message =

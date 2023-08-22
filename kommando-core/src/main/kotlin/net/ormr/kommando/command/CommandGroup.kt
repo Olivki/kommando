@@ -17,7 +17,7 @@
 package net.ormr.kommando.command
 
 import net.ormr.kommando.*
-import net.ormr.kommando.localization.DefaultMessage
+import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
 public sealed interface CommandGroup<out Super> : KommandoComponent, DescribableCommandComponent
@@ -25,7 +25,7 @@ public sealed interface CommandGroup<out Super> : KommandoComponent, Describable
     public val defaultGroupName: String
     public val superCommand: @UnsafeVariance Super
     public val groupName: Message
-        get() = localeBundle.getMessageOrNull("name") ?: DefaultMessage(defaultGroupName)
+        get() = localeBundle.getMessageOrNull("name") ?: BasicMessage(defaultGroupName)
 
     override val componentDescription: Message
         get() = localeBundle.getMessage("description")

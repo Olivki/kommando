@@ -14,26 +14,87 @@
  * limitations under the License.
  */
 
+@file:Suppress("NOTHING_TO_INLINE")
+
 package net.ormr.kommando.localization
 
 import dev.kord.common.Locale
 import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentHashMapOf
 import kotlinx.collections.immutable.plus
+import kotlinx.collections.immutable.toPersistentHashMap
+import net.ormr.kommando.kord.asString
+import net.ormr.kommando.util.toPersistentHashMap
 
+/**
+ * A mapping of [Locale]s to strings.
+ */
 @JvmInline
-public value class LocalizedStrings internal constructor(private val entries: PersistentMap<Locale, String>) {
-    public operator fun get(locale: Locale): String? = entries[locale]
+public value class LocalizedStrings internal constructor(private val delegate: PersistentMap<Locale, String>) {
+    /**
+     * Returns the string for the given [locale], or `null` if no such string exists.
+     */
+    public operator fun get(locale: Locale): String? = delegate[locale]
 
-    public operator fun contains(locale: Locale): Boolean = locale in entries
+    /**
+     * Returns `true` if a string is defined for the given [locale].
+     */
+    public operator fun contains(locale: Locale): Boolean = locale in delegate
 
-    public operator fun plus(other: LocalizedStrings): LocalizedStrings = LocalizedStrings(entries + other.entries)
+    /**
+     * Returns a new [LocalizedStrings] instance containing all entries from `this` instance and the [other] instance.
+     *
+     * If both instances contain the same locale, the value from [other] will be used.
+     */
+    public operator fun plus(other: LocalizedStrings): LocalizedStrings = LocalizedStrings(delegate + other.delegate)
 
-    public fun isEmpty(): Boolean = entries.isEmpty()
+    /**
+     * Returns `true` if no mappings are defined.
+     */
+    public fun isEmpty(): Boolean = delegate.isEmpty()
 
-    public fun isNotEmpty(): Boolean = entries.isNotEmpty()
+    /**
+     * Returns the backing [PersistentMap] instance.
+     */
+    public fun asMap(): PersistentMap<Locale, String> = delegate
 
-    public fun toMutableMap(): MutableMap<Locale, String> = entries.toMutableMap()
+    override fun toString(): String = delegate.entries.joinToString(prefix = "{", postfix = "}") { (locale, string) ->
+        "${locale.asString()} -> '$string'"
+    }
 }
 
+private val EMPTY_STRINGS: LocalizedStrings = LocalizedStrings(persistentHashMapOf())
+
+/**
+ * Returns an empty [LocalizedStrings] instance.
+ */
+public fun emptyLocalizedStrings(): LocalizedStrings = EMPTY_STRINGS
+
+/**
+ * Returns an empty [LocalizedStrings] instance.
+ */
+public fun localizedStringsOf(): LocalizedStrings = emptyLocalizedStrings()
+
+/**
+ * Returns a [LocalizedStrings] instance containing the given [mappings].
+ */
+public fun localizedStringsOf(vararg mappings: Pair<Locale, String>): LocalizedStrings =
+    LocalizedStrings(mappings.toPersistentHashMap())
+
+/**
+ * Returns a [LocalizedStrings] instance containing the mappings in `this` map.
+ */
+public fun Map<Locale, String>.toLocalizedStrings(): LocalizedStrings = LocalizedStrings(toPersistentHashMap())
+
+/**
+ * Returns `true` if any mappings are defined.
+ */
+public inline fun LocalizedStrings.isNotEmpty(): Boolean = !isEmpty()
+
+/**
+ * Returns the string for the given [locale], or throws a [NoSuchElementException] if no such string exists.
+ *
+ * @throws [NoSuchElementException] if no string exists for the given [locale]
+ */
 public fun LocalizedStrings.getValue(locale: Locale): String =
-    this[locale] ?: throw NoSuchElementException("No string found for locale '$locale'")
+    this[locale] ?: throw NoSuchElementException("No string found for locale ($locale)")

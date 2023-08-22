@@ -14,15 +14,88 @@
  * limitations under the License.
  */
 
+@file:Suppress("NOTHING_TO_INLINE")
+
 package net.ormr.kommando.localization
 
+import dev.kord.common.Locale
+import net.ormr.kommando.kord.asString
+
+/**
+ * A message that may contain multiple locale mappings.
+ *
+ * @see [BasicMessage]
+ * @see [LocalizedMessage]
+ */
 public sealed interface Message {
+    /**
+     * The default string for this message.
+     *
+     * This is used as a fallback if no localization is found for the given locale.
+     */
     public val defaultString: String
+
+    /**
+     * Returns the string for the given [locale], or the [defaultString] if no such string exists.
+     */
+    public fun getStringOrDefault(locale: Locale): String
+
+    /**
+     * Returns `true` if this message contains a string for the given [locale].
+     */
+    public operator fun contains(locale: Locale): Boolean
 }
 
-public data class DefaultMessage(override val defaultString: String) : Message
+/**
+ * A message that has no locale mappings.
+ *
+ * It's only value is the [defaultString].
+ *
+ * @property [defaultString] The only string for this message.
+ */
+public data class BasicMessage(override val defaultString: String) : Message {
+    /**
+     * Always returns the [defaultString], since this message has no locale mappings.
+     */
+    override fun getStringOrDefault(locale: Locale): String = defaultString
 
-// TODO: more
-public data class LocalizedMessage(val value: String) : Message {
-    override val defaultString: String get() = TODO()
+    /**
+     * Returns `false` since this message has no locale mappings.
+     */
+    override fun contains(locale: Locale): Boolean = false
 }
+
+/**
+ * A message that has one or more locale mappings.
+ *
+ * @property [defaultLocale] The default locale for this message.
+ * @property [strings] The locale mappings for this message.
+ */
+public data class LocalizedMessage(val defaultLocale: Locale, val strings: LocalizedStrings) : Message {
+    init {
+        require(defaultLocale in strings) { "defaultLocale ($defaultLocale) is not defined in 'strings'" }
+    }
+
+    override val defaultString: String = strings.getValue(defaultLocale)
+
+    /**
+     * Returns the string for the given [locale], or the [defaultString] if no such string exists.
+     */
+    override fun getStringOrDefault(locale: Locale): String = strings[locale] ?: defaultString
+
+    /**
+     * Returns the string for the given [locale], or `null` if no such string exists.
+     */
+    public fun getStringOrNull(locale: Locale): String? = strings[locale]
+
+    override fun contains(locale: Locale): Boolean = locale in strings
+    override fun toString(): String =
+        "LocalizedMessage(defaultLocale=${defaultLocale.asString()}, defaultString='$defaultString', strings=$strings)"
+}
+
+/**
+ * Returns a new [LocalizedMessage] instance containing all [strings][LocalizedMessage.strings] from `this` instance and
+ * the [other] instance.
+ */
+public inline operator fun LocalizedMessage.plus(other: LocalizedMessage): LocalizedMessage =
+    copy(strings = strings + other.strings)
