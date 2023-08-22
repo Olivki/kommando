@@ -32,13 +32,21 @@ public value class KommandoComponentPath internal constructor(private val parts:
         require(parts.all { PATH_SEP_CHAR !in it }) { "Path must not contain '$PATH_SEP_CHAR'" }
     }
 
-    public operator fun plus(other: KommandoComponentPath): KommandoComponentPath =
+    public operator fun div(other: KommandoComponentPath): KommandoComponentPath =
         KommandoComponentPath(parts + other.parts)
 
     public operator fun div(other: String): KommandoComponentPath = KommandoComponentPath(parts + other)
 
+    public operator fun get(index: Int): String = parts[index]
+
     public fun asString(): String = parts.joinToString(PATH_SEP_STR)
+
+    public fun asList(): List<String> = parts
+
+    public operator fun iterator(): Iterator<String> = parts.iterator()
 }
+
+public inline fun KommandoComponentPath.forEach(action: (String) -> Unit): Unit = asList().forEach(action)
 
 public fun KommandoComponentPath(first: String, vararg rest: String): KommandoComponentPath = KommandoComponentPath(
     parts = persistentListOf<String>().mutate {

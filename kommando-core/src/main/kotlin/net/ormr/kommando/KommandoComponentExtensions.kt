@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("FunctionName")
+@file:Suppress("FunctionName", "NOTHING_TO_INLINE")
 
 package net.ormr.kommando
 
@@ -25,7 +25,16 @@ public inline val KommandoComponent.localeBundle: LocaleBundle
     get() = kommando.localeBundle
 
 context(KommandoComponent)
-public fun LocaleBundle.getMessage(key: String): Message = getMessage(this@KommandoComponent, key)
+public inline fun LocaleBundle.getMessage(key: String): Message = getMessage(componentPath, key)
 
 context(KommandoComponent)
-public fun LocaleBundle.getMessageOrNull(key: String): Message? = getMessageOrNull(this@KommandoComponent, key)
+public inline fun LocaleBundle.getMessage(path: KommandoComponentPath, key: String): Message =
+    getMessage(this@KommandoComponent, path, key)
+
+context(KommandoComponent)
+public inline fun LocaleBundle.getMessageOrNull(key: String): Message? =
+    getMessageOrNull(componentPath, key)
+
+context(KommandoComponent)
+public inline fun LocaleBundle.getMessageOrNull(path: KommandoComponentPath, key: String): Message? =
+    getMessageOrNull(this@KommandoComponent, path, key)

@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando.localization
+package net.ormr.kommando.command.argument
 
-import net.ormr.kommando.KommandoComponent
-import net.ormr.kommando.KommandoComponentPath
-
-// TODO: better name
-public fun interface MessageFinder {
-    public fun findMessage(
-        bundle: MessageBundle,
-        component: KommandoComponent,
-        path: KommandoComponentPath,
-        key: String,
-    ): Message?
+public interface AutoCompletableArgument<Value, ArgValue, out ArgType> : Argument<Value, ArgValue, ArgType>
+        where ArgValue : Any,
+              ArgType : ArgumentType<ArgValue> {
+    public val autoComplete: AutoCompleteAction?
 }
+
+public interface AutoCompletableArgumentWithChoices<Value, ArgValue, out ArgType> :
+    AutoCompletableArgument<Value, ArgValue, ArgType>, ArgumentWithChoice<Value, ArgValue, ArgType>
+        where Value : Any,
+              ArgValue : Any,
+              ArgType : ChoiceArgumentType<ArgValue>

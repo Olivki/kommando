@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando.localization
+package net.ormr.kommando.command.argument
 
-import net.ormr.kommando.KommandoComponent
-import net.ormr.kommando.KommandoComponentPath
+import dev.kord.core.entity.interaction.AutoCompleteInteraction
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 
-// TODO: better name
-public fun interface MessageFinder {
-    public fun findMessage(
-        bundle: MessageBundle,
-        component: KommandoComponent,
-        path: KommandoComponentPath,
-        key: String,
-    ): Message?
+public fun interface AutoCompleteAction {
+    // TODO: pass in the command that is being executed
+    context(AutoCompleteInteraction)
+    public suspend fun provideSuggestion(event: AutoCompleteInteractionCreateEvent)
 }

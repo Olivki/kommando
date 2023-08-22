@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando.localization
+package net.ormr.kommando.command.argument
 
-import net.ormr.kommando.KommandoComponent
-import net.ormr.kommando.KommandoComponentPath
+import dev.kord.common.entity.optional.Optional
+import dev.kord.rest.builder.interaction.BaseChoiceBuilder
 
-// TODO: better name
-public fun interface MessageFinder {
-    public fun findMessage(
-        bundle: MessageBundle,
-        component: KommandoComponent,
-        path: KommandoComponentPath,
-        key: String,
-    ): Message?
+context(BaseChoiceBuilder<Value>)
+internal fun <Value> addChoices(choices: List<ArgumentChoice<Value>>)
+        where Value : Any {
+    for ((name, value, strings) in choices) {
+        // TODO: do we want to use 'Missing' instead of 'Null'?
+        choice(name, value, if (strings.isEmpty()) Optional(strings.asMap()) else Optional.Missing())
+    }
 }

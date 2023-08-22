@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando.localization
+package net.ormr.kommando.command.argument
 
-import net.ormr.kommando.KommandoComponent
-import net.ormr.kommando.KommandoComponentPath
+import net.ormr.kommando.localization.Message
 
-// TODO: better name
-public fun interface MessageFinder {
-    public fun findMessage(
-        bundle: MessageBundle,
-        component: KommandoComponent,
-        path: KommandoComponentPath,
-        key: String,
-    ): Message?
+public fun interface ArgumentFactory<Value, Arg>
+        where Arg : Argument<Value, *, *> {
+    public fun create(name: String, description: Message): Arg
 }

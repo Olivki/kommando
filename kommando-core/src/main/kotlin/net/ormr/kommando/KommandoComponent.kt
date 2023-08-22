@@ -20,6 +20,7 @@ import net.ormr.kommando.localization.Message
 import org.kodein.di.DI
 import org.kodein.di.instance
 
+// TODO: rename to Component?
 public interface KommandoComponent : KommandoDI {
     public val kommando: Kommando
     public val componentPath: KommandoComponentPath

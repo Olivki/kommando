@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando.localization
+package net.ormr.kommando.command.argument
 
-import net.ormr.kommando.KommandoComponent
-import net.ormr.kommando.KommandoComponentPath
+import net.ormr.kommando.command.CustomizableCommand
+import net.ormr.kommando.localization.Message
 
-// TODO: better name
-public fun interface MessageFinder {
-    public fun findMessage(
-        bundle: MessageBundle,
-        component: KommandoComponent,
-        path: KommandoComponentPath,
-        key: String,
-    ): Message?
+// namespace to hide 'createDelegate' from top-level IDE suggestions
+public object ArgumentHelper {
+    context(Cmd)
+    public fun <Value, Cmd, Arg> newBuilder(
+        name: String?,
+        description: Message?,
+        argumentFactory: ArgumentFactory<Value, Arg>,
+    ): ArgumentBuilder<Cmd, Value, Arg>
+            where Cmd : CustomizableCommand<*>,
+                  Arg : Argument<Value, *, *> = ArgumentBuilder(name, description, argumentFactory)
 }

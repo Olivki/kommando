@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando.localization
+package net.ormr.kommando.command.argument
 
-import net.ormr.kommando.KommandoComponent
-import net.ormr.kommando.KommandoComponentPath
-
-// TODO: better name
-public fun interface MessageFinder {
-    public fun findMessage(
-        bundle: MessageBundle,
-        component: KommandoComponent,
-        path: KommandoComponentPath,
-        key: String,
-    ): Message?
+public interface ArgumentWithRange<RangeValue, Value, ArgValue, out ArgType>
+        where RangeValue : Any,
+              Value : Any,
+              ArgValue : Any,
+              ArgType : ArgumentType<ArgValue> {
+    public val min: RangeValue?
+    public val max: RangeValue?
 }
