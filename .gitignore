@@ -48,3 +48,4 @@ gradle-app.setting
 kotlin-js-store!/data/
 /data/
 /humbaba/
+/kommando-core/src/main/kotlin/net/ormr/kommando/test/**
