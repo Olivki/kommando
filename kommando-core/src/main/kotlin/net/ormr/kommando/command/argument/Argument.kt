@@ -25,17 +25,17 @@ import net.ormr.kommando.localization.MessageResolver
 public interface Argument<Value, ArgValue, out ArgType>
         where ArgValue : Any,
               ArgType : ArgumentType<ArgValue> {
-    public val name: String
+    public val name: Message
     public val description: Message
     public val type: ArgType
 
     public suspend fun getValue(source: InteractionCommand, event: ChatInputCommandInteractionCreateEvent): Value =
-        convertArgumentValue(type.getValue(source, name))
+        convertArgumentValue(type.getValue(source, defaultName))
 
     public suspend fun getValueOrNull(
         source: InteractionCommand,
         event: ChatInputCommandInteractionCreateEvent,
-    ): Value? = convertNullableArgumentValue(type.getValueOrNull(source, name))
+    ): Value? = convertNullableArgumentValue(type.getValueOrNull(source, defaultName))
 
     public fun convertArgumentValue(value: ArgValue): Value
 
@@ -45,3 +45,5 @@ public interface Argument<Value, ArgValue, out ArgType>
     public fun buildArgument(resolver: MessageResolver, isRequired: Boolean)
 }
 
+public inline val Argument<*, *, *>.defaultName: String
+    get() = name.defaultString

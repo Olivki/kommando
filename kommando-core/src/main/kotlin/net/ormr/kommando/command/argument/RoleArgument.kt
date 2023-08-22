@@ -16,68 +16,48 @@
 
 package net.ormr.kommando.command.argument
 
+import dev.kord.core.entity.Role
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import dev.kord.rest.builder.interaction.string
+import dev.kord.rest.builder.interaction.role
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.*
 
-public class StringArgument(
+public class RoleArgument(
     override val name: Message,
     override val description: Message,
-    override val autoComplete: AutoCompleteAction?,
-) : AutoCompletableArgumentWithChoices<String, String, ArgumentType.String> {
-    override val type: ArgumentType.String
-        get() = ArgumentType.String
+) : Argument<Role, Role, ArgumentType.Role> {
+    override val type: ArgumentType.Role
+        get() = ArgumentType.Role
 
-    override fun convertArgumentValue(value: String): String = value
+    override fun convertArgumentValue(value: Role): Role = value
 
-    override fun convertNullableArgumentValue(value: String?): String? = value
-
-    override fun convertChoiceValue(value: String): String = value
+    override fun convertNullableArgumentValue(value: Role?): Role? = value
 
     context(BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
-        string(resolver[name], resolver[description]) {
+        role(resolver[name], resolver[description]) {
             registerLocalizations()
-            this.autocomplete = autoComplete != null
             this.required = isRequired
         }
     }
-
-    context(BaseInputChatBuilder)
-    override fun buildArgumentWithChoices(
-        resolver: MessageResolver,
-        choices: List<ArgumentChoice<String>>,
-        isRequired: Boolean,
-    ) {
-        string(resolver[name], resolver[description]) {
-            registerLocalizations()
-            this.required = isRequired
-            addChoices(choices)
-        }
-    }
-
-    override fun toString(): String = "StringArgument(name='$name', description='${description.defaultString}')"
 }
 
 context(Cmd)
-public fun <Cmd> string(
+public fun <Cmd> role(
     name: Message? = null,
     description: String,
-    autoComplete: AutoCompleteAction? = null,
-): ArgumentBuilder<Cmd, String, StringArgument>
+): ArgumentBuilder<Cmd, Role, RoleArgument>
         where Cmd : CustomizableCommand<*> =
     ArgumentHelper.newBuilder(name, BasicMessage(description)) { resolvedName, desc ->
-        StringArgument(resolvedName, desc, autoComplete)
+        RoleArgument(resolvedName, desc)
     }
 
 context(Cmd)
-public fun <Cmd> string(
+public fun <Cmd> role(
     name: Message? = null,
     description: LocalizedMessage? = null,
-    autoComplete: AutoCompleteAction? = null,
-): ArgumentBuilder<Cmd, String, StringArgument>
+): ArgumentBuilder<Cmd, Role, RoleArgument>
         where Cmd : CustomizableCommand<*> =
     ArgumentHelper.newBuilder(name, description) { resolvedName, desc ->
-        StringArgument(resolvedName, desc, autoComplete)
+        RoleArgument(resolvedName, desc)
     }

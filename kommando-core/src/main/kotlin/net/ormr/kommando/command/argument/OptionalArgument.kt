@@ -28,7 +28,7 @@ public class OptionalArgument<Value, ArgValue, out ArgType>(
 ) : Argument<Value?, ArgValue, ArgType> // can't delegate because 'Value?' != 'Value'
         where ArgValue : Any,
               ArgType : ArgumentType<ArgValue> {
-    override val name: String
+    override val name: Message
         get() = delegate.name
 
     override val description: Message

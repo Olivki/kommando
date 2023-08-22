@@ -32,6 +32,7 @@ public sealed interface ArgumentType<Value>
     public fun getValue(source: InteractionCommand, name: KString): Value = getValueOrNull(source, name)
         ?: throw NoSuchArgumentWithTypeException(name, this)
 
+    // TODO: we pray that localization doesn't alter the stored name
     public fun getValueOrNull(source: InteractionCommand, name: KString): Value?
 
     public data object Attachment : ArgumentType<AttachmentEntity> {

@@ -16,68 +16,50 @@
 
 package net.ormr.kommando.command.argument
 
+import dev.kord.core.entity.Attachment
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import dev.kord.rest.builder.interaction.string
+import dev.kord.rest.builder.interaction.attachment
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.*
 
-public class StringArgument(
+public class AttachmentArgument(
     override val name: Message,
     override val description: Message,
-    override val autoComplete: AutoCompleteAction?,
-) : AutoCompletableArgumentWithChoices<String, String, ArgumentType.String> {
-    override val type: ArgumentType.String
-        get() = ArgumentType.String
+) : Argument<Attachment, Attachment, ArgumentType.Attachment> {
+    override val type: ArgumentType.Attachment
+        get() = ArgumentType.Attachment
 
-    override fun convertArgumentValue(value: String): String = value
+    override fun convertArgumentValue(value: Attachment): Attachment = value
 
-    override fun convertNullableArgumentValue(value: String?): String? = value
-
-    override fun convertChoiceValue(value: String): String = value
+    override fun convertNullableArgumentValue(value: Attachment?): Attachment? = value
 
     context(BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
-        string(resolver[name], resolver[description]) {
+        attachment(resolver[name], resolver[description]) {
             registerLocalizations()
-            this.autocomplete = autoComplete != null
             this.required = isRequired
         }
     }
 
-    context(BaseInputChatBuilder)
-    override fun buildArgumentWithChoices(
-        resolver: MessageResolver,
-        choices: List<ArgumentChoice<String>>,
-        isRequired: Boolean,
-    ) {
-        string(resolver[name], resolver[description]) {
-            registerLocalizations()
-            this.required = isRequired
-            addChoices(choices)
-        }
-    }
-
-    override fun toString(): String = "StringArgument(name='$name', description='${description.defaultString}')"
+    override fun toString(): String = "AttachmentArgument(name=$name, description=$description)"
 }
 
 context(Cmd)
-public fun <Cmd> string(
+public fun <Cmd> attachment(
     name: Message? = null,
     description: String,
-    autoComplete: AutoCompleteAction? = null,
-): ArgumentBuilder<Cmd, String, StringArgument>
+): ArgumentBuilder<Cmd, Attachment, AttachmentArgument>
         where Cmd : CustomizableCommand<*> =
     ArgumentHelper.newBuilder(name, BasicMessage(description)) { resolvedName, desc ->
-        StringArgument(resolvedName, desc, autoComplete)
+        AttachmentArgument(resolvedName, desc)
     }
 
 context(Cmd)
-public fun <Cmd> string(
+public fun <Cmd> attachment(
     name: Message? = null,
     description: LocalizedMessage? = null,
-    autoComplete: AutoCompleteAction? = null,
-): ArgumentBuilder<Cmd, String, StringArgument>
+): ArgumentBuilder<Cmd, Attachment, AttachmentArgument>
         where Cmd : CustomizableCommand<*> =
     ArgumentHelper.newBuilder(name, description) { resolvedName, desc ->
-        StringArgument(resolvedName, desc, autoComplete)
+        AttachmentArgument(resolvedName, desc)
     }

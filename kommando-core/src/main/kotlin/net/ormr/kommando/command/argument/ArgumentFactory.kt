@@ -20,5 +20,5 @@ import net.ormr.kommando.localization.Message
 
 public fun interface ArgumentFactory<Value, Arg>
         where Arg : Argument<Value, *, *> {
-    public fun create(name: String, description: Message): Arg
+    public fun create(name: Message, description: Message): Arg
 }

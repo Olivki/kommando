@@ -92,6 +92,11 @@ public fun Map<Locale, String>.toLocalizedStrings(): LocalizedStrings = Localize
 public inline fun LocalizedStrings.isNotEmpty(): Boolean = !isEmpty()
 
 /**
+ * Returns a new [MutableMap] containing the entries of `this` instance.
+ */
+public inline fun LocalizedStrings.toMutableMap(): MutableMap<Locale, String> = asMap().toMutableMap()
+
+/**
  * Returns the string for the given [locale], or throws a [NoSuchElementException] if no such string exists.
  *
  * @throws [NoSuchElementException] if no string exists for the given [locale]

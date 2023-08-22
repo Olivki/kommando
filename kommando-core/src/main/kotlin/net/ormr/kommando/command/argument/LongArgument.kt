@@ -22,7 +22,7 @@ import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.*
 
 public class LongArgument(
-    override val name: String,
+    override val name: Message,
     override val description: Message,
     override val min: Long?,
     override val max: Long?,
@@ -40,7 +40,8 @@ public class LongArgument(
 
     context(BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
-        integer(name, resolver[description]) {
+        integer(resolver[name], resolver[description]) {
+            registerLocalizations()
             this.autocomplete = autoComplete != null
             this.required = isRequired
             this.minValue = min
@@ -54,7 +55,8 @@ public class LongArgument(
         choices: List<ArgumentChoice<Long>>,
         isRequired: Boolean,
     ) {
-        integer(name, resolver[description]) {
+        integer(resolver[name], resolver[description]) {
+            registerLocalizations()
             this.required = isRequired
             // TODO: do we add min & max for choice ones?
             this.minValue = min
@@ -69,7 +71,7 @@ public class LongArgument(
 
 context(Cmd)
 public fun <Cmd> long(
-    name: String? = null,
+    name: Message? = null,
     description: String,
     min: Long? = null,
     max: Long? = null,
@@ -82,7 +84,7 @@ public fun <Cmd> long(
 
 context(Cmd)
 public fun <Cmd> long(
-    name: String? = null,
+    name: Message? = null,
     description: LocalizedMessage? = null,
     min: Long? = null,
     max: Long? = null,

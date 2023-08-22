@@ -23,7 +23,7 @@ import net.ormr.kommando.localization.Message
 public object ArgumentHelper {
     context(Cmd)
     public fun <Value, Cmd, Arg> newBuilder(
-        name: String?,
+        name: Message?,
         description: Message?,
         argumentFactory: ArgumentFactory<Value, Arg>,
     ): ArgumentBuilder<Cmd, Value, Arg>

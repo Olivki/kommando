@@ -17,67 +17,46 @@
 package net.ormr.kommando.command.argument
 
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import dev.kord.rest.builder.interaction.string
+import dev.kord.rest.builder.interaction.boolean
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.*
 
-public class StringArgument(
+public class BooleanArgument(
     override val name: Message,
     override val description: Message,
-    override val autoComplete: AutoCompleteAction?,
-) : AutoCompletableArgumentWithChoices<String, String, ArgumentType.String> {
-    override val type: ArgumentType.String
-        get() = ArgumentType.String
+) : Argument<Boolean, Boolean, ArgumentType.Boolean> {
+    override val type: ArgumentType.Boolean
+        get() = ArgumentType.Boolean
 
-    override fun convertArgumentValue(value: String): String = value
+    override fun convertArgumentValue(value: Boolean): Boolean = value
 
-    override fun convertNullableArgumentValue(value: String?): String? = value
-
-    override fun convertChoiceValue(value: String): String = value
+    override fun convertNullableArgumentValue(value: Boolean?): Boolean? = value
 
     context(BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
-        string(resolver[name], resolver[description]) {
+        boolean(resolver[name], resolver[description]) {
             registerLocalizations()
-            this.autocomplete = autoComplete != null
             this.required = isRequired
         }
     }
-
-    context(BaseInputChatBuilder)
-    override fun buildArgumentWithChoices(
-        resolver: MessageResolver,
-        choices: List<ArgumentChoice<String>>,
-        isRequired: Boolean,
-    ) {
-        string(resolver[name], resolver[description]) {
-            registerLocalizations()
-            this.required = isRequired
-            addChoices(choices)
-        }
-    }
-
-    override fun toString(): String = "StringArgument(name='$name', description='${description.defaultString}')"
 }
 
 context(Cmd)
-public fun <Cmd> string(
+public fun <Cmd> boolean(
     name: Message? = null,
     description: String,
-    autoComplete: AutoCompleteAction? = null,
-): ArgumentBuilder<Cmd, String, StringArgument>
+): ArgumentBuilder<Cmd, Boolean, BooleanArgument>
         where Cmd : CustomizableCommand<*> =
     ArgumentHelper.newBuilder(name, BasicMessage(description)) { resolvedName, desc ->
-        StringArgument(resolvedName, desc, autoComplete)
+        BooleanArgument(resolvedName, desc)
     }
 
 context(Cmd)
-public fun <Cmd> string(
+public fun <Cmd> boolean(
     name: Message? = null,
     description: LocalizedMessage? = null,
-    autoComplete: AutoCompleteAction? = null,
-): ArgumentBuilder<Cmd, String, StringArgument>
+): ArgumentBuilder<Cmd, Boolean, BooleanArgument>
         where Cmd : CustomizableCommand<*> =
     ArgumentHelper.newBuilder(name, description) { resolvedName, desc ->
-        StringArgument(resolvedName, desc, autoComplete)
+        BooleanArgument(resolvedName, desc)
     }

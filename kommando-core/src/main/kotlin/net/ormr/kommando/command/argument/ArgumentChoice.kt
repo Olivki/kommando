@@ -28,6 +28,7 @@ public data class ArgumentChoice<Value>(
     override fun toString(): String = "'$defaultName' = $value"
 }
 
+// TODO: handle localization of the name
 context(CustomizableCommand<*>)
 public infix fun <Value> String.means(value: Value): ArgumentChoice<Value>
         where Value : Any = ArgumentChoice(this, value, emptyLocalizedStrings())
