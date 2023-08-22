@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("NOTHING_TO_INLINE")
+
 package net.ormr.kommando.command.factory
 
 import kotlinx.collections.immutable.toPersistentList
@@ -84,3 +86,8 @@ context(KommandoBuilder)
 @KommandoDsl
 public fun CommandFactory(factory: DirectDI.() -> RootCommand<*, *>): CommandFactory =
     SingleCommandFactory(factory)
+
+context(KommandoBuilder)
+public inline operator fun CommandFactory.unaryPlus() {
+    commandFactories += this
+}

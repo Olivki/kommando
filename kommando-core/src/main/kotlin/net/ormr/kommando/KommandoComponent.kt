@@ -35,3 +35,6 @@ public abstract class AbstractKommandoComponent : KommandoComponent {
 public interface DescribableKommandoComponent : KommandoComponent {
     public val componentDescription: Message
 }
+
+public inline val DescribableKommandoComponent.defaultComponentDescription: String
+    get() = componentDescription.defaultString

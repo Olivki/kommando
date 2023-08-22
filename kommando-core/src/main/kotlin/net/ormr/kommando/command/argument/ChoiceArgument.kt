@@ -19,7 +19,6 @@ package net.ormr.kommando.command.argument
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.localization.MessageResolver
 
 public class ChoiceArgument<Value, ArgValue, out ArgType>(
     private val delegate: ArgumentWithChoice<Value, ArgValue, ArgType>,
@@ -42,8 +41,8 @@ public class ChoiceArgument<Value, ArgValue, out ArgType>(
     override fun convertNullableArgumentValue(value: ArgValue?): Nothing = noNullableConversionSupport()
 
     context(ArgumentBuildContext, BaseInputChatBuilder)
-    override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
-        delegate.buildArgumentWithChoices(resolver, choices, isRequired)
+    override fun buildArgument(isRequired: Boolean) {
+        delegate.buildArgumentWithChoices(choices, isRequired)
     }
 
     override fun toString(): String = "WithChoices<$delegate, $choices>"

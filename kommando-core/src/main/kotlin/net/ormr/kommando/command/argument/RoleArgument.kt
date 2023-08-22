@@ -21,7 +21,9 @@ import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.role
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.localization.*
+import net.ormr.kommando.localization.BasicMessage
+import net.ormr.kommando.localization.LocalizedMessage
+import net.ormr.kommando.localization.Message
 
 public class RoleArgument(
     override val key: String,
@@ -36,8 +38,8 @@ public class RoleArgument(
     override fun convertNullableArgumentValue(value: Role?): Role? = value
 
     context(ArgumentBuildContext, BaseInputChatBuilder)
-    override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
-        role(resolver[name], resolver[description]) {
+    override fun buildArgument(isRequired: Boolean) {
+        role(defaultName, defaultDescription) {
             registerLocalizations()
             this.required = isRequired
         }

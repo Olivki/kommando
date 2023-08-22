@@ -16,5 +16,105 @@
 
 package net.ormr.kommando
 
-public class KommandoBuilder {
+import com.github.michaelbull.logging.InlineLogger
+import dev.kord.common.Locale
+import dev.kord.core.Kord
+import dev.kord.gateway.Intents
+import dev.kord.gateway.builder.PresenceBuilder
+import net.ormr.kommando.command.factory.CommandFactory
+import net.ormr.kommando.command.permission.DefaultCommandPermissions
+import net.ormr.kommando.localization.LocaleBundle
+import net.ormr.kommando.localization.emptyMessageBundle
+import org.kodein.di.DI
+import org.kodein.di.DirectDI
+import org.kodein.di.DirectDIAware
+import org.kodein.di.bindEagerSingleton
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
+
+@KommandoDsl
+public class KommandoBuilder @PublishedApi internal constructor(
+    public val kord: Kord,
+    public val intents: Intents,
+    override val directDI: DirectDI,
+) : DirectDIAware {
+    public val commandFactories: MutableList<CommandFactory> = mutableListOf()
+
+    public var defaultCommandPermissions: DefaultCommandPermissions? = null
+
+    public var exceptionHandler: KommandoExceptionHandler? = null
+
+    public var localeBundle: LocaleBundle = LocaleBundle(
+        defaultLocale = Locale.ENGLISH_UNITED_STATES,
+        messageBundle = emptyMessageBundle(),
+        finder = { bundle, _, path, key -> bundle.getMessageOrNull(path, key) },
+    )
+
+    @PublishedApi
+    internal suspend fun build(): Kommando {
+        val kommando = Kommando(
+            kord = kord,
+            localeBundle = localeBundle,
+            defaultCommandPermissions = defaultCommandPermissions,
+            exceptionHandler = exceptionHandler,
+        )
+
+        if (localeBundle.messageBundle.isEmpty()) {
+            logger.warn { "MessageBundle is currently empty." }
+        }
+
+        kommandoDI.addExtend(directDI.di).addConfig { bindEagerSingleton { kommando } }
+
+        kommando.setup(factories = commandFactories)
+
+        return kommando
+    }
+
+    private companion object {
+        private val logger = InlineLogger()
+    }
+}
+
+@KommandoDsl
+public suspend inline fun bot(
+    token: String,
+    intents: Intents = Intents.nonPrivileged,
+    presence: PresenceBuilder.() -> Unit = {},
+    crossinline di: DI.MainBuilder.() -> Unit = {},
+    builder: KommandoBuilder.() -> Unit,
+) {
+    contract {
+        callsInPlace(presence, InvocationKind.EXACTLY_ONCE)
+        callsInPlace(di, InvocationKind.AT_LEAST_ONCE)
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
+    bot(Kord(token), intents, presence, di, builder)
+}
+
+@KommandoDsl
+public suspend inline fun bot(
+    kord: Kord,
+    intents: Intents = Intents.nonPrivileged,
+    presence: PresenceBuilder.() -> Unit = {},
+    crossinline di: DI.MainBuilder.() -> Unit = {},
+    builder: KommandoBuilder.() -> Unit,
+) {
+    contract {
+        callsInPlace(presence, InvocationKind.EXACTLY_ONCE)
+        callsInPlace(di, InvocationKind.EXACTLY_ONCE)
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
+    val kodein = DI.direct {
+        bindEagerSingleton { kord }
+        di()
+    }
+
+    KommandoBuilder(kord, intents, kodein).apply(builder).build()
+
+    kord.login {
+        this.intents = intents
+        this.presence = PresenceBuilder().apply(presence).toPresence()
+    }
 }

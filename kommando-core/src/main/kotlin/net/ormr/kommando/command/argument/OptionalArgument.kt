@@ -22,7 +22,6 @@ import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.Message
-import net.ormr.kommando.localization.MessageResolver
 
 public class OptionalArgument<Value, ArgValue, out ArgType>(
     private val delegate: Argument<Value, ArgValue, ArgType>,
@@ -56,8 +55,8 @@ public class OptionalArgument<Value, ArgValue, out ArgType>(
     override fun convertNullableArgumentValue(value: ArgValue?): Nothing = noNullableConversionSupport()
 
     context(ArgumentBuildContext, BaseInputChatBuilder)
-    override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
-        delegate.buildArgument(resolver, isRequired = false)
+    override fun buildArgument(isRequired: Boolean) {
+        delegate.buildArgument(isRequired = false)
     }
 
     override fun toString(): String = "Optional<$delegate>"

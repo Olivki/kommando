@@ -21,7 +21,9 @@ import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.mentionable
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.localization.*
+import net.ormr.kommando.localization.BasicMessage
+import net.ormr.kommando.localization.LocalizedMessage
+import net.ormr.kommando.localization.Message
 
 public class MentionableArgument(
     override val key: String,
@@ -36,8 +38,8 @@ public class MentionableArgument(
     override fun convertNullableArgumentValue(value: Entity?): Entity? = value
 
     context(ArgumentBuildContext, BaseInputChatBuilder)
-    override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
-        mentionable(resolver[name], resolver[description]) {
+    override fun buildArgument(isRequired: Boolean) {
+        mentionable(defaultName, defaultDescription) {
             registerLocalizations()
             this.required = isRequired
         }

@@ -13,6 +13,7 @@ kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotli
 kodein-di = { group = "org.kodein.di", name = "kodein-di", version.ref = "kodein" }
 kodein-di-conf = { group = "org.kodein.di", name = "kodein-di-conf", version.ref = "kodein" }
 kord-core = { group = "dev.kord", name = "kord-core", version.ref = "kord" }
+inlineLogger = { group = "com.michael-bull.kotlin-inline-logger", name = "kotlin-inline-logger", version = "1.0.4" }
 
 [bundles]
 kodein = ["kodein-di", "kodein-di-conf"]

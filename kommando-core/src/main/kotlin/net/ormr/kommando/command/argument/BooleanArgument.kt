@@ -20,7 +20,9 @@ import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.boolean
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.localization.*
+import net.ormr.kommando.localization.BasicMessage
+import net.ormr.kommando.localization.LocalizedMessage
+import net.ormr.kommando.localization.Message
 
 public class BooleanArgument(
     override val key: String,
@@ -35,8 +37,8 @@ public class BooleanArgument(
     override fun convertNullableArgumentValue(value: Boolean?): Boolean? = value
 
     context(ArgumentBuildContext, BaseInputChatBuilder)
-    override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
-        boolean(resolver[name], resolver[description]) {
+    override fun buildArgument(isRequired: Boolean) {
+        boolean(defaultName, defaultDescription) {
             registerLocalizations()
             this.required = isRequired
         }

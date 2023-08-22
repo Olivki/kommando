@@ -20,7 +20,6 @@ import dev.kord.core.entity.interaction.InteractionCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import net.ormr.kommando.localization.Message
-import net.ormr.kommando.localization.MessageResolver
 
 public interface Argument<Value, ArgValue, out ArgType>
         where ArgValue : Any,
@@ -43,8 +42,11 @@ public interface Argument<Value, ArgValue, out ArgType>
     public fun convertNullableArgumentValue(value: ArgValue?): Value?
 
     context(ArgumentBuildContext, BaseInputChatBuilder)
-    public fun buildArgument(resolver: MessageResolver, isRequired: Boolean)
+    public fun buildArgument(isRequired: Boolean)
 }
 
 public inline val Argument<*, *, *>.defaultName: String
     get() = name.defaultString
+
+public inline val Argument<*, *, *>.defaultDescription: String
+    get() = description.defaultString

@@ -39,6 +39,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(libs.inlineLogger)
     implementation(libs.kotlinx.collections.immutable)
     api(libs.bundles.kodein)
     api(libs.bundles.kord)

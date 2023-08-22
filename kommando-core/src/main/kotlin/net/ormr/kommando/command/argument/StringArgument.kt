@@ -20,7 +20,9 @@ import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.string
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.localization.*
+import net.ormr.kommando.localization.BasicMessage
+import net.ormr.kommando.localization.LocalizedMessage
+import net.ormr.kommando.localization.Message
 
 public class StringArgument(
     override val key: String,
@@ -41,8 +43,8 @@ public class StringArgument(
     override fun convertChoiceValue(value: String): String = value
 
     context(ArgumentBuildContext, BaseInputChatBuilder)
-    override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
-        string(resolver[name], resolver[description]) {
+    override fun buildArgument(isRequired: Boolean) {
+        string(defaultName, defaultDescription) {
             registerLocalizations()
             this.autocomplete = autoComplete != null
             this.minLength = min
@@ -53,11 +55,10 @@ public class StringArgument(
 
     context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgumentWithChoices(
-        resolver: MessageResolver,
         choices: List<ArgumentChoice<String>>,
         isRequired: Boolean,
     ) {
-        string(resolver[name], resolver[description]) {
+        string(defaultName, defaultDescription) {
             registerLocalizations()
             this.required = isRequired
             // TODO: do we add min & max for choice ones?

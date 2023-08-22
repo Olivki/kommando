@@ -21,7 +21,9 @@ import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.channel
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.localization.*
+import net.ormr.kommando.localization.BasicMessage
+import net.ormr.kommando.localization.LocalizedMessage
+import net.ormr.kommando.localization.Message
 
 public class ChannelArgument(
     override val key: String,
@@ -36,8 +38,8 @@ public class ChannelArgument(
     override fun convertNullableArgumentValue(value: ResolvedChannel?): ResolvedChannel? = value
 
     context(ArgumentBuildContext, BaseInputChatBuilder)
-    override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
-        channel(resolver[name], resolver[description]) {
+    override fun buildArgument(isRequired: Boolean) {
+        channel(defaultName, defaultDescription) {
             registerLocalizations()
             this.required = isRequired
         }

@@ -16,8 +16,8 @@
 
 package net.ormr.kommando.command.argument
 
-import net.ormr.kommando.command.CustomizableCommand
+import net.ormr.kommando.command.Command
 
 public interface ArgumentBuildContext {
-    public val parentCommand: CustomizableCommand<*>
+    public val parentCommand: Command<*>
 }

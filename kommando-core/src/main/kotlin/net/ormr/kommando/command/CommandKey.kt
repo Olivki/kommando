@@ -17,6 +17,8 @@
 package net.ormr.kommando.command
 
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.application.ApplicationCommand
+import dev.kord.core.entity.application.GuildApplicationCommand
 
 public sealed interface CommandKey {
     public fun asString(): String
@@ -38,4 +40,9 @@ public fun RootCommand<*, *>.toCommandKey(): CommandKey = when (this) {
 internal fun RootCommand<*, *>.formatAsCommandKey(): String = when (this) {
     is GuildRootCommand -> "$defaultCommandName @$commandGuildId"
     is GlobalRootCommand -> defaultCommandName
+}
+
+public fun ApplicationCommand.toCommandKey(): CommandKey = when (this) {
+    is GuildApplicationCommand -> CommandKey.Guild(name, guildId)
+    else -> CommandKey.Global(name)
 }

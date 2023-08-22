@@ -22,7 +22,10 @@ import dev.kord.rest.builder.interaction.string
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localeBundle
-import net.ormr.kommando.localization.*
+import net.ormr.kommando.localization.BasicMessage
+import net.ormr.kommando.localization.LocalizedMessage
+import net.ormr.kommando.localization.Message
+import net.ormr.kommando.localization.toMutableMap
 
 public class EnumChoiceArgument<Value>(
     override val key: String,
@@ -47,10 +50,10 @@ public class EnumChoiceArgument<Value>(
     override fun convertNullableArgumentValue(value: String?): Value? = value?.let(nameToEntry::getValue)
 
     context(ArgumentBuildContext, BaseInputChatBuilder)
-    override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
+    override fun buildArgument(isRequired: Boolean) {
         val bundle = parentCommand.localeBundle
         val path = parentCommand.componentPath / "arguments" / key / "choices"
-        string(resolver[name], resolver[description]) {
+        string(defaultName, defaultDescription) {
             this.required = isRequired
             for (entry in entries) {
                 val name = entry.name

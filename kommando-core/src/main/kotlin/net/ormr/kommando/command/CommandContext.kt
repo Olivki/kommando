@@ -25,6 +25,6 @@ public sealed interface CommandContext<out I>
     public val interaction: I
 }
 
-public sealed interface GuildCommandContext : CommandContext<GuildChatInputCommandInteraction>
+public interface GuildCommandContext : CommandContext<GuildChatInputCommandInteraction>
 
-public sealed interface GlobalCommandContext : CommandContext<ChatInputCommandInteraction>
+public interface GlobalCommandContext : CommandContext<ChatInputCommandInteraction>

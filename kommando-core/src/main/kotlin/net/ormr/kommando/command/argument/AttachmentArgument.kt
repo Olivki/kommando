@@ -21,7 +21,9 @@ import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.attachment
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.localization.*
+import net.ormr.kommando.localization.BasicMessage
+import net.ormr.kommando.localization.LocalizedMessage
+import net.ormr.kommando.localization.Message
 
 public class AttachmentArgument(
     override val key: String,
@@ -36,8 +38,8 @@ public class AttachmentArgument(
     override fun convertNullableArgumentValue(value: Attachment?): Attachment? = value
 
     context(ArgumentBuildContext, BaseInputChatBuilder)
-    override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
-        attachment(resolver[name], resolver[description]) {
+    override fun buildArgument(isRequired: Boolean) {
+        attachment(defaultName, defaultDescription) {
             registerLocalizations()
             this.required = isRequired
         }

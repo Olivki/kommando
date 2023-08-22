@@ -22,7 +22,7 @@ import net.ormr.kommando.KommandoComponentPath
 
 public data class LocaleBundle(
     public val defaultLocale: Locale,
-    private val messageBundle: MessageBundle,
+    public val messageBundle: MessageBundle,
     private val finder: MessageFinder,
 ) {
     public fun getMessage(component: KommandoComponent, path: KommandoComponentPath, key: String): Message =

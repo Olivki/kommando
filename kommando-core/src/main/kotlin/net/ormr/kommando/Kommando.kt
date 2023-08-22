@@ -16,11 +16,37 @@
 
 package net.ormr.kommando
 
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
+import net.ormr.kommando.command.factory.CommandFactory
+import net.ormr.kommando.command.factory.RegisteredCommand
+import net.ormr.kommando.command.permission.DefaultCommandPermissions
+import net.ormr.kommando.internal.handleCommands
+import net.ormr.kommando.internal.registerCommands
 import net.ormr.kommando.localization.LocaleBundle
 
 public class Kommando internal constructor(
     public val kord: Kord,
     public val localeBundle: LocaleBundle,
-) {
+    public val defaultCommandPermissions: DefaultCommandPermissions?,
+    public val exceptionHandler: KommandoExceptionHandler?,
+) : KommandoDI {
+    public lateinit var registeredCommands: Map<Snowflake, RegisteredCommand>
+        private set
+
+    @PublishedApi
+    internal suspend fun setup(factories: List<CommandFactory>) {
+        registerComponents(factories)
+        registerHandlers()
+    }
+
+    private suspend fun registerComponents(commands: List<CommandFactory>) {
+        // TODO: actually quit the application if there's problems with registering the commands,
+        //       as Kord is probably gonna force the application to be alive even though it will throw exceptions
+        registeredCommands = registerCommands(commands)
+    }
+
+    private suspend fun registerHandlers() {
+        handleCommands()
+    }
 }

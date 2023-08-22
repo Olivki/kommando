@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando.command.argument
+package net.ormr.kommando.command.factory
 
-import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-
-public interface ArgumentWithChoice<Value, ArgValue, out ArgType> : Argument<Value, ArgValue, ArgType>
-        where Value : Any,
-              ArgValue : Any,
-              ArgType : ChoiceArgumentType<ArgValue> {
-    public fun convertChoiceValue(value: Value): ArgValue
-
-    context(ArgumentBuildContext, BaseInputChatBuilder)
-    public fun buildArgumentWithChoices(
-        choices: List<ArgumentChoice<ArgValue>>,
-        isRequired: Boolean,
-    )
+public sealed interface RegisteredSubCommandContainer {
+    public val subCommands: Map<String, SubCommandFactory>
 }
+
+public class RegisteredCommand(
+    public val factory: CommandFactory,
+    public val groups: Map<String, RegisteredGroup>,
+    override val subCommands: Map<String, SubCommandFactory>,
+) : RegisteredSubCommandContainer
+
+public class RegisteredGroup(
+    public val factory: CommandGroupFactory,
+    override val subCommands: Map<String, SubCommandFactory>,
+) : RegisteredSubCommandContainer

@@ -47,6 +47,15 @@ public sealed interface Message {
 }
 
 /**
+ * Returns a [MutableMap] containing all the locale mappings for this message, or `null` if this message has no locale
+ * mappings.
+ */
+public fun Message.toMutableMapOrNull(): MutableMap<Locale, String>? = when (this) {
+    is BasicMessage -> null
+    is LocalizedMessage -> strings.toMutableMap()
+}
+
+/**
  * A message that has no locale mappings.
  *
  * It's only value is the [defaultString].
