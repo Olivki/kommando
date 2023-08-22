@@ -22,10 +22,14 @@ import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.*
 
 public class StringArgument(
+    override val key: String,
     override val name: Message,
     override val description: Message,
+    override val min: Int?,
+    override val max: Int?,
     override val autoComplete: AutoCompleteAction?,
-) : AutoCompletableArgumentWithChoices<String, String, ArgumentType.String> {
+) : AutoCompletableArgumentWithChoices<String, String, ArgumentType.String>,
+    ArgumentWithRange<Int, String, String, ArgumentType.String> {
     override val type: ArgumentType.String
         get() = ArgumentType.String
 
@@ -35,16 +39,18 @@ public class StringArgument(
 
     override fun convertChoiceValue(value: String): String = value
 
-    context(BaseInputChatBuilder)
+    context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
         string(resolver[name], resolver[description]) {
             registerLocalizations()
             this.autocomplete = autoComplete != null
+            this.minLength = min
+            this.maxLength = max
             this.required = isRequired
         }
     }
 
-    context(BaseInputChatBuilder)
+    context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgumentWithChoices(
         resolver: MessageResolver,
         choices: List<ArgumentChoice<String>>,
@@ -53,31 +59,39 @@ public class StringArgument(
         string(resolver[name], resolver[description]) {
             registerLocalizations()
             this.required = isRequired
+            // TODO: do we add min & max for choice ones?
+            this.minLength = min
+            this.maxLength = max
             addChoices(choices)
         }
     }
 
-    override fun toString(): String = "StringArgument(name='$name', description='${description.defaultString}')"
+    override fun toString(): String =
+        "StringArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}', min=$min, max=$max)"
 }
 
 context(Cmd)
 public fun <Cmd> string(
     name: Message? = null,
     description: String,
+    min: Int? = null,
+    max: Int? = null,
     autoComplete: AutoCompleteAction? = null,
 ): ArgumentBuilder<Cmd, String, StringArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, BasicMessage(description)) { resolvedName, desc ->
-        StringArgument(resolvedName, desc, autoComplete)
+    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
+        StringArgument(key, resolvedName, desc, min, max, autoComplete)
     }
 
 context(Cmd)
 public fun <Cmd> string(
     name: Message? = null,
     description: LocalizedMessage? = null,
+    min: Int? = null,
+    max: Int? = null,
     autoComplete: AutoCompleteAction? = null,
 ): ArgumentBuilder<Cmd, String, StringArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, description) { resolvedName, desc ->
-        StringArgument(resolvedName, desc, autoComplete)
+    ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
+        StringArgument(key, resolvedName, desc, min, max, autoComplete)
     }

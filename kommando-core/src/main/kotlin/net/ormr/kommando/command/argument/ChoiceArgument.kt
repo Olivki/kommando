@@ -27,15 +27,20 @@ public class ChoiceArgument<Value, ArgValue, out ArgType>(
         where Value : Any,
               ArgValue : Any,
               ArgType : ChoiceArgumentType<ArgValue> {
+    init {
+        require(choices.isNotEmpty()) { "Choices must not be empty" }
+        require(choices.size <= 25) { "Choices must not be more than 25" }
+    }
+
     // 'copy' on data classes doesn't change the returned generics, so we can't use it for this
     private val choices: List<ArgumentChoice<ArgValue>> =
-        choices.map { ArgumentChoice(it.defaultName, delegate.convertChoiceValue(it.value), it.strings) }
+        choices.map { ArgumentChoice(it.key, delegate.convertChoiceValue(it.value)) }
 
     override fun convertArgumentValue(value: ArgValue): Nothing = noConversionSupport()
 
     override fun convertNullableArgumentValue(value: ArgValue?): Nothing = noNullableConversionSupport()
 
-    context(BaseInputChatBuilder)
+    context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
         delegate.buildArgumentWithChoices(resolver, choices, isRequired)
     }
@@ -57,7 +62,7 @@ public fun <Cmd, Value, ArgValue, ArgType, Arg> ArgumentBuilder<Cmd, Value, Arg>
         add(first)
         addAll(rest)
     }
-    return ArgumentHelper.newBuilder(name, description) { name, desc ->
-        ChoiceArgument(argumentFactory.create(name, desc), choices)
+    return ArgumentHelper.newBuilder(name, description) { key, name, desc ->
+        ChoiceArgument(argumentFactory.create(key, name, desc), choices)
     }
 }

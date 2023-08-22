@@ -18,12 +18,20 @@ package net.ormr.kommando.command.argument
 
 import dev.kord.common.entity.optional.Optional
 import dev.kord.rest.builder.interaction.BaseChoiceBuilder
+import net.ormr.kommando.localeBundle
+import net.ormr.kommando.localization.LocalizedMessage
+import net.ormr.kommando.localization.toMutableMap
 
-context(BaseChoiceBuilder<Value>)
+context(ArgumentWithChoice<*, *, *>, ArgumentBuildContext, BaseChoiceBuilder<Value>)
 internal fun <Value> addChoices(choices: List<ArgumentChoice<Value>>)
         where Value : Any {
-    for ((name, value, strings) in choices) {
-        // TODO: do we want to use 'Missing' instead of 'Null'?
-        choice(name, value, if (strings.isEmpty()) Optional(strings.asMap()) else Optional.Missing())
+    val bundle = parentCommand.localeBundle
+    val path = parentCommand.componentPath / "arguments" / key / "choices"
+    for ((name, value) in choices) {
+        val strings = when (val message = bundle.getMessageOrNull(parentCommand, path, name)) {
+            is LocalizedMessage -> message.strings.toMutableMap()
+            else -> null
+        }
+        choice(name, value, Optional(strings))
     }
 }

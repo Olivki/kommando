@@ -28,6 +28,9 @@ public class OptionalArgument<Value, ArgValue, out ArgType>(
 ) : Argument<Value?, ArgValue, ArgType> // can't delegate because 'Value?' != 'Value'
         where ArgValue : Any,
               ArgType : ArgumentType<ArgValue> {
+    override val key: String
+        get() = delegate.key
+
     override val name: Message
         get() = delegate.name
 
@@ -51,11 +54,9 @@ public class OptionalArgument<Value, ArgValue, out ArgType>(
 
     override fun convertNullableArgumentValue(value: ArgValue?): Nothing = noNullableConversionSupport()
 
-    context(BaseInputChatBuilder)
+    context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
-        with(delegate) {
-            buildArgument(resolver, isRequired = false)
-        }
+        delegate.buildArgument(resolver, isRequired = false)
     }
 
     override fun toString(): String = "Optional<$delegate>"
@@ -70,6 +71,6 @@ public fun <Cmd, Value, ArgValue, Arg> ArgumentBuilder<Cmd, Value, Arg>.optional
               ArgValue : Any,
               Cmd : CustomizableCommand<*>,
               Arg : Argument<Value, ArgValue, *> =
-    ArgumentHelper.newBuilder(name, description) { name, desc ->
-        OptionalArgument(argumentFactory.create(name, desc))
+    ArgumentHelper.newBuilder(name, description) { key, name, desc ->
+        OptionalArgument(argumentFactory.create(key, name, desc))
     }

@@ -22,6 +22,7 @@ import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.*
 
 public class DoubleArgument(
+    override val key: String,
     override val name: Message,
     override val description: Message,
     override val min: Double?,
@@ -38,7 +39,7 @@ public class DoubleArgument(
 
     override fun convertArgumentValue(value: Double): Double = value
 
-    context(BaseInputChatBuilder)
+    context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
         number(resolver[name], resolver[description]) {
             registerLocalizations()
@@ -49,7 +50,7 @@ public class DoubleArgument(
         }
     }
 
-    context(BaseInputChatBuilder)
+    context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgumentWithChoices(
         resolver: MessageResolver,
         choices: List<ArgumentChoice<Double>>,
@@ -66,7 +67,7 @@ public class DoubleArgument(
     }
 
     override fun toString(): String =
-        "DoubleArgument(name='$name', description='${description.defaultString}', min=$min, max=$max)"
+        "DoubleArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}', min=$min, max=$max)"
 }
 
 context(Cmd)
@@ -78,8 +79,8 @@ public fun <Cmd> double(
     autoComplete: AutoCompleteAction? = null,
 ): ArgumentBuilder<Cmd, Double, DoubleArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, BasicMessage(description)) { resolvedName, desc ->
-        DoubleArgument(resolvedName, desc, min, max, autoComplete)
+    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
+        DoubleArgument(key, resolvedName, desc, min, max, autoComplete)
     }
 
 context(Cmd)
@@ -91,6 +92,6 @@ public fun <Cmd> double(
     autoComplete: AutoCompleteAction? = null,
 ): ArgumentBuilder<Cmd, Double, DoubleArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, description) { resolvedName, desc ->
-        DoubleArgument(resolvedName, desc, min, max, autoComplete)
+    ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
+        DoubleArgument(key, resolvedName, desc, min, max, autoComplete)
     }

@@ -22,6 +22,7 @@ import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.*
 
 public class LongArgument(
+    override val key: String,
     override val name: Message,
     override val description: Message,
     override val min: Long?,
@@ -38,7 +39,7 @@ public class LongArgument(
 
     override fun convertArgumentValue(value: Long): Long = value
 
-    context(BaseInputChatBuilder)
+    context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
         integer(resolver[name], resolver[description]) {
             registerLocalizations()
@@ -49,7 +50,7 @@ public class LongArgument(
         }
     }
 
-    context(BaseInputChatBuilder)
+    context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgumentWithChoices(
         resolver: MessageResolver,
         choices: List<ArgumentChoice<Long>>,
@@ -66,7 +67,7 @@ public class LongArgument(
     }
 
     override fun toString(): String =
-        "LongArgument(name='$name', description='${description.defaultString}', min=$min, max=$max)"
+        "LongArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}', min=$min, max=$max)"
 }
 
 context(Cmd)
@@ -78,8 +79,8 @@ public fun <Cmd> long(
     autoComplete: AutoCompleteAction? = null,
 ): ArgumentBuilder<Cmd, Long, LongArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, BasicMessage(description)) { resolvedName, desc ->
-        LongArgument(resolvedName, desc, min, max, autoComplete)
+    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
+        LongArgument(key, resolvedName, desc, min, max, autoComplete)
     }
 
 context(Cmd)
@@ -91,6 +92,6 @@ public fun <Cmd> long(
     autoComplete: AutoCompleteAction? = null,
 ): ArgumentBuilder<Cmd, Long, LongArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, description) { resolvedName, desc ->
-        LongArgument(resolvedName, desc, min, max, autoComplete)
+    ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
+        LongArgument(key, resolvedName, desc, min, max, autoComplete)
     }

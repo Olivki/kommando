@@ -23,6 +23,7 @@ import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.*
 
 public class RoleArgument(
+    override val key: String,
     override val name: Message,
     override val description: Message,
 ) : Argument<Role, Role, ArgumentType.Role> {
@@ -33,13 +34,16 @@ public class RoleArgument(
 
     override fun convertNullableArgumentValue(value: Role?): Role? = value
 
-    context(BaseInputChatBuilder)
+    context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
         role(resolver[name], resolver[description]) {
             registerLocalizations()
             this.required = isRequired
         }
     }
+
+    override fun toString(): String =
+        "RoleArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}')"
 }
 
 context(Cmd)
@@ -48,8 +52,8 @@ public fun <Cmd> role(
     description: String,
 ): ArgumentBuilder<Cmd, Role, RoleArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, BasicMessage(description)) { resolvedName, desc ->
-        RoleArgument(resolvedName, desc)
+    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
+        RoleArgument(key, resolvedName, desc)
     }
 
 context(Cmd)
@@ -58,6 +62,6 @@ public fun <Cmd> role(
     description: LocalizedMessage? = null,
 ): ArgumentBuilder<Cmd, Role, RoleArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, description) { resolvedName, desc ->
-        RoleArgument(resolvedName, desc)
+    ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
+        RoleArgument(key, resolvedName, desc)
     }

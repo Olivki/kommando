@@ -47,11 +47,9 @@ public class DefaultArgument<Value, ArgValue, out ArgType>(
 
     override fun convertNullableArgumentValue(value: ArgValue?): Nothing = noNullableConversionSupport()
 
-    context(BaseInputChatBuilder)
+    context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
-        with(delegate) {
-            buildArgument(resolver, isRequired = false)
-        }
+        delegate.buildArgument(resolver, isRequired = false)
     }
 
     override fun toString(): String = "Default<$delegate>"
@@ -72,6 +70,6 @@ public infix fun <Cmd, Value, ArgValue, Arg> ArgumentBuilder<Cmd, Value, Arg>.de
         where ArgValue : Any,
               Cmd : CustomizableCommand<*>,
               Arg : Argument<Value, ArgValue, *> =
-    ArgumentHelper.newBuilder(name, description) { name, desc ->
-        DefaultArgument(argumentFactory.create(name, desc), supplier)
+    ArgumentHelper.newBuilder(name, description) { key, name, desc ->
+        DefaultArgument(argumentFactory.create(key, name, desc), supplier)
     }

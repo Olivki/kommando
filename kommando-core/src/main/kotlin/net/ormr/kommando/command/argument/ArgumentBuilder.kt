@@ -36,14 +36,15 @@ public class ArgumentBuilder<Cmd, Value, Arg>(
         //       so we could probably implement some sort of cache system to just use a fast path
         //       after registration has been done? We'd need to use mutex rather than synchronization because
         //       coroutines
+        val key = property.name
         val bundle = thisRef.localeBundle
-        val argPath = thisRef.componentPath / "arguments" / property.name
+        val argPath = thisRef.componentPath / "arguments" / key
         // TODO: check if this works properly
         val name = this.name
             ?: bundle.getMessageOrNull(thisRef, argPath, "name")
             ?: BasicMessage(property.name)
         val description = this.description ?: bundle.getMessage(thisRef, argPath, "description")
-        val argument = argumentFactory.create(name, description)
+        val argument = argumentFactory.create(key, name, description)
         TODO("registerArgument")
         //thisRef.registerArgument(name, argument)
         return ArgumentPropertyDelegate(argument)

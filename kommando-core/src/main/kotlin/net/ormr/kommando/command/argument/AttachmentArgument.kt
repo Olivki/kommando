@@ -23,6 +23,7 @@ import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.*
 
 public class AttachmentArgument(
+    override val key: String,
     override val name: Message,
     override val description: Message,
 ) : Argument<Attachment, Attachment, ArgumentType.Attachment> {
@@ -33,7 +34,7 @@ public class AttachmentArgument(
 
     override fun convertNullableArgumentValue(value: Attachment?): Attachment? = value
 
-    context(BaseInputChatBuilder)
+    context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
         attachment(resolver[name], resolver[description]) {
             registerLocalizations()
@@ -41,7 +42,8 @@ public class AttachmentArgument(
         }
     }
 
-    override fun toString(): String = "AttachmentArgument(name=$name, description=$description)"
+    override fun toString(): String =
+        "AttachmentArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}')"
 }
 
 context(Cmd)
@@ -50,8 +52,8 @@ public fun <Cmd> attachment(
     description: String,
 ): ArgumentBuilder<Cmd, Attachment, AttachmentArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, BasicMessage(description)) { resolvedName, desc ->
-        AttachmentArgument(resolvedName, desc)
+    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
+        AttachmentArgument(key, resolvedName, desc)
     }
 
 context(Cmd)
@@ -60,6 +62,6 @@ public fun <Cmd> attachment(
     description: LocalizedMessage? = null,
 ): ArgumentBuilder<Cmd, Attachment, AttachmentArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, description) { resolvedName, desc ->
-        AttachmentArgument(resolvedName, desc)
+    ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
+        AttachmentArgument(key, resolvedName, desc)
     }

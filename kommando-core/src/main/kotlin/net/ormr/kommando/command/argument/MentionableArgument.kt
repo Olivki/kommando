@@ -23,6 +23,7 @@ import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.*
 
 public class MentionableArgument(
+    override val key: String,
     override val name: Message,
     override val description: Message,
 ) : Argument<Entity, Entity, ArgumentType.Mentionable> {
@@ -33,13 +34,16 @@ public class MentionableArgument(
 
     override fun convertNullableArgumentValue(value: Entity?): Entity? = value
 
-    context(BaseInputChatBuilder)
+    context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
         mentionable(resolver[name], resolver[description]) {
             registerLocalizations()
             this.required = isRequired
         }
     }
+
+    override fun toString(): String =
+        "MentionableArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}')"
 }
 
 context(Cmd)
@@ -48,8 +52,8 @@ public fun <Cmd> mentionable(
     description: String,
 ): ArgumentBuilder<Cmd, Entity, MentionableArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, BasicMessage(description)) { resolvedName, desc ->
-        MentionableArgument(resolvedName, desc)
+    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
+        MentionableArgument(key, resolvedName, desc)
     }
 
 context(Cmd)
@@ -58,6 +62,6 @@ public fun <Cmd> mentionable(
     description: LocalizedMessage? = null,
 ): ArgumentBuilder<Cmd, Entity, MentionableArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, description) { resolvedName, desc ->
-        MentionableArgument(resolvedName, desc)
+    ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
+        MentionableArgument(key, resolvedName, desc)
     }

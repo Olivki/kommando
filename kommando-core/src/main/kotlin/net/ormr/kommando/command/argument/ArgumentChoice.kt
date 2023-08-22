@@ -17,18 +17,12 @@
 package net.ormr.kommando.command.argument
 
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.localization.LocalizedStrings
-import net.ormr.kommando.localization.emptyLocalizedStrings
 
-public data class ArgumentChoice<Value>(
-    public val defaultName: String,
-    public val value: Value,
-    public val strings: LocalizedStrings,
-) where Value : Any {
-    override fun toString(): String = "'$defaultName' = $value"
+public data class ArgumentChoice<Value>(public val key: String, public val value: Value) where Value : Any {
+    override fun toString(): String = "'$key' = $value"
 }
 
 // TODO: handle localization of the name
 context(CustomizableCommand<*>)
-public infix fun <Value> String.means(value: Value): ArgumentChoice<Value>
-        where Value : Any = ArgumentChoice(this, value, emptyLocalizedStrings())
+public infix fun <Value> String.returns(value: Value): ArgumentChoice<Value>
+        where Value : Any = ArgumentChoice(this, value)

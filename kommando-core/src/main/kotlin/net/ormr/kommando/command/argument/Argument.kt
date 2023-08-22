@@ -25,6 +25,7 @@ import net.ormr.kommando.localization.MessageResolver
 public interface Argument<Value, ArgValue, out ArgType>
         where ArgValue : Any,
               ArgType : ArgumentType<ArgValue> {
+    public val key: String
     public val name: Message
     public val description: Message
     public val type: ArgType
@@ -41,7 +42,7 @@ public interface Argument<Value, ArgValue, out ArgType>
 
     public fun convertNullableArgumentValue(value: ArgValue?): Value?
 
-    context(BaseInputChatBuilder)
+    context(ArgumentBuildContext, BaseInputChatBuilder)
     public fun buildArgument(resolver: MessageResolver, isRequired: Boolean)
 }
 

@@ -22,6 +22,7 @@ import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.*
 
 public class BooleanArgument(
+    override val key: String,
     override val name: Message,
     override val description: Message,
 ) : Argument<Boolean, Boolean, ArgumentType.Boolean> {
@@ -32,13 +33,16 @@ public class BooleanArgument(
 
     override fun convertNullableArgumentValue(value: Boolean?): Boolean? = value
 
-    context(BaseInputChatBuilder)
+    context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
         boolean(resolver[name], resolver[description]) {
             registerLocalizations()
             this.required = isRequired
         }
     }
+
+    override fun toString(): String =
+        "BooleanArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}')"
 }
 
 context(Cmd)
@@ -47,8 +51,8 @@ public fun <Cmd> boolean(
     description: String,
 ): ArgumentBuilder<Cmd, Boolean, BooleanArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, BasicMessage(description)) { resolvedName, desc ->
-        BooleanArgument(resolvedName, desc)
+    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
+        BooleanArgument(key, resolvedName, desc)
     }
 
 context(Cmd)
@@ -57,6 +61,6 @@ public fun <Cmd> boolean(
     description: LocalizedMessage? = null,
 ): ArgumentBuilder<Cmd, Boolean, BooleanArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, description) { resolvedName, desc ->
-        BooleanArgument(resolvedName, desc)
+    ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
+        BooleanArgument(key, resolvedName, desc)
     }

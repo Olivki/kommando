@@ -23,6 +23,7 @@ import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.*
 
 public class ChannelArgument(
+    override val key: String,
     override val name: Message,
     override val description: Message,
 ) : Argument<ResolvedChannel, ResolvedChannel, ArgumentType.Channel> {
@@ -33,13 +34,16 @@ public class ChannelArgument(
 
     override fun convertNullableArgumentValue(value: ResolvedChannel?): ResolvedChannel? = value
 
-    context(BaseInputChatBuilder)
+    context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgument(resolver: MessageResolver, isRequired: Boolean) {
         channel(resolver[name], resolver[description]) {
             registerLocalizations()
             this.required = isRequired
         }
     }
+
+    override fun toString(): String =
+        "ChannelArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}')"
 }
 
 context(Cmd)
@@ -48,8 +52,8 @@ public fun <Cmd> channel(
     description: String,
 ): ArgumentBuilder<Cmd, ResolvedChannel, ChannelArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, BasicMessage(description)) { resolvedName, desc ->
-        ChannelArgument(resolvedName, desc)
+    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
+        ChannelArgument(key, resolvedName, desc)
     }
 
 context(Cmd)
@@ -58,6 +62,6 @@ public fun <Cmd> channel(
     description: LocalizedMessage? = null,
 ): ArgumentBuilder<Cmd, ResolvedChannel, ChannelArgument>
         where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, description) { resolvedName, desc ->
-        ChannelArgument(resolvedName, desc)
+    ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
+        ChannelArgument(key, resolvedName, desc)
     }

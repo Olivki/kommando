@@ -16,9 +16,6 @@
 
 package net.ormr.kommando.command.argument
 
-import net.ormr.kommando.localization.Message
-
-public fun interface ArgumentFactory<Value, Arg>
-        where Arg : Argument<Value, *, *> {
-    public fun create(key: String, name: Message, description: Message): Arg
+public interface EnumArgumentChoice {
+    public val choiceName: String
 }
