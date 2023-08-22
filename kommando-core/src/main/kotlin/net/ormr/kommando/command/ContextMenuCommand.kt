@@ -24,7 +24,7 @@ public sealed interface ContextMenuCommand<Context, Perms, Value> : RootCommand<
               Perms : CommandPermissions,
               Value : Entity
 
-public abstract class AbstractContextMenuCommand<Context, Perms, Value>(
+public sealed class AbstractContextMenuCommand<Context, Perms, Value>(
     defaultName: String,
 ) : AbstractRootCommand<Context, Perms>(defaultName), ContextMenuCommand<Context, Perms, Value>
         where Context : CommandContext<*>,
