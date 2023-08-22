@@ -70,7 +70,7 @@ public inline fun <reified Value, Cmd> enum(
 ): ArgumentBuilder<Cmd, Value, EnumChoiceArgument<Value>>
         where Value : Enum<Value>,
               Value : EnumArgumentChoice,
-              Cmd : CustomizableCommand<Cmd> =
+              Cmd : CustomizableCommand<*> =
     ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
         EnumChoiceArgument(key, resolvedName, desc, enumValues<Value>().asList())
     }

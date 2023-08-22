@@ -24,6 +24,7 @@ import kotlin.properties.PropertyDelegateProvider
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
+// TODO: we could probably eliminate the generic for 'Cmd' and just use 'CustomizableCommand<*>'
 public class ArgumentBuilder<Cmd, Value, Arg>(
     public val name: Message?,
     public val description: Message?,
