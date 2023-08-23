@@ -1,4 +1,4 @@
 **/.idea/
 **/build/
 **/.gradle/
-/kommando-core/src/main/kotlin/net/ormr/kommando/test/**
+/kommando-example/
