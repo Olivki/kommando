@@ -65,6 +65,9 @@ public class EnumChoiceArgument<Value>(
             }
         }
     }
+
+    override fun toString(): String =
+        "EnumChoiceArgument(key='$key', name=$name, description=$description, entries=$nameToEntry)"
 }
 
 context(Cmd)

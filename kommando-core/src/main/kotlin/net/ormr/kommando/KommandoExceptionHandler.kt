@@ -19,12 +19,12 @@ package net.ormr.kommando
 import dev.kord.core.event.interaction.ApplicationCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 
-public fun interface EventFailure<Event> {
+public fun interface EventFailureHandler<Event> {
     public fun handle(cause: Exception, event: Event)
 }
 
-private typealias SlashCommandFailure = EventFailure<ApplicationCommandInteractionCreateEvent>
-private typealias AutoCompleteFailure = EventFailure<AutoCompleteInteractionCreateEvent>
+private typealias SlashCommandFailure = EventFailureHandler<ApplicationCommandInteractionCreateEvent>
+private typealias AutoCompleteFailure = EventFailureHandler<AutoCompleteInteractionCreateEvent>
 
 public class KommandoExceptionHandler(
     public val slashCommandInvoke: SlashCommandFailure?,

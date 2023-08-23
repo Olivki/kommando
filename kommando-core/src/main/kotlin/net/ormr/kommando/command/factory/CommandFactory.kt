@@ -24,18 +24,18 @@ import org.kodein.di.DirectDI
 public sealed interface CommandFactory {
     public val factory: DirectDI.() -> RootCommand<*, *>
 
-    public operator fun invoke(di: DirectDI): RootCommand<*, *>
+    public fun create(di: DirectDI): RootCommand<*, *>
 }
 
 public class SingleCommandFactory internal constructor(
     override val factory: DirectDI.() -> RootCommand<*, *>,
 ) : CommandFactory {
-    override fun invoke(di: DirectDI): RootCommand<*, *> = factory(di)
+    override fun create(di: DirectDI): RootCommand<*, *> = factory(di)
 }
 
 public class ParentCommandFactory internal constructor(
     override val factory: DirectDI.() -> SuperCommand<*, *>,
     public val children: PersistentList<CommandChildFactory<*>>,
 ) : CommandFactory {
-    override fun invoke(di: DirectDI): SuperCommand<*, *> = factory(di)
+    override fun create(di: DirectDI): SuperCommand<*, *> = factory(di)
 }

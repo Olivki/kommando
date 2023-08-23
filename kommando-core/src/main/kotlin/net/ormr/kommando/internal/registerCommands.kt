@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("NOTHING_TO_INLINE")
-
 package net.ormr.kommando.internal
 
 import com.github.michaelbull.logging.InlineLogger
@@ -38,6 +36,12 @@ import org.kodein.di.DirectDI
 import org.kodein.di.direct
 
 // Here be dragons
+
+// TODO: verify command names and arguments?
+//       https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-naming
+//       localized names follow the same rules as normal names
+
+// TODO: verify that arguments are ordered correctly (required before optional)
 
 private val logger = InlineLogger()
 
@@ -100,7 +104,7 @@ internal suspend fun registerCommands(
     return buildMap {
         kord.createGlobalApplicationCommands {
             for (wrapper in globalCommands) {
-                logger.info { "Registering global command ${wrapper.instance.defaultCommandName} (${wrapper::class.qualifiedName})" }
+                logger.info { "Registering global command ${wrapper.instance::class.qualifiedName}#${wrapper.instance.defaultCommandName}" }
                 when (val command = wrapper.instance as GlobalRootCommand) {
                     is GlobalCommand -> input(command.defaultCommandName, command.defaultComponentDescription) {
                         applyPermissions(globalPerms, command)
@@ -120,7 +124,7 @@ internal suspend fun registerCommands(
             val (_, wrappers) = commandData
             kord.createGuildApplicationCommands(guildId) {
                 for (wrapper in wrappers) {
-                    logger.info { "Registering guild command ${wrapper.instance.defaultCommandName} (${wrapper::class.qualifiedName})" }
+                    logger.info { "Registering guild command ${wrapper.instance::class.qualifiedName}#${wrapper.instance.defaultCommandName} @$guildId" }
                     when (val command = wrapper.instance as GuildRootCommand) {
                         is GuildCommand -> input(command.defaultCommandName, command.defaultComponentDescription) {
                             applyPermissions(guildPerms, command)
@@ -156,16 +160,16 @@ private suspend fun <Cmd> ApplicationCommandCreateBuilder.applyPermissions(
     defaultMemberPermissions = permissions?.defaultMemberPermissions
 }
 
-private class ArgumentBuildContextImpl(override val parentCommand: Command<*>) : ArgumentBuildContext
+private data class ArgumentBuildContextImpl(override val parentCommand: Command<*>) : ArgumentBuildContext
 
 context(RootInputChatBuilder)
 private fun buildCommand(wrapper: CommandWrapper) {
     val (command) = wrapper
-    val fixedCommand = command.asAbstractCommand()
+    val fixedCommand = command.fixCommand()
     val builder = this@RootInputChatBuilder
     val buildContext = ArgumentBuildContextImpl(command)
     with(buildContext) {
-        buildArguments(fixedCommand.findArguments().values)
+        buildArguments(fixedCommand.findDirectArguments().values)
     }
 
     if (builder is LocalizedNameBuilder) {
@@ -208,7 +212,7 @@ private fun buildCommand(wrapper: CommandWrapper) {
 
 context(ArgumentBuildContext, SubCommandBuilder)
 private fun buildSubCommand(subCommand: SubCommand<*, *>) {
-    buildArguments(subCommand.fix().findArguments().values)
+    buildArguments(subCommand.findDirectArguments().values)
 }
 
 context(ArgumentBuildContext, BaseInputChatBuilder)
@@ -243,28 +247,28 @@ private fun createWrappers(
 ): List<CommandWrapper> = factories.map { parent ->
     when (parent) {
         is ParentCommandFactory -> {
-            val instance = parent(di)
+            val instance = parent.create(di)
             ParentCommandWrapper(
                 instance = instance,
                 factory = parent,
                 children = parent.children.map { child ->
                     when (child) {
                         is CommandGroupFactory -> {
-                            val group = child(di).fix()
-                            group.superCommand = instance
+                            val group = child.create(di)
+                            group.initSuperCommand(instance)
                             CommandGroupWrapper(
                                 instance = group,
                                 subCommands = child
                                     .factories
                                     .map { it(di) }
-                                    .onEach { it.fix().superCommand = instance },
+                                    .onEach { it.initSuperCommand(instance) },
                                 subCommandFactories = child.factories.map { SubCommandFactory(it) },
                                 factory = child,
                             )
                         }
                         is SubCommandFactory -> {
-                            val subCommand = child(di).fix()
-                            subCommand.superCommand = instance
+                            val subCommand = child.create(di)
+                            subCommand.initSuperCommand(instance)
                             SubCommandWrapper(
                                 instance = subCommand,
                                 factory = child,
@@ -274,18 +278,8 @@ private fun createWrappers(
                 },
             )
         }
-        is SingleCommandFactory -> SingleCommandWrapper(parent(di), parent)
+        is SingleCommandFactory -> SingleCommandWrapper(parent.create(di), parent)
     }
-}
-
-internal inline fun SubCommand<*, *>.fix(): AbstractSubCommand<*, *> {
-    check(this is AbstractSubCommand<*, *>) { "SubCommand '${this::class}' is not an instance of ${AbstractSubCommand::class}'" }
-    return this
-}
-
-internal inline fun CommandGroup<*>.fix(): AbstractCommandGroup<*> {
-    check(this is AbstractCommandGroup<*>) { "CommandGroup '${this::class}' is not an instance of ${AbstractCommandGroup::class}'" }
-    return this
 }
 
 private fun unknownCommandType(commands: List<CommandWrapper>): String {

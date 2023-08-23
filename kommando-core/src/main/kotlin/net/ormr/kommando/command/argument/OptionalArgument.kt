@@ -73,5 +73,5 @@ public fun <Cmd, Value, ArgValue, Arg> ArgumentBuilder<Cmd, Value, Arg>.optional
               Cmd : CustomizableCommand<*>,
               Arg : Argument<Value, ArgValue, *> =
     ArgumentHelper.newBuilder(name, description) { key, name, desc ->
-        OptionalArgument(argumentFactory.create(key, name, desc))
+        OptionalArgument(createArgument(key, name, desc))
     }

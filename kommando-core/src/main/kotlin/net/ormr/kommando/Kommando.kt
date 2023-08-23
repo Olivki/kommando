@@ -18,6 +18,7 @@ package net.ormr.kommando
 
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
+import net.ormr.kommando.command.CommandMessageConverters
 import net.ormr.kommando.command.factory.CommandFactory
 import net.ormr.kommando.command.factory.RegisteredCommand
 import net.ormr.kommando.command.permission.DefaultCommandPermissions
@@ -30,6 +31,7 @@ public class Kommando internal constructor(
     public val localeBundle: LocaleBundle,
     public val defaultCommandPermissions: DefaultCommandPermissions?,
     public val exceptionHandler: KommandoExceptionHandler?,
+    public val commandMessageConverters: CommandMessageConverters,
 ) : KommandoDI {
     public lateinit var registeredCommands: Map<Snowflake, RegisteredCommand>
         private set

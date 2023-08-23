@@ -66,7 +66,7 @@ internal suspend fun handleCommands() {
             val commandName = interaction.command.rootName
             val commandId = interaction.command.rootId
             val registeredCommand = getRegisteredCommand(commandId, commandName)
-            val command = registeredCommand.factory(direct)
+            val command = registeredCommand.factory.create(direct)
 
             if (command is SuperCommand<*, *>) {
                 when (val interactionCommand = interaction.command) {
@@ -99,7 +99,7 @@ internal suspend fun handleCommands() {
 context(AutoCompleteInteractionCreateEvent)
 private suspend inline fun Command<*>.autoComplete(name: String, commandId: Snowflake, commandName: String) {
     val event = this@AutoCompleteInteractionCreateEvent
-    val argument = asAbstractCommand().registry.findArgument(name)
+    val argument = findRegistry().findArgument(name)
 
     if (argument is AutoCompletableArgument<*, *, *>) {
         val autoComplete = argument.autoComplete ?: noAutoCompleteDefined(
@@ -127,7 +127,7 @@ private suspend inline fun <reified Cmd> inputCommand(
     val rootName = interactionCommand.rootName
     val registeredCommand = getRegisteredCommand(id, rootName)
     val event = this@ChatInputCommandInteractionCreateEvent
-    val command = registeredCommand.factory(di)
+    val command = registeredCommand.factory.create(di)
     if (command is Cmd) {
         check(command is SuperCommand<*, *>)
         when (interactionCommand) {
@@ -154,8 +154,8 @@ private suspend inline fun <reified Cmd> inputCommand(
 }
 
 private fun RegisteredGroup.createGroup(di: DirectDI, command: SuperCommand<*, *>): CommandGroup<*> {
-    val group = this.factory(di).fix()
-    group.superCommand = command
+    val group = factory.create(di).fixCommandGroup()
+    group.initSuperCommand(command)
     return group
 }
 
@@ -172,8 +172,8 @@ private fun RegisteredSubCommandContainer.getSubCommand(
     command: SuperCommand<*, *>,
     name: String,
 ): SubCommand<*, *> {
-    val result = subCommands[name]?.invoke(di) ?: noSuchSubCommand(name, command)
-    result.fix().superCommand = command
+    val result = subCommands[name]?.create(di) ?: noSuchSubCommand(name, command)
+    result.initSuperCommand(command)
     return result
 }
 
@@ -195,9 +195,9 @@ private suspend fun populateArguments(
     interactionCommand: InteractionCommand,
     event: ChatInputCommandInteractionCreateEvent,
 ) {
-    val fixedCommand = command.asAbstractCommand()
+    val fixedCommand = command.fixCommand()
     val arguments = fixedCommand
-        .findArguments()
+        .findDirectArguments()
         .mapValuesTo(hashMapOf()) { (_, arg) -> arg.getValue(interactionCommand, event) }
     fixedCommand
         .registry
@@ -225,6 +225,7 @@ private suspend inline fun <reified Cmd> userCommand(di: DirectDI)
 // Kotlin fails to smart cast here, but still complains about useless casts, lol
 @Suppress("USELESS_CAST")
 private suspend fun executeCommand(command: Command<*>, interaction: ApplicationCommandInteraction) {
+    @Suppress("REDUNDANT_ELSE_IN_WHEN")
     when (command) {
         is GuildCommandType -> {
             val context = GuildCommandContextImpl(interaction.unsafeCast())
@@ -234,6 +235,10 @@ private suspend fun executeCommand(command: Command<*>, interaction: Application
             val context = GlobalCommandContextImpl(interaction.unsafeCast())
             with(context) { (command as GlobalCommandType).execute() }
         }
+        // The Kotlin CLI compiler sometimes fails to infer that this is exhaustive,
+        // this problem seems to be fully fixed in 2.0
+        // TODO: remove this when Kotlin 2.0 is released
+        else -> error("Should never happen, but it did for: $command")
     }
 }
 
@@ -244,7 +249,7 @@ private inline fun <reified Cmd> withCommand(di: DirectDI, block: (command: Cmd)
         where Cmd : Command<*> {
     val id = interaction.invokedCommandId
     val registeredCommand = getRegisteredCommand(id, interaction.invokedCommandName)
-    val command = registeredCommand.factory(di)
+    val command = registeredCommand.factory.create(di)
     if (command is Cmd) {
         block(command)
     } else {

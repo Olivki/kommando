@@ -23,7 +23,7 @@ import kotlin.reflect.KProperty
 
 internal class CommandArgumentRegistry(private val command: Command<*>) {
     private val isInitialized: AtomicBoolean = AtomicBoolean(false)
-    private val arguments: MutableMap<String, Argument<*, *, *>> = hashMapOf()
+    private val arguments: MutableMap<String, Argument<*, *, *>> = mutableMapOf() // needs to retain the order
     private var populatedArguments: Map<String, Any?>? = null
 
     fun registerArgument(key: String, argument: Argument<*, *, *>) {
@@ -55,6 +55,8 @@ internal class CommandArgumentRegistry(private val command: Command<*>) {
     fun populate(arguments: Map<String, Any?>) {
         populatedArguments = arguments
     }
+
+    fun asMap(): Map<String, Argument<*, *, *>> = arguments
 
     fun toMap(): Map<String, Argument<*, *, *>> = arguments.toMap()
 

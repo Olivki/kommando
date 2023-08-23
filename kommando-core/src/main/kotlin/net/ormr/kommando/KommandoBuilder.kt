@@ -21,6 +21,7 @@ import dev.kord.common.Locale
 import dev.kord.core.Kord
 import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
+import net.ormr.kommando.command.CommandMessageConverters
 import net.ormr.kommando.command.factory.CommandFactory
 import net.ormr.kommando.command.permission.DefaultCommandPermissions
 import net.ormr.kommando.localization.LocaleBundle
@@ -50,6 +51,8 @@ public class KommandoBuilder @PublishedApi internal constructor(
         finder = { bundle, _, path, key -> bundle.getMessageOrNull(path, key) },
     )
 
+    public var commandMessageConverters: CommandMessageConverters = CommandMessageConverters.DEFAULT
+
     @PublishedApi
     internal suspend fun build(): Kommando {
         val kommando = Kommando(
@@ -57,6 +60,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
             localeBundle = localeBundle,
             defaultCommandPermissions = defaultCommandPermissions,
             exceptionHandler = exceptionHandler,
+            commandMessageConverters = commandMessageConverters,
         )
 
         if (localeBundle.messageBundle.isEmpty()) {

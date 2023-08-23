@@ -37,8 +37,13 @@ public sealed class AbstractSubCommand<Context, out Super>(
         where Context : CommandContext<*>,
               Super : SuperCommand<*, *> {
     final override lateinit var superCommand: @UnsafeVariance Super
-        internal set
+        private set
 
     final override val componentPath: KommandoComponentPath
         get() = superCommand.componentPath / "subCommands" / defaultCommandName
+
+    // Workaround for 'Setter for property is removed by type projection' error
+    internal fun initSuperCommand(parent: @UnsafeVariance Super) {
+        superCommand = parent
+    }
 }

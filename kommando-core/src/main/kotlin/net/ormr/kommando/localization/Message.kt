@@ -55,6 +55,26 @@ public fun Message.toMutableMapOrNull(): MutableMap<Locale, String>? = when (thi
     is LocalizedMessage -> strings.toMutableMap()
 }
 
+public inline fun Message.map(mapper: (Locale?, String) -> String): Message = when (this) {
+    is BasicMessage -> mapper(null, defaultString).let(::BasicMessage)
+    is LocalizedMessage -> copy(
+        strings = strings
+            .asMap()
+            .mapValues { (locale, string) -> mapper(locale, string) }
+            .toLocalizedStrings()
+    )
+}
+
+public inline fun Message.forEach(action: (Locale?, String) -> Unit): Unit = when (this) {
+    is BasicMessage -> action(null, defaultString)
+    is LocalizedMessage -> strings.asMap().forEach { (locale, string) -> action(locale, string) }
+}
+
+public inline fun Message.all(predicate: (Locale?, String) -> Boolean): Boolean = when (this) {
+    is BasicMessage -> predicate(null, defaultString)
+    is LocalizedMessage -> strings.asMap().all { (locale, string) -> predicate(locale, string) }
+}
+
 /**
  * A message that has no locale mappings.
  *
@@ -72,6 +92,8 @@ public data class BasicMessage(override val defaultString: String) : Message {
      * Returns `false` since this message has no locale mappings.
      */
     override fun contains(locale: Locale): Boolean = false
+
+    override fun toString(): String = "BasicMessage(defaultString='$defaultString')"
 }
 
 /**

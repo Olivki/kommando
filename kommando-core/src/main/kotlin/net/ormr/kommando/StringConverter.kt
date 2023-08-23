@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-@file:Suppress("NOTHING_TO_INLINE")
+package net.ormr.kommando
 
-package net.ormr.kommando.command
-
-internal inline fun Command<*>.asAbstractCommand(): AbstractCommand<*> {
-    check(this is AbstractCommand<*>) { "Command '${this::class}' is not an instance of ${AbstractCommand::class}'" }
-    return this
+public fun interface StringConverter {
+    public fun convert(string: String): String
 }

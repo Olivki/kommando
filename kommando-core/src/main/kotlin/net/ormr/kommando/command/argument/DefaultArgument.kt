@@ -72,5 +72,5 @@ public infix fun <Cmd, Value, ArgValue, Arg> ArgumentBuilder<Cmd, Value, Arg>.de
               Cmd : CustomizableCommand<*>,
               Arg : Argument<Value, ArgValue, *> =
     ArgumentHelper.newBuilder(name, description) { key, name, desc ->
-        DefaultArgument(argumentFactory.create(key, name, desc), supplier)
+        DefaultArgument(createArgument(key, name, desc), supplier)
     }

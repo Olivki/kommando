@@ -25,7 +25,7 @@ public sealed interface CommandChildFactory<Comp>
         where Comp : KommandoComponent {
     public val factory: DirectDI.() -> Comp
 
-    public operator fun invoke(di: DirectDI): Comp = factory(di)
+    public fun create(di: DirectDI): Comp = factory(di)
 }
 
 public class SubCommandFactory internal constructor(override val factory: DirectDI.() -> SubCommand<*, *>) :

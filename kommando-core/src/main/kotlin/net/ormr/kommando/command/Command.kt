@@ -23,6 +23,8 @@ import net.ormr.kommando.localeBundle
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
+// TODO: implement nsfw flag
+
 public sealed interface Command<Context> : KommandoComponent
         where Context : CommandContext<*> {
     public val defaultCommandName: String

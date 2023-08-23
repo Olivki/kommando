@@ -64,6 +64,6 @@ public fun <Cmd, Value, ArgValue, ArgType, Arg> ArgumentBuilder<Cmd, Value, Arg>
         addAll(rest)
     }
     return ArgumentHelper.newBuilder(name, description) { key, name, desc ->
-        ChoiceArgument(argumentFactory.create(key, name, desc), choices)
+        ChoiceArgument(createArgument(key, name, desc), choices)
     }
 }
