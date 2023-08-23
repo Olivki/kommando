@@ -22,7 +22,7 @@ import net.ormr.kommando.localization.Message
 
 public abstract class CommandGroup<out Super>(
     public val defaultGroupName: String,
-) : KommandoComponent, DescribableCommandComponent
+) : AbstractKommandoComponent(), DescribableCommandComponent
         where Super : SuperCommand<*, *> {
     public lateinit var superCommand: @UnsafeVariance Super
         private set
