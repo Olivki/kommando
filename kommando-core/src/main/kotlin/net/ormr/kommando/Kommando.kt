@@ -16,9 +16,11 @@
 
 package net.ormr.kommando
 
+import com.github.michaelbull.logging.InlineLogger
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import net.ormr.kommando.command.CommandMessageConverters
+import net.ormr.kommando.command.argument.ArgumentCache
 import net.ormr.kommando.command.factory.CommandFactory
 import net.ormr.kommando.command.factory.RegisteredCommand
 import net.ormr.kommando.command.permission.DefaultCommandPermissions
@@ -36,6 +38,8 @@ public class Kommando internal constructor(
     public lateinit var registeredCommands: Map<Snowflake, RegisteredCommand>
         private set
 
+    internal val argumentCache: ArgumentCache = ArgumentCache()
+
     @PublishedApi
     internal suspend fun setup(factories: List<CommandFactory>) {
         registerComponents(factories)
@@ -45,10 +49,15 @@ public class Kommando internal constructor(
     private suspend fun registerComponents(commands: List<CommandFactory>) {
         // TODO: actually quit the application if there's problems with registering the commands,
         //       as Kord is probably gonna force the application to be alive even though it will throw exceptions
+        logger.info { "Registering commands..." }
         registeredCommands = registerCommands(commands)
     }
 
     private suspend fun registerHandlers() {
         handleCommands()
+    }
+
+    private companion object {
+        private val logger = InlineLogger()
     }
 }
