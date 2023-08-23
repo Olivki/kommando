@@ -40,8 +40,6 @@ internal inline fun SubCommand<*, *>.initSuperCommand(parent: SuperCommand<*, *>
 
 internal inline fun SubCommand<*, *>.fixSubCommand(): AbstractSubCommand<*, *> = fixType { "SubCommand" }
 
-internal inline fun CommandGroup<*>.fixCommandGroup(): AbstractCommandGroup<*> = fixType { "CommandGroup" }
-
 internal inline fun Command<*>.fixCommand(): AbstractCommand<*> = fixType { "Command" }
 
 internal inline fun <reified From, reified To> From.fixType(name: () -> String): To
