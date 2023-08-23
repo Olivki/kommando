@@ -40,12 +40,12 @@ public class EnumChoiceArgument<Value>(
         require(entries.size <= 25) { "Choices must not be more than 25" }
     }
 
-    private val nameToEntry: Map<String, Value> = entries.associateByTo(hashMapOf()) { it.choiceName }
+    private val nameToEntry: Map<String, Value> = entries.associateByTo(hashMapOf()) { it.name }
 
     override val type: ArgumentType.String
         get() = ArgumentType.String
 
-    override fun convertArgumentValue(value: String): Value = nameToEntry.getValue(value)
+    override fun convertArgumentValue(value: String): Value = nameToEntry[value] ?: error("$value !in $nameToEntry")
 
     override fun convertNullableArgumentValue(value: String?): Value? = value?.let(nameToEntry::getValue)
 
@@ -61,7 +61,7 @@ public class EnumChoiceArgument<Value>(
                     is LocalizedMessage -> message.strings.toMutableMap()
                     else -> null
                 }
-                choice(name, name, Optional(strings))
+                choice(entry.choiceName, name, Optional(strings))
             }
         }
     }
