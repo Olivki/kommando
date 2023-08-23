@@ -16,15 +16,15 @@
 
 package net.ormr.kommando.localization
 
-import net.ormr.kommando.KommandoComponent
-import net.ormr.kommando.KommandoComponentPath
+import net.ormr.kommando.Component
+import net.ormr.kommando.ComponentPath
 
 // TODO: better name
 public fun interface MessageFinder {
     public fun findMessage(
         bundle: MessageBundle,
-        component: KommandoComponent,
-        path: KommandoComponentPath,
+        component: Component,
+        path: ComponentPath,
         key: String,
     ): Message?
 }

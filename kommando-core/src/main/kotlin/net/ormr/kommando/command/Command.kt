@@ -16,8 +16,8 @@
 
 package net.ormr.kommando.command
 
-import net.ormr.kommando.AbstractKommandoComponent
-import net.ormr.kommando.KommandoComponent
+import net.ormr.kommando.AbstractComponent
+import net.ormr.kommando.Component
 import net.ormr.kommando.getMessageOrNull
 import net.ormr.kommando.localeBundle
 import net.ormr.kommando.localization.BasicMessage
@@ -25,7 +25,7 @@ import net.ormr.kommando.localization.Message
 
 // TODO: implement nsfw flag
 
-public sealed interface Command<Context> : KommandoComponent
+public sealed interface Command<Context> : Component
         where Context : CommandContext<*> {
     public val defaultCommandName: String
     public val commandName: Message
@@ -38,7 +38,7 @@ public sealed interface Command<Context> : KommandoComponent
 
 public sealed class AbstractCommand<Context>(
     override val defaultCommandName: String,
-) : AbstractKommandoComponent(), Command<Context>
+) : AbstractComponent(), Command<Context>
         where Context : CommandContext<*> {
     internal val registry: CommandArgumentRegistry by lazy {
         CommandArgumentRegistry(this)

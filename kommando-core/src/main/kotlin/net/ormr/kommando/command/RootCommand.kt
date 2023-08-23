@@ -16,7 +16,7 @@
 
 package net.ormr.kommando.command
 
-import net.ormr.kommando.KommandoComponentPath
+import net.ormr.kommando.ComponentPath
 import net.ormr.kommando.command.permission.CommandPermissions
 import net.ormr.kommando.command.permission.GlobalCommandPermissions
 import net.ormr.kommando.command.permission.GuildCommandPermissions
@@ -35,8 +35,8 @@ public sealed class AbstractRootCommand<Context, Perms>(
               Perms : CommandPermissions {
     // TODO: for guild commands, the syntax is name @guildId, but we should allow a syntax like name @*
     //       to catch all guild ids
-    final override val componentPath: KommandoComponentPath
-        get() = KommandoComponentPath("components", "commands", this.formatAsCommandKey())
+    final override val componentPath: ComponentPath
+        get() = ComponentPath("components", "commands", this.formatAsCommandKey())
 }
 // TODO: override componentPath
 

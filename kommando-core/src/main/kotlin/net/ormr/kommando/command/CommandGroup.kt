@@ -22,7 +22,7 @@ import net.ormr.kommando.localization.Message
 
 public abstract class CommandGroup<out Super>(
     public val defaultGroupName: String,
-) : AbstractKommandoComponent(), DescribableCommandComponent
+) : AbstractComponent(), DescribableCommandComponent
         where Super : SuperCommand<*, *> {
     public lateinit var superCommand: @UnsafeVariance Super
         private set
@@ -33,7 +33,7 @@ public abstract class CommandGroup<out Super>(
     override val componentDescription: Message
         get() = localeBundle.getMessage("description")
 
-    final override val componentPath: KommandoComponentPath
+    final override val componentPath: ComponentPath
         get() = superCommand.componentPath / "groups" / defaultGroupName
 
     // Workaround for 'Setter for property is removed by type projection' error

@@ -16,6 +16,6 @@
 
 package net.ormr.kommando.command
 
-import net.ormr.kommando.DescribableKommandoComponent
+import net.ormr.kommando.DescribableComponent
 
-public sealed interface DescribableCommandComponent : DescribableKommandoComponent
+public sealed interface DescribableCommandComponent : DescribableComponent

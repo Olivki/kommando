@@ -20,7 +20,7 @@ package net.ormr.kommando.localization
 
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.toPersistentHashMap
-import net.ormr.kommando.KommandoComponentPath
+import net.ormr.kommando.ComponentPath
 import net.ormr.kommando.util.toPersistentHashMap
 
 /**
@@ -38,14 +38,14 @@ public interface MessageBundle {
      *
      * @throws [NoSuchElementException] if no message exists for the given [key]
      */
-    public fun getMessage(path: KommandoComponentPath, key: String): Message =
+    public fun getMessage(path: ComponentPath, key: String): Message =
         getMessageOrNull(path, key)
             ?: throw NoSuchElementException("No message found for path '${path.asString()}/$key'")
 
     /**
      * Returns the [Message] associated with the given [key], or `null` if no such message exists.
      */
-    public fun getMessageOrNull(path: KommandoComponentPath, key: String): Message?
+    public fun getMessageOrNull(path: ComponentPath, key: String): Message?
 
     /**
      * Returns `true` if this bundle contains a message for the given [key].
@@ -90,7 +90,7 @@ public fun Map<String, Message>.toMessageBundle(): MessageBundle = when (size) {
 public inline fun MessageBundle.isNotEmpty(): Boolean = !isEmpty()
 
 private class MapMessageBundle(private val delegate: PersistentMap<String, Message>) : MessageBundle {
-    override fun getMessageOrNull(path: KommandoComponentPath, key: String): Message? = delegate[key]
+    override fun getMessageOrNull(path: ComponentPath, key: String): Message? = delegate[key]
 
     override fun contains(key: String): Boolean = key in delegate
 
@@ -98,10 +98,10 @@ private class MapMessageBundle(private val delegate: PersistentMap<String, Messa
 }
 
 private data object EmptyMessageBundle : MessageBundle {
-    override fun getMessage(path: KommandoComponentPath, key: String): Message =
+    override fun getMessage(path: ComponentPath, key: String): Message =
         throw UnsupportedOperationException("Can't get message from empty bundle")
 
-    override fun getMessageOrNull(path: KommandoComponentPath, key: String): Message? = null
+    override fun getMessageOrNull(path: ComponentPath, key: String): Message? = null
 
     override fun contains(key: String): Boolean = false
 

@@ -21,20 +21,20 @@ package net.ormr.kommando
 import net.ormr.kommando.localization.LocaleBundle
 import net.ormr.kommando.localization.Message
 
-public inline val KommandoComponent.localeBundle: LocaleBundle
+public inline val Component.localeBundle: LocaleBundle
     get() = kommando.localeBundle
 
-context(KommandoComponent)
+context(Component)
 public inline fun LocaleBundle.getMessage(key: String): Message = getMessage(componentPath, key)
 
-context(KommandoComponent)
-public inline fun LocaleBundle.getMessage(path: KommandoComponentPath, key: String): Message =
-    getMessage(this@KommandoComponent, path, key)
+context(Component)
+public inline fun LocaleBundle.getMessage(path: ComponentPath, key: String): Message =
+    getMessage(this@Component, path, key)
 
-context(KommandoComponent)
+context(Component)
 public inline fun LocaleBundle.getMessageOrNull(key: String): Message? =
     getMessageOrNull(componentPath, key)
 
-context(KommandoComponent)
-public inline fun LocaleBundle.getMessageOrNull(path: KommandoComponentPath, key: String): Message? =
-    getMessageOrNull(this@KommandoComponent, path, key)
+context(Component)
+public inline fun LocaleBundle.getMessageOrNull(path: ComponentPath, key: String): Message? =
+    getMessageOrNull(this@Component, path, key)

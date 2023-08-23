@@ -16,13 +16,13 @@
 
 package net.ormr.kommando.command.factory
 
-import net.ormr.kommando.KommandoComponent
+import net.ormr.kommando.Component
 import net.ormr.kommando.command.CommandGroup
 import net.ormr.kommando.command.SubCommand
 import org.kodein.di.DirectDI
 
 public sealed interface CommandChildFactory<Comp>
-        where Comp : KommandoComponent {
+        where Comp : Component {
     public val factory: DirectDI.() -> Comp
 
     public fun create(di: DirectDI): Comp = factory(di)

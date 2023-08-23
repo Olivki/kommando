@@ -20,21 +20,20 @@ import net.ormr.kommando.localization.Message
 import org.kodein.di.DI
 import org.kodein.di.instance
 
-// TODO: rename to Component?
-public interface KommandoComponent : KommandoDI {
+public interface Component : KommandoDI {
     public val kommando: Kommando
-    public val componentPath: KommandoComponentPath
+    public val componentPath: ComponentPath
 }
 
-public abstract class AbstractKommandoComponent : KommandoComponent {
+public abstract class AbstractComponent : Component {
     final override val di: DI get() = super.di
 
     final override val kommando: Kommando by instance()
 }
 
-public interface DescribableKommandoComponent : KommandoComponent {
+public interface DescribableComponent : Component {
     public val componentDescription: Message
 }
 
-public inline val DescribableKommandoComponent.defaultComponentDescription: String
+public inline val DescribableComponent.defaultComponentDescription: String
     get() = componentDescription.defaultString

@@ -17,18 +17,18 @@
 package net.ormr.kommando.localization
 
 import dev.kord.common.Locale
-import net.ormr.kommando.KommandoComponent
-import net.ormr.kommando.KommandoComponentPath
+import net.ormr.kommando.Component
+import net.ormr.kommando.ComponentPath
 
 public data class LocaleBundle(
     public val defaultLocale: Locale,
     public val messageBundle: MessageBundle,
     private val finder: MessageFinder,
 ) {
-    public fun getMessage(component: KommandoComponent, path: KommandoComponentPath, key: String): Message =
+    public fun getMessage(component: Component, path: ComponentPath, key: String): Message =
         getMessageOrNull(component, path, key)
             ?: throw NoSuchElementException("No message found for '$path/$key'")
 
-    public fun getMessageOrNull(component: KommandoComponent, path: KommandoComponentPath, key: String): Message? =
+    public fun getMessageOrNull(component: Component, path: ComponentPath, key: String): Message? =
         finder.findMessage(messageBundle, component, path, key)
 }

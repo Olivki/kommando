@@ -16,7 +16,7 @@
 
 package net.ormr.kommando.command
 
-import net.ormr.kommando.KommandoComponentPath
+import net.ormr.kommando.ComponentPath
 import net.ormr.kommando.getMessage
 import net.ormr.kommando.localeBundle
 import net.ormr.kommando.localization.Message
@@ -39,7 +39,7 @@ public sealed class AbstractSubCommand<Context, out Super>(
     final override lateinit var superCommand: @UnsafeVariance Super
         private set
 
-    final override val componentPath: KommandoComponentPath
+    final override val componentPath: ComponentPath
         get() = superCommand.componentPath / "subCommands" / defaultCommandName
 
     // Workaround for 'Setter for property is removed by type projection' error
