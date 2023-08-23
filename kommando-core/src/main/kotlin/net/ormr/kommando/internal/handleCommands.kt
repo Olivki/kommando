@@ -19,7 +19,7 @@ package net.ormr.kommando.internal
 import com.github.michaelbull.logging.InlineLogger
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.interaction.ApplicationCommandInteraction
-import dev.kord.core.entity.interaction.GlobalChatInputCommandInteraction
+import dev.kord.core.entity.interaction.ChatInputCommandInteraction
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.core.entity.interaction.InteractionCommand
 import dev.kord.core.event.interaction.*
@@ -266,5 +266,5 @@ private data class GuildCommandContextImpl(
 ) : GuildCommandContext
 
 private data class GlobalCommandContextImpl(
-    override val interaction: GlobalChatInputCommandInteraction,
+    override val interaction: ChatInputCommandInteraction,
 ) : GlobalCommandContext

@@ -37,7 +37,7 @@ import org.kodein.di.direct
 
 // Here be dragons
 
-// TODO: verify command names and arguments?
+// TODO: verify command names?
 //       https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-naming
 //       localized names follow the same rules as normal names
 
