@@ -40,7 +40,7 @@ public class EnumChoiceArgument<Value>(
         require(entries.size <= 25) { "Choices must not be more than 25" }
     }
 
-    private val nameToEntry: Map<String, Value> = entries.associateByTo(hashMapOf()) { it.name }
+    private val nameToEntry: Map<String, Value> = entries.associateByTo(hashMapOf()) { it.choiceName }
 
     override val type: ArgumentType.String
         get() = ArgumentType.String
