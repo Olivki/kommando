@@ -261,7 +261,7 @@ private fun createWrappers(
                                 subCommands = child
                                     .factories
                                     .map { it(di) }
-                                    .onEach { it.fixSubCommand().initSuperComponent(instance) },
+                                    .onEach { it.fixSubCommand().initSuperComponent(group) },
                                 subCommandFactories = child.factories.map { SubCommandFactory(it) },
                                 factory = child,
                             )
