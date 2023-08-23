@@ -38,10 +38,6 @@ internal inline fun SubCommand<*, *>.initSuperCommand(parent: SuperCommand<*, *>
     fixSubCommand().initSuperCommand(parent)
 }
 
-internal inline fun CommandGroup<*>.initSuperCommand(parent: SuperCommand<*, *>) {
-    fixCommandGroup().initSuperCommand(parent)
-}
-
 internal inline fun SubCommand<*, *>.fixSubCommand(): AbstractSubCommand<*, *> = fixType { "SubCommand" }
 
 internal inline fun CommandGroup<*>.fixCommandGroup(): AbstractCommandGroup<*> = fixType { "CommandGroup" }

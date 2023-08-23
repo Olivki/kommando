@@ -154,7 +154,7 @@ private suspend inline fun <reified Cmd> inputCommand(
 }
 
 private fun RegisteredGroup.createGroup(di: DirectDI, command: SuperCommand<*, *>): CommandGroup<*> {
-    val group = factory.create(di).fixCommandGroup()
+    val group = factory.create(di)
     group.initSuperCommand(command)
     return group
 }

@@ -20,21 +20,18 @@ import net.ormr.kommando.*
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
-public sealed interface CommandGroup<out Super> : KommandoComponent, DescribableCommandComponent
+public abstract class CommandGroup<out Super>(
+    public val defaultGroupName: String,
+) : KommandoComponent, DescribableCommandComponent
         where Super : SuperCommand<*, *> {
-    public val defaultGroupName: String
-    public val superCommand: @UnsafeVariance Super
+    public lateinit var superCommand: @UnsafeVariance Super
+        private set
+
     public val groupName: Message
         get() = localeBundle.getMessageOrNull("name") ?: BasicMessage(defaultGroupName)
 
     override val componentDescription: Message
         get() = localeBundle.getMessage("description")
-}
-
-public sealed class AbstractCommandGroup<out Super>(override val defaultGroupName: String) : CommandGroup<Super>
-        where Super : SuperCommand<*, *> {
-    final override lateinit var superCommand: @UnsafeVariance Super
-        private set
 
     final override val componentPath: KommandoComponentPath
         get() = superCommand.componentPath / "groups" / defaultGroupName
