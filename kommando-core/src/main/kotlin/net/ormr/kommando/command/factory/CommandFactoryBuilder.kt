@@ -68,26 +68,21 @@ public class CommandFactoryBuilder<Cmd, Context, Perms>(private val factory: Dir
 
 context(KommandoBuilder)
 @KommandoDsl
-public inline fun <Cmd, Context, Perms> CommandFactory(
+public inline fun <Cmd, Context, Perms> commandFactory(
     noinline factory: DirectDI.() -> Cmd,
     builder: CommandFactoryBuilder<Cmd, Context, Perms>.() -> Unit,
-): CommandFactory
-        where Cmd : SuperCommand<Context, Perms>,
-              Context : CommandContext<*>,
-              Perms : CommandPermissions {
+) where Cmd : SuperCommand<Context, Perms>,
+        Context : CommandContext<*>,
+        Perms : CommandPermissions {
     contract {
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    return CommandFactoryBuilder(factory).apply(builder).createFactory()
+    commandFactories += CommandFactoryBuilder(factory).apply(builder).createFactory()
 }
 
 context(KommandoBuilder)
 @KommandoDsl
-public fun CommandFactory(factory: DirectDI.() -> RootCommand<*, *>): CommandFactory =
-    SingleCommandFactory(factory)
-
-context(KommandoBuilder)
-public inline operator fun CommandFactory.unaryPlus() {
-    commandFactories += this
+public fun commandFactory(factory: DirectDI.() -> RootCommand<*, *>) {
+    commandFactories += SingleCommandFactory(factory)
 }

@@ -21,21 +21,33 @@ import net.ormr.kommando.command.permission.GuildCommandPermissions
 
 public sealed interface GuildChatInputCommand : ChatInputCommand<GuildCommandContext>, GuildCommandType
 
+public sealed interface GuildInheritableCommandComponent : InheritableCommandComponent
+
 public abstract class GuildCommand(
     name: String,
     description: String,
 ) : AbstractSuperCommand<GuildCommandContext, GuildCommandPermissions>(name, description), GuildRootCommand,
-    GuildRootChatInputCommand, GuildChatInputCommand {
+    GuildRootChatInputCommand, GuildChatInputCommand, GuildInheritableCommandComponent {
     context(GuildCommandContext)
     override suspend fun execute() {
         error("Command ${this::class.qualifiedName} should never be executed")
     }
 }
 
-public abstract class GuildSubCommand<out Super : GuildCommand>(
+public abstract class GuildSubCommand<out Super>(
     name: String,
     description: String,
-) : AbstractSubCommand<GuildCommandContext, Super>(name, description), GuildCommandType, GuildChatInputCommand {
+) : AbstractSubCommand<GuildCommandContext, Super>(name, description), GuildCommandType, GuildChatInputCommand
+        where Super : GuildInheritableCommandComponent {
     final override val commandGuildId: Snowflake
-        get() = superComponent.commandGuildId
+        get() = findRoot().commandGuildId
+}
+
+private fun GuildSubCommand<*>.findRoot(): GuildRootCommand {
+    var current: InheritableCommandComponent = superComponent
+    while (current is CommandGroup<*>) {
+        current = current.superCommand
+    }
+    require(current is GuildRootCommand) { "Could not find root for $this" }
+    return current
 }
