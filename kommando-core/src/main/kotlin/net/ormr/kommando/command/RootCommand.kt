@@ -36,7 +36,7 @@ public sealed class AbstractRootCommand<Context, Perms>(
     // TODO: for guild commands, the syntax is name @guildId, but we should allow a syntax like name @*
     //       to catch all guild ids
     final override val componentPath: ComponentPath
-        get() = ComponentPath("components", "commands", this.formatAsCommandKey(defaultName))
+        get() = ComponentPath("commands", this.formatAsCommandKey(defaultName))
 }
 // TODO: override componentPath
 

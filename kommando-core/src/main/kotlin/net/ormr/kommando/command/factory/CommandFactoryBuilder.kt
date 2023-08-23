@@ -45,6 +45,7 @@ public class CommandFactoryBuilder<Cmd, Context, Perms>(private val factory: Dir
         }
     }
 
+    // TODO: separate builder for groups
     @KommandoDsl
     public fun <Group> group(
         group: DirectDI.() -> Group,

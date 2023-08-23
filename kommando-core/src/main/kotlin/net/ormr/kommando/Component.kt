@@ -22,6 +22,12 @@ import org.kodein.di.instance
 
 public interface Component : KommandoDI {
     public val kommando: Kommando
+
+    /**
+     * The path to this component.
+     *
+     * This is not guaranteed to be a "full" path, as it may be a path relative to the parent component.
+     */
     public val componentPath: ComponentPath
 }
 

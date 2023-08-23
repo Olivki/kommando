@@ -50,7 +50,9 @@ public class ArgumentBuilder<Cmd, Value, Arg>(
         val (key, name, description) = cache.getOrPut(cacheKey) {
             val key = nameConverter.convert(property.name)
             val bundle = thisRef.localeBundle
-            val argPath = thisRef.componentPath / "arguments" / key
+            val selfPath = thisRef.componentPath
+            val firstPath = cache.pathStack.firstOrNull()?.let { it / selfPath } ?: selfPath
+            val argPath = firstPath / "arguments" / property.name
             val name = this.name
                 ?: bundle.getMessageOrNull(thisRef, argPath, "name")
                 ?: BasicMessage(key)

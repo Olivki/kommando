@@ -30,9 +30,9 @@ public sealed interface SubCommand<Context, out Super> : Command<Context>, Custo
 }
 
 public sealed class AbstractSubCommand<Context, out Super>(
-    name: String,
+    private val defaultName: String,
     private val defaultDescription: String,
-) : AbstractCommand<Context>(name), SubCommand<Context, Super>
+) : AbstractCommand<Context>(defaultName), SubCommand<Context, Super>
         where Context : CommandContext<*>,
               Super : InheritableCommandComponent {
     override val componentDescription: Message
@@ -42,7 +42,7 @@ public sealed class AbstractSubCommand<Context, out Super>(
         private set
 
     final override val componentPath: ComponentPath
-        get() = superComponent.componentPath / "subCommands" / defaultCommandName
+        get() = ComponentPath("subCommands", defaultName)
 
     // Workaround for 'Setter for property is removed by type projection' error
     internal fun initSuperComponent(parent: @UnsafeVariance Super) {

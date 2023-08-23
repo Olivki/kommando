@@ -39,7 +39,7 @@ public abstract class CommandGroup<out Super>(
         get() = localeBundle.getMessageOrNull("description") ?: BasicMessage(description)
 
     final override val componentPath: ComponentPath
-        get() = superCommand.componentPath / "groups" / name
+        get() = ComponentPath("groups", name)
 
     // Workaround for 'Setter for property is removed by type projection' error
     internal fun initSuperCommand(parent: @UnsafeVariance Super) {

@@ -241,13 +241,16 @@ private suspend fun List<CommandWrapper>.mergeGuildCommands(
         }
     }
 
+context(Kommando)
 private fun createWrappers(
     di: DirectDI,
     factories: List<CommandFactory>,
 ): List<CommandWrapper> = factories.map { parent ->
+    val paths = argumentCache.pathStack
     when (parent) {
         is ParentCommandFactory -> {
             val instance = parent.create(di)
+            paths.addFirst(instance.componentPath)
             ParentCommandWrapper(
                 instance = instance,
                 factory = parent,
@@ -256,6 +259,7 @@ private fun createWrappers(
                         is CommandGroupFactory -> {
                             val group = child.create(di).fix()
                             group.initSuperCommand(instance)
+                            paths.addFirst(paths.first() / group.componentPath)
                             CommandGroupWrapper(
                                 instance = group,
                                 subCommands = child
@@ -264,7 +268,9 @@ private fun createWrappers(
                                     .onEach { it.fixSubCommand().initSuperComponent(group) },
                                 subCommandFactories = child.factories.map { SubCommandFactory(it) },
                                 factory = child,
-                            )
+                            ).also {
+                                paths.removeFirst()
+                            }
                         }
                         is SubCommandFactory -> {
                             val subCommand = child.create(di)
@@ -276,7 +282,9 @@ private fun createWrappers(
                         }
                     }
                 },
-            )
+            ).also {
+                paths.removeFirst()
+            }
         }
         is SingleCommandFactory -> SingleCommandWrapper(parent.create(di), parent)
     }
