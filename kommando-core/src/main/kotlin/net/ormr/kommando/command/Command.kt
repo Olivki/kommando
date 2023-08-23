@@ -31,7 +31,9 @@ public sealed interface Command<Context> : KommandoComponent
     public val commandName: Message
 
     context(Context)
-    public suspend fun execute()
+    public suspend fun execute() {
+        error("Command ${this::class.qualifiedName} should never be executed")
+    }
 }
 
 public sealed class AbstractCommand<Context>(
