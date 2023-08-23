@@ -17,8 +17,9 @@
 package net.ormr.kommando.command
 
 import net.ormr.kommando.ComponentPath
-import net.ormr.kommando.getMessage
+import net.ormr.kommando.getMessageOrNull
 import net.ormr.kommando.localeBundle
+import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
 public sealed interface SubCommand<Context, out Super> : Command<Context>, CustomizableCommand<Context>,
@@ -26,16 +27,17 @@ public sealed interface SubCommand<Context, out Super> : Command<Context>, Custo
         where Context : CommandContext<*>,
               Super : SuperCommand<*, *> {
     public val superCommand: @UnsafeVariance Super
-
-    override val componentDescription: Message
-        get() = localeBundle.getMessage("description")
 }
 
 public sealed class AbstractSubCommand<Context, out Super>(
-    defaultName: String,
-) : AbstractCommand<Context>(defaultName), SubCommand<Context, Super>
+    name: String,
+    private val defaultDescription: String,
+) : AbstractCommand<Context>(name), SubCommand<Context, Super>
         where Context : CommandContext<*>,
               Super : SuperCommand<*, *> {
+    override val componentDescription: Message
+        get() = localeBundle.getMessageOrNull("description") ?: BasicMessage(defaultDescription)
+
     final override lateinit var superCommand: @UnsafeVariance Super
         private set
 

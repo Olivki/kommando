@@ -17,20 +17,22 @@
 package net.ormr.kommando.command
 
 import net.ormr.kommando.command.permission.CommandPermissions
-import net.ormr.kommando.getMessage
+import net.ormr.kommando.getMessageOrNull
 import net.ormr.kommando.localeBundle
+import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
 public sealed interface SuperCommand<Context, Perms> : RootCommand<Context, Perms>, CustomizableCommand<Context>,
     DescribableCommandComponent, ChatInputCommand<Context>
         where Context : CommandContext<*>,
-              Perms : CommandPermissions {
-    override val componentDescription: Message
-        get() = localeBundle.getMessage("description")
-}
+              Perms : CommandPermissions
 
 public sealed class AbstractSuperCommand<Context, Perms>(
-    defaultName: String,
-) : AbstractRootCommand<Context, Perms>(defaultName), SuperCommand<Context, Perms>
+    name: String,
+    private val defaultDescription: String,
+) : AbstractRootCommand<Context, Perms>(name), SuperCommand<Context, Perms>
         where Context : CommandContext<*>,
-              Perms : CommandPermissions
+              Perms : CommandPermissions {
+    override val componentDescription: Message
+        get() = localeBundle.getMessageOrNull("description") ?: BasicMessage(defaultDescription)
+}

@@ -261,14 +261,14 @@ private fun createWrappers(
                                 subCommands = child
                                     .factories
                                     .map { it(di) }
-                                    .onEach { it.initSuperCommand(instance) },
+                                    .onEach { it.fixSubCommand().initSuperCommand(instance) },
                                 subCommandFactories = child.factories.map { SubCommandFactory(it) },
                                 factory = child,
                             )
                         }
                         is SubCommandFactory -> {
                             val subCommand = child.create(di)
-                            subCommand.initSuperCommand(instance)
+                            subCommand.fixSubCommand().initSuperCommand(instance)
                             SubCommandWrapper(
                                 instance = subCommand,
                                 factory = child,

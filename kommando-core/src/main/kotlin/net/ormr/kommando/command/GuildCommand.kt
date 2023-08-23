@@ -22,14 +22,20 @@ import net.ormr.kommando.command.permission.GuildCommandPermissions
 public sealed interface GuildChatInputCommand : ChatInputCommand<GuildCommandContext>, GuildCommandType
 
 public abstract class GuildCommand(
-    defaultName: String,
-    override val commandGuildId: Snowflake,
-) : AbstractSuperCommand<GuildCommandContext, GuildCommandPermissions>(defaultName), GuildRootCommand,
-    GuildRootChatInputCommand, GuildChatInputCommand
+    name: String,
+    description: String,
+) : AbstractSuperCommand<GuildCommandContext, GuildCommandPermissions>(name, description), GuildRootCommand,
+    GuildRootChatInputCommand, GuildChatInputCommand {
+    context(GuildCommandContext)
+    override suspend fun execute() {
+        error("Command ${this::class.qualifiedName} should never be executed")
+    }
+}
 
 public abstract class GuildSubCommand<out Super : GuildCommand>(
-    defaultName: String,
-) : AbstractSubCommand<GuildCommandContext, Super>(defaultName), GuildCommandType, GuildChatInputCommand {
+    name: String,
+    description: String,
+) : AbstractSubCommand<GuildCommandContext, Super>(name, description), GuildCommandType, GuildChatInputCommand {
     final override val commandGuildId: Snowflake
         get() = superCommand.commandGuildId
 }

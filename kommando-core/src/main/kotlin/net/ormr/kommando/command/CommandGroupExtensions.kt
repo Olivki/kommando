@@ -16,17 +16,5 @@
 
 package net.ormr.kommando.command
 
-import net.ormr.kommando.command.argument.Argument
-
-public inline val Command<*>.defaultCommandName: String
-    get() = commandName.defaultString
-
-/**
- * Returns a map of all the arguments that are registered to this command.
- *
- * Depending on when this function is called, the returned map may be empty.
- */
-public fun AbstractCommand<*>.findArguments(): Map<String, Argument<*, *, *>> = when (this) {
-    is CustomizableCommand<*> -> registry.toMap()
-    else -> emptyMap()
-}
+public inline val CommandGroup<*>.defaultGroupName: String
+    get() = groupName.defaultString

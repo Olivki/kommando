@@ -27,23 +27,20 @@ import net.ormr.kommando.localization.Message
 
 public sealed interface Command<Context> : Component
         where Context : CommandContext<*> {
-    public val defaultCommandName: String
     public val commandName: Message
 
     context(Context)
-    public suspend fun execute() {
-        error("Command ${this::class.qualifiedName} should never be executed")
-    }
+    public suspend fun execute()
 }
 
 public sealed class AbstractCommand<Context>(
-    override val defaultCommandName: String,
+    private val defaultName: String,
 ) : AbstractComponent(), Command<Context>
         where Context : CommandContext<*> {
+    override val commandName: Message
+        get() = localeBundle.getMessageOrNull("name") ?: BasicMessage(defaultName)
+
     internal val registry: CommandArgumentRegistry by lazy {
         CommandArgumentRegistry(this)
     }
-
-    override val commandName: Message
-        get() = localeBundle.getMessageOrNull("name") ?: BasicMessage(defaultCommandName)
 }

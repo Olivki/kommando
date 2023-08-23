@@ -18,6 +18,7 @@ package net.ormr.kommando.command.argument
 
 import com.github.michaelbull.logging.InlineLogger
 import net.ormr.kommando.command.CustomizableCommand
+import net.ormr.kommando.command.defaultCommandName
 import net.ormr.kommando.internal.findRegistry
 import net.ormr.kommando.localeBundle
 import net.ormr.kommando.localization.BasicMessage

@@ -16,25 +16,29 @@
 
 package net.ormr.kommando.command
 
-import net.ormr.kommando.*
+import net.ormr.kommando.AbstractComponent
+import net.ormr.kommando.ComponentPath
+import net.ormr.kommando.getMessageOrNull
+import net.ormr.kommando.localeBundle
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
 public abstract class CommandGroup<out Super>(
-    public val defaultGroupName: String,
+    private val name: String,
+    private val description: String,
 ) : AbstractComponent(), DescribableCommandComponent
         where Super : SuperCommand<*, *> {
     public lateinit var superCommand: @UnsafeVariance Super
         private set
 
     public val groupName: Message
-        get() = localeBundle.getMessageOrNull("name") ?: BasicMessage(defaultGroupName)
+        get() = localeBundle.getMessageOrNull("name") ?: BasicMessage(name)
 
     override val componentDescription: Message
-        get() = localeBundle.getMessage("description")
+        get() = localeBundle.getMessageOrNull("description") ?: BasicMessage(description)
 
     final override val componentPath: ComponentPath
-        get() = superCommand.componentPath / "groups" / defaultGroupName
+        get() = superCommand.componentPath / "groups" / name
 
     // Workaround for 'Setter for property is removed by type projection' error
     internal fun initSuperCommand(parent: @UnsafeVariance Super) {

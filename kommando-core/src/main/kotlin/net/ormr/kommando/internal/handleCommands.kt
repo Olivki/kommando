@@ -173,7 +173,7 @@ private fun RegisteredSubCommandContainer.getSubCommand(
     name: String,
 ): SubCommand<*, *> {
     val result = subCommands[name]?.create(di) ?: noSuchSubCommand(name, command)
-    result.initSuperCommand(command)
+    result.fixSubCommand().initSuperCommand(command)
     return result
 }
 
