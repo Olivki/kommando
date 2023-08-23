@@ -26,7 +26,7 @@ import net.ormr.kommando.localization.Message
 public abstract class CommandGroup<out Super>(
     private val name: String,
     private val description: String,
-) : AbstractComponent(), DescribableCommandComponent
+) : AbstractComponent(), DescribableCommandComponent, InheritableCommandComponent
         where Super : SuperCommand<*, *> {
     public lateinit var superCommand: @UnsafeVariance Super
         private set

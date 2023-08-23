@@ -25,8 +25,8 @@ import net.ormr.kommando.localization.Message
 public sealed interface SubCommand<Context, out Super> : Command<Context>, CustomizableCommand<Context>,
     DescribableCommandComponent, ChatInputCommand<Context>
         where Context : CommandContext<*>,
-              Super : SuperCommand<*, *> {
-    public val superCommand: @UnsafeVariance Super
+              Super : InheritableCommandComponent {
+    public val superComponent: @UnsafeVariance Super
 }
 
 public sealed class AbstractSubCommand<Context, out Super>(
@@ -34,18 +34,18 @@ public sealed class AbstractSubCommand<Context, out Super>(
     private val defaultDescription: String,
 ) : AbstractCommand<Context>(name), SubCommand<Context, Super>
         where Context : CommandContext<*>,
-              Super : SuperCommand<*, *> {
+              Super : InheritableCommandComponent {
     override val componentDescription: Message
         get() = localeBundle.getMessageOrNull("description") ?: BasicMessage(defaultDescription)
 
-    final override lateinit var superCommand: @UnsafeVariance Super
+    final override lateinit var superComponent: @UnsafeVariance Super
         private set
 
     final override val componentPath: ComponentPath
-        get() = superCommand.componentPath / "subCommands" / defaultCommandName
+        get() = superComponent.componentPath / "subCommands" / defaultCommandName
 
     // Workaround for 'Setter for property is removed by type projection' error
-    internal fun initSuperCommand(parent: @UnsafeVariance Super) {
-        superCommand = parent
+    internal fun initSuperComponent(parent: @UnsafeVariance Super) {
+        superComponent = parent
     }
 }

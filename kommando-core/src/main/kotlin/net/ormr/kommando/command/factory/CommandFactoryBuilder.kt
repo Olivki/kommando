@@ -48,12 +48,12 @@ public class CommandFactoryBuilder<Cmd, Context, Perms>(private val factory: Dir
     @KommandoDsl
     public fun group(
         group: DirectDI.() -> CommandGroup<Cmd>,
-        first: DirectDI.() -> SubCommand<Context, Cmd>,
-        vararg rest: DirectDI.() -> SubCommand<Context, Cmd>,
+        firstCommand: DirectDI.() -> SubCommand<Context, Cmd>,
+        vararg restCommands: DirectDI.() -> SubCommand<Context, Cmd>,
     ) {
-        val factories = buildList(rest.size + 1) {
-            add(first)
-            addAll(rest)
+        val factories = buildList(restCommands.size + 1) {
+            add(firstCommand)
+            addAll(restCommands)
         }
 
         children += CommandGroupFactory(group, factories)

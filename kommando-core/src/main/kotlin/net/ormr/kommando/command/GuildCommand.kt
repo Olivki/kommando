@@ -37,5 +37,5 @@ public abstract class GuildSubCommand<out Super : GuildCommand>(
     description: String,
 ) : AbstractSubCommand<GuildCommandContext, Super>(name, description), GuildCommandType, GuildChatInputCommand {
     final override val commandGuildId: Snowflake
-        get() = superCommand.commandGuildId
+        get() = superComponent.commandGuildId
 }

@@ -29,14 +29,14 @@ public sealed interface RootCommand<Context, Perms> : Command<Context>
 }
 
 public sealed class AbstractRootCommand<Context, Perms>(
-    defaultName: String,
+    private val defaultName: String,
 ) : AbstractCommand<Context>(defaultName), RootCommand<Context, Perms>
         where Context : CommandContext<*>,
               Perms : CommandPermissions {
     // TODO: for guild commands, the syntax is name @guildId, but we should allow a syntax like name @*
     //       to catch all guild ids
     final override val componentPath: ComponentPath
-        get() = ComponentPath("components", "commands", this.formatAsCommandKey())
+        get() = ComponentPath("components", "commands", this.formatAsCommandKey(defaultName))
 }
 // TODO: override componentPath
 

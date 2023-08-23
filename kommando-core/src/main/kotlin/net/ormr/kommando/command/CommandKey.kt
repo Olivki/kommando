@@ -37,9 +37,9 @@ public fun RootCommand<*, *>.toCommandKey(): CommandKey = when (this) {
     is GlobalRootCommand -> CommandKey.Global(defaultCommandName)
 }
 
-internal fun RootCommand<*, *>.formatAsCommandKey(): String = when (this) {
-    is GuildRootCommand -> "$defaultCommandName @$commandGuildId"
-    is GlobalRootCommand -> defaultCommandName
+internal fun RootCommand<*, *>.formatAsCommandKey(defaultName: String): String = when (this) {
+    is GuildRootCommand -> "$defaultName @$commandGuildId"
+    is GlobalRootCommand -> defaultName
 }
 
 public fun ApplicationCommand.toCommandKey(): CommandKey = when (this) {

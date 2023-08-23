@@ -254,21 +254,21 @@ private fun createWrappers(
                 children = parent.children.map { child ->
                     when (child) {
                         is CommandGroupFactory -> {
-                            val group = child.create(di)
+                            val group = child.create(di).fix()
                             group.initSuperCommand(instance)
                             CommandGroupWrapper(
                                 instance = group,
                                 subCommands = child
                                     .factories
                                     .map { it(di) }
-                                    .onEach { it.fixSubCommand().initSuperCommand(instance) },
+                                    .onEach { it.fixSubCommand().initSuperComponent(instance) },
                                 subCommandFactories = child.factories.map { SubCommandFactory(it) },
                                 factory = child,
                             )
                         }
                         is SubCommandFactory -> {
                             val subCommand = child.create(di)
-                            subCommand.fixSubCommand().initSuperCommand(instance)
+                            subCommand.fixSubCommand().initSuperComponent(instance)
                             SubCommandWrapper(
                                 instance = subCommand,
                                 factory = child,

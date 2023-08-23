@@ -23,7 +23,7 @@ import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
 public sealed interface SuperCommand<Context, Perms> : RootCommand<Context, Perms>, CustomizableCommand<Context>,
-    DescribableCommandComponent, ChatInputCommand<Context>
+    DescribableCommandComponent, ChatInputCommand<Context>, InheritableCommandComponent
         where Context : CommandContext<*>,
               Perms : CommandPermissions
 
