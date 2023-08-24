@@ -22,15 +22,15 @@ import net.ormr.kommando.localeBundle
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
-public sealed interface SuperCommand<Context, Perms> : TopLevelCommand<Context, Perms>, CustomizableCommand<Context>,
+public sealed interface RootCommand<Context, Perms> : TopLevelCommand<Context, Perms>, CustomizableCommand<Context>,
     DescribableCommandComponent, ChatInputCommand<Context>, InheritableCommandComponent
         where Context : CommandContext<*>,
               Perms : CommandPermissions
 
-public sealed class AbstractSuperCommand<Context, Perms>(
+public sealed class AbstractRootCommand<Context, Perms>(
     name: String,
     private val defaultDescription: String,
-) : AbstractTopLevelCommand<Context, Perms>(name), SuperCommand<Context, Perms>
+) : AbstractTopLevelCommand<Context, Perms>(name), RootCommand<Context, Perms>
         where Context : CommandContext<*>,
               Perms : CommandPermissions {
     override val componentDescription: Message

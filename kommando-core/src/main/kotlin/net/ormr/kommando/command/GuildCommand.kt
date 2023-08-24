@@ -26,7 +26,7 @@ public sealed interface GuildInheritableCommandComponent : InheritableCommandCom
 public abstract class GuildCommand(
     name: String,
     description: String,
-) : AbstractSuperCommand<GuildCommandContext, GuildCommandPermissions>(name, description), GuildTopLevelCommand,
+) : AbstractRootCommand<GuildCommandContext, GuildCommandPermissions>(name, description), GuildTopLevelCommand,
     GuildTopLevelChatInputCommand, GuildChatInputCommand, GuildInheritableCommandComponent {
     context(GuildCommandContext)
     override suspend fun execute() {
@@ -34,19 +34,19 @@ public abstract class GuildCommand(
     }
 }
 
-public abstract class GuildSubCommand<out Super>(
+public abstract class GuildSubCommand<out Root>(
     name: String,
     description: String,
-) : AbstractSubCommand<GuildCommandContext, Super>(name, description), GuildCommandType, GuildChatInputCommand
-        where Super : GuildInheritableCommandComponent {
+) : AbstractSubCommand<GuildCommandContext, Root>(name, description), GuildCommandType, GuildChatInputCommand
+        where Root : GuildInheritableCommandComponent {
     final override val commandGuildId: Snowflake
         get() = findRoot().commandGuildId
 }
 
 private fun GuildSubCommand<*>.findRoot(): GuildTopLevelCommand {
-    var current: InheritableCommandComponent = superComponent
+    var current: InheritableCommandComponent = rootComponent
     while (current is CommandGroup<*>) {
-        current = current.superCommand
+        current = current.rootCommand
     }
     require(current is GuildTopLevelCommand) { "Could not find root for $this" }
     return current

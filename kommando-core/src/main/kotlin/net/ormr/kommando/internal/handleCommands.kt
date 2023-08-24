@@ -68,7 +68,7 @@ internal suspend fun handleCommands() {
             val registeredCommand = getRegisteredCommand(commandId, commandName)
             val command = registeredCommand.factory.create(direct)
 
-            if (command is SuperCommand<*, *>) {
+            if (command is RootCommand<*, *>) {
                 when (val interactionCommand = interaction.command) {
                     is KordRootCommand -> command.autoComplete(argumentName, commandId, commandName)
                     is KordSubCommand -> {
@@ -84,7 +84,7 @@ internal suspend fun handleCommands() {
                     }
                 }
             } else {
-                invalidCommandType(SuperCommand::class, command::class, CommandRequestInfo(commandId, commandName))
+                invalidCommandType(RootCommand::class, command::class, CommandRequestInfo(commandId, commandName))
             }
         } catch (e: KommandoException) {
             logger.error(e) { e.message!! }
@@ -129,7 +129,7 @@ private suspend inline fun <reified Cmd> inputCommand(
     val event = this@ChatInputCommandInteractionCreateEvent
     val command = registeredCommand.factory.create(di)
     if (command is Cmd) {
-        check(command is SuperCommand<*, *>)
+        check(command is RootCommand<*, *>)
         when (interactionCommand) {
             is KordRootCommand -> {
                 populateArguments(command, interactionCommand, event)
@@ -153,9 +153,9 @@ private suspend inline fun <reified Cmd> inputCommand(
     }
 }
 
-private fun RegisteredGroup.createGroup(di: DirectDI, command: SuperCommand<*, *>): CommandGroup<*> {
+private fun RegisteredGroup.createGroup(di: DirectDI, command: RootCommand<*, *>): CommandGroup<*> {
     val group = factory.create(di).fix()
-    group.initSuperCommand(command)
+    group.initRootComponent(command)
     return group
 }
 
@@ -169,11 +169,11 @@ private fun RegisteredCommand.getRegisteredGroup(
 
 private fun RegisteredSubCommandContainer.getSubCommand(
     di: DirectDI,
-    command: SuperCommand<*, *>,
+    command: RootCommand<*, *>,
     name: String,
 ): SubCommand<*, *> {
     val result = subCommands[name]?.create(di) ?: noSuchSubCommand(name, command)
-    result.fixSubCommand().initSuperComponent(command)
+    result.fixSubCommand().initRootComponent(command)
     return result
 }
 

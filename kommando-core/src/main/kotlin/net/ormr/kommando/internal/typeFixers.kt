@@ -34,7 +34,7 @@ internal inline fun Command<*>.findDirectArguments(): Map<String, Argument<*, *,
 
 internal inline fun Command<*>.findRegistry(): CommandArgumentRegistry = fixCommand().registry
 
-internal inline fun CommandGroup<*>.fix(): CommandGroup<SuperCommand<*, *>> = this
+internal inline fun CommandGroup<*>.fix(): CommandGroup<RootCommand<*, *>> = this
 
 internal inline fun SubCommand<*, *>.fixSubCommand(): AbstractSubCommand<*, InheritableCommandComponent> =
     fixType { "SubCommand" }

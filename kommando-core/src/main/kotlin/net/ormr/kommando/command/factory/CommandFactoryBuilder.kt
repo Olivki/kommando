@@ -29,7 +29,7 @@ import kotlin.contracts.contract
 
 @KommandoDsl
 public class CommandFactoryBuilder<Cmd, Context, Perms>(private val factory: DirectDI.() -> Cmd)
-        where Cmd : SuperCommand<Context, Perms>,
+        where Cmd : RootCommand<Context, Perms>,
               Context : CommandContext<*>,
               Perms : CommandPermissions {
     private val children = mutableListOf<CommandChildFactory<*>>()
@@ -72,7 +72,7 @@ context(KommandoBuilder)
 public inline fun <Cmd, Context, Perms> commandFactory(
     noinline factory: DirectDI.() -> Cmd,
     builder: CommandFactoryBuilder<Cmd, Context, Perms>.() -> Unit,
-) where Cmd : SuperCommand<Context, Perms>,
+) where Cmd : RootCommand<Context, Perms>,
         Context : CommandContext<*>,
         Perms : CommandPermissions {
     contract {

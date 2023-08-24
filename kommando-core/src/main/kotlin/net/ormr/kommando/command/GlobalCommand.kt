@@ -25,7 +25,7 @@ public sealed interface GlobalInheritableCommandComponent : InheritableCommandCo
 public abstract class GlobalCommand(
     name: String,
     description: String,
-) : AbstractSuperCommand<GlobalCommandContext, GlobalCommandPermissions>(name, description), GlobalTopLevelCommand,
+) : AbstractRootCommand<GlobalCommandContext, GlobalCommandPermissions>(name, description), GlobalTopLevelCommand,
     GlobalTopLevelChatInputCommand, GlobalChatInputCommand, GlobalInheritableCommandComponent {
     context(GlobalCommandContext)
     override suspend fun execute() {
@@ -33,8 +33,8 @@ public abstract class GlobalCommand(
     }
 }
 
-public abstract class GlobalSubCommand<out Super>(
+public abstract class GlobalSubCommand<out Root>(
     name: String,
     description: String,
-) : AbstractSubCommand<GlobalCommandContext, Super>(name, description), GlobalCommandType, GlobalChatInputCommand
-        where Super : GlobalInheritableCommandComponent
+) : AbstractSubCommand<GlobalCommandContext, Root>(name, description), GlobalCommandType, GlobalChatInputCommand
+        where Root : GlobalInheritableCommandComponent
