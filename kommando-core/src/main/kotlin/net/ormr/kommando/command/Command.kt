@@ -22,11 +22,12 @@ import net.ormr.kommando.localization
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
-// TODO: implement nsfw flag
-
 public sealed interface Command<Context> : CommandComponent
         where Context : CommandContext<*> {
     public val commandName: Message
+
+    public val isNsfw: Boolean?
+        get() = null
 
     context(Context)
     public suspend fun execute()

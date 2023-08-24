@@ -110,13 +110,16 @@ internal suspend fun registerCommands(
                 logger.info { "Registering global command: ${wrapper.type}" }
                 when (val command = wrapper.instance as GlobalTopLevelCommand) {
                     is GlobalCommand -> input(command.defaultCommandName, command.defaultComponentDescription) {
+                        applyNsfw(command)
                         applyPermissions(defaultPerms, command)
                         buildCommand(wrapper)
                     }
                     is GlobalMessageCommand -> message(command.defaultCommandName) {
+                        applyNsfw(command)
                         applyPermissions(defaultPerms, command)
                     }
                     is GlobalUserCommand -> user(command.defaultCommandName) {
+                        applyNsfw(command)
                         applyPermissions(defaultPerms, command)
                     }
                 }
@@ -130,13 +133,16 @@ internal suspend fun registerCommands(
                     logger.info { "Registering guild command: ${wrapper.type} @$guildId" }
                     when (val command = wrapper.instance as GuildTopLevelCommand) {
                         is GuildCommand -> input(command.defaultCommandName, command.defaultComponentDescription) {
+                            applyNsfw(command)
                             applyPermissions(defaultPerms, command)
                             buildCommand(wrapper)
                         }
                         is GuildMessageCommand -> message(command.defaultCommandName) {
+                            applyNsfw(command)
                             applyPermissions(defaultPerms, command)
                         }
                         is GuildUserCommand -> user(command.defaultCommandName) {
+                            applyNsfw(command)
                             applyPermissions(defaultPerms, command)
                         }
                     }
@@ -144,6 +150,11 @@ internal suspend fun registerCommands(
             }.collect(::collectCommands)
         }
     }
+}
+
+context(ApplicationCommandCreateBuilder)
+private fun applyNsfw(command: Command<*>) {
+    nsfw = command.isNsfw
 }
 
 private suspend fun <Cmd> GlobalApplicationCommandCreateBuilder.applyPermissions(
