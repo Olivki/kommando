@@ -23,12 +23,14 @@ import dev.kord.gateway.builder.PresenceBuilder
 import net.ormr.kommando.command.CommandsBuilder
 import net.ormr.kommando.localization.Localization
 import net.ormr.kommando.localization.LocalizationBuilder
+import net.ormr.kommando.modal.ModalStorage
 import org.kodein.di.DI
 import org.kodein.di.DirectDI
 import org.kodein.di.DirectDIAware
 import org.kodein.di.bindEagerSingleton
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.time.Duration.Companion.minutes
 
 @KommandoDsl
 public class KommandoBuilder @PublishedApi internal constructor(
@@ -36,6 +38,8 @@ public class KommandoBuilder @PublishedApi internal constructor(
     public val intents: Intents,
     override val directDI: DirectDI,
 ) : DirectDIAware {
+    public var modalStorage: ModalStorage = ModalStorage(expireAfter = 30.minutes)
+
     @PublishedApi
     internal var exceptionHandler: KommandoExceptionHandler? = null
 
@@ -54,6 +58,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
             localization = localization,
             commands = commands,
             exceptionHandler = exceptionHandler,
+            modalStorage = modalStorage,
         )
 
         if (localization.messageBundle.isEmpty()) {
