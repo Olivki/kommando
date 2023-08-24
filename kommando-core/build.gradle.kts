@@ -41,6 +41,9 @@ kotlin {
 dependencies {
     implementation(libs.inlineLogger)
     implementation(libs.kasechange)
+    implementation(libs.jackson.dataformat.yaml)
+    // explicit snakeYaml dependency, because the one jackson uses has vulnerabilities
+    implementation(libs.snakeYaml)
     api(libs.kotlinx.collections.immutable)
     api(libs.bundles.kodein)
     api(libs.bundles.kord)

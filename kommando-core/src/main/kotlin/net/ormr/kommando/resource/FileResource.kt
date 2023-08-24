@@ -16,8 +16,10 @@
 
 package net.ormr.kommando.resource
 
+import java.io.IOException
 import java.io.InputStream
 import java.nio.file.Path
+import kotlin.io.path.exists
 import kotlin.io.path.inputStream
 import kotlin.io.path.pathString
 
@@ -28,7 +30,15 @@ public data class FileResource(public val file: Path) : Resource {
     override val path: String
         get() = file.pathString
 
-    override fun inputStream(): InputStream = file.inputStream()
+    override fun exists(): Boolean = file.exists()
+
+    override fun inputStream(): InputStream = try {
+        file.inputStream()
+    } catch (e: IOException) {
+        throw ResourceNotFoundException("Could not find resource at path '$path'", e)
+    }
+
+    override fun asString(): String = file.pathString
 }
 
 /**

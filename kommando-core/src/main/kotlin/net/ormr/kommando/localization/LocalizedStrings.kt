@@ -87,6 +87,11 @@ public fun localizedStringsOf(vararg mappings: Pair<Locale, String>): LocalizedS
 public fun Map<Locale, String>.toLocalizedStrings(): LocalizedStrings = LocalizedStrings(toPersistentHashMap())
 
 /**
+ * Returns a [LocalizedStrings] instance containing the mappings in `this` map.
+ */
+public fun PersistentMap<Locale, String>.toLocalizedStrings(): LocalizedStrings = LocalizedStrings(this)
+
+/**
  * Returns `true` if any mappings are defined.
  */
 public inline fun LocalizedStrings.isNotEmpty(): Boolean = !isEmpty()

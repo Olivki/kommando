@@ -16,18 +16,56 @@
 
 package net.ormr.kommando.localization
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
+import com.github.michaelbull.logging.InlineLogger
+import dev.kord.common.Locale
 import net.ormr.kommando.ComponentPath
+import net.ormr.kommando.forEach
+import net.ormr.kommando.util.toPersistentHashMap
 
-public class YamlMessageBundle : MessageBundle {
+private class YamlMessageBundle(private val resource: LocalizedResource) : MessageBundle {
+    private val defaultLocale get() = resource.defaultLocale
+    private val objects = resource
+        .asMap()
+        .entries
+        .filter { (_, resource) -> resource.exists() }
+        .map { (locale, resource) ->
+            logger.debug { "Reading file: ${resource.asString()}" }
+            resource.inputStream().use { YamlObject(locale, mapper.readTree(it)) }
+        }
+
     override fun getMessageOrNull(path: ComponentPath, key: String): Message? {
-        TODO("Not yet implemented")
+        val strings = objects
+            .asSequence()
+            .mapNotNull { obj -> obj.findString(path, key)?.let { obj.locale to it } }
+            .toPersistentHashMap()
+            .ifEmpty { return null }
+            .toLocalizedStrings()
+        return LocalizedMessage(defaultLocale, strings)
     }
 
-    override fun contains(key: String): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun isEmpty(): Boolean = resource.isEmpty()
 
-    override fun isEmpty(): Boolean {
-        TODO("Not yet implemented")
+    private companion object {
+        private val logger = InlineLogger()
+        private val mapper = YAMLMapper()
     }
 }
+
+private data class YamlObject(val locale: Locale, private val root: JsonNode) {
+    fun findString(path: ComponentPath, key: String): String? {
+        val node = walkToEndOf(path)?.get(key) ?: return null
+        return node.textValue()
+    }
+
+    private fun walkToEndOf(path: ComponentPath): JsonNode? {
+        var current = root
+        path.forEach { component ->
+            current = current[component] ?: return null
+        }
+        return current
+    }
+}
+
+public fun loadYamlMessageBundle(resource: LocalizedResource): MessageBundle = YamlMessageBundle(resource)

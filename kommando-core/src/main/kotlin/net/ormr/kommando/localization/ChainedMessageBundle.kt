@@ -14,30 +14,18 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando.resource
+package net.ormr.kommando.localization
 
-import java.io.InputStream
+import net.ormr.kommando.ComponentPath
 
-/**
- * A resource that has a `path` and can be loaded via [inputStream].
- */
-public interface Resource {
-    /**
-     * The path to the resource.
-     */
-    public val path: String
+private class ChainedMessageBundle(
+    private val left: MessageBundle,
+    private val right: MessageBundle,
+) : MessageBundle {
+    override fun getMessageOrNull(path: ComponentPath, key: String): Message? =
+        left.getMessageOrNull(path, key) ?: right.getMessageOrNull(path, key)
 
-    /**
-     * Returns `true` if the resource exists.
-     */
-    public fun exists(): Boolean
-
-    /**
-     * Returns a new [InputStream] for the resource.
-     *
-     * @throws [ResourceNotFoundException] if an `InputStream` could not be opened for some reason
-     */
-    public fun inputStream(): InputStream
-
-    public fun asString(): String
+    override fun isEmpty(): Boolean = left.isEmpty() && right.isEmpty()
 }
+
+public operator fun MessageBundle.plus(other: MessageBundle): MessageBundle = ChainedMessageBundle(this, other)

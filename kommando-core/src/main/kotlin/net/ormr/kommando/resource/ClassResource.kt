@@ -24,12 +24,16 @@ import java.io.InputStream
  * @property [clz] The class to load the resource from.
  */
 public data class ClassResource(override val path: String, val clz: Class<*>) : Resource {
+    override fun exists(): Boolean = clz.getResource(path) != null
+
     override fun inputStream(): InputStream =
         clz.getResourceAsStream(path)
             ?: throw ResourceNotFoundException("Could not open resource stream for '$path' @ $clz")
+
+    override fun asString(): String = "$path @ $clz"
 }
 
 /**
  * Creates a new [ClassResource] from the given [path] and `this`.
  */
-public fun Class<*>.resource(path: String): ClassResource = ClassResource(path, this)
+public fun Class<*>.getClassResource(path: String): ClassResource = ClassResource(path, this)
