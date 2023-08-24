@@ -25,8 +25,8 @@ public sealed interface GlobalInheritableCommandComponent : InheritableCommandCo
 public abstract class GlobalCommand(
     name: String,
     description: String,
-) : AbstractSuperCommand<GlobalCommandContext, GlobalCommandPermissions>(name, description), GlobalRootCommand,
-    GlobalRootChatInputCommand, GlobalChatInputCommand, GlobalInheritableCommandComponent {
+) : AbstractSuperCommand<GlobalCommandContext, GlobalCommandPermissions>(name, description), GlobalTopLevelCommand,
+    GlobalTopLevelChatInputCommand, GlobalChatInputCommand, GlobalInheritableCommandComponent {
     context(GlobalCommandContext)
     override suspend fun execute() {
         error("Command ${this::class.qualifiedName} should never be executed")

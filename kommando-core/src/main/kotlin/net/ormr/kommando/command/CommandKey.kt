@@ -32,14 +32,14 @@ public sealed interface CommandKey {
     }
 }
 
-public fun RootCommand<*, *>.toCommandKey(): CommandKey = when (this) {
-    is GuildRootCommand -> CommandKey.Guild(defaultCommandName, commandGuildId)
-    is GlobalRootCommand -> CommandKey.Global(defaultCommandName)
+public fun TopLevelCommand<*, *>.toCommandKey(): CommandKey = when (this) {
+    is GuildTopLevelCommand -> CommandKey.Guild(defaultCommandName, commandGuildId)
+    is GlobalTopLevelCommand -> CommandKey.Global(defaultCommandName)
 }
 
-internal fun RootCommand<*, *>.formatAsCommandKey(defaultName: String): String = when (this) {
-    is GuildRootCommand -> "$defaultName @$commandGuildId"
-    is GlobalRootCommand -> defaultName
+internal fun TopLevelCommand<*, *>.formatAsCommandKey(defaultName: String): String = when (this) {
+    is GuildTopLevelCommand -> "$defaultName @$commandGuildId"
+    is GlobalTopLevelCommand -> defaultName
 }
 
 public fun ApplicationCommand.toCommandKey(): CommandKey = when (this) {

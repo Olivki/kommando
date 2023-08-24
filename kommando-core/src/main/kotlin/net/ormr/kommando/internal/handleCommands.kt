@@ -47,7 +47,7 @@ internal suspend fun handleCommands() {
                 is GlobalChatInputCommandInteractionCreateEvent -> inputCommand<GlobalCommand>(direct)
                 is GlobalMessageCommandInteractionCreateEvent -> messageCommand<GlobalMessageCommand>(direct)
                 is GlobalUserCommandInteractionCreateEvent -> userCommand<GlobalUserCommand>(direct)
-                is GuildChatInputCommandInteractionCreateEvent -> inputCommand<RootChatInputCommand<*, *>>(direct)
+                is GuildChatInputCommandInteractionCreateEvent -> inputCommand<TopLevelChatInputCommand<*, *>>(direct)
                 is GuildMessageCommandInteractionCreateEvent -> messageCommand<GuildMessageCommand>(direct)
                 is GuildUserCommandInteractionCreateEvent -> userCommand<GuildUserCommand>(direct)
             }
@@ -121,7 +121,7 @@ private suspend inline fun Command<*>.autoComplete(name: String, commandId: Snow
 context(Kommando, ChatInputCommandInteractionCreateEvent)
 private suspend inline fun <reified Cmd> inputCommand(
     di: DirectDI,
-) where  Cmd : RootChatInputCommand<*, *> {
+) where  Cmd : TopLevelChatInputCommand<*, *> {
     val interactionCommand = interaction.command
     val id = interactionCommand.rootId
     val rootName = interactionCommand.rootName

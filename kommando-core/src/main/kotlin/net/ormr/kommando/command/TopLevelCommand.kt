@@ -21,16 +21,16 @@ import net.ormr.kommando.command.permission.CommandPermissions
 import net.ormr.kommando.command.permission.GlobalCommandPermissions
 import net.ormr.kommando.command.permission.GuildCommandPermissions
 
-public sealed interface RootCommand<Context, Perms> : Command<Context>
+public sealed interface TopLevelCommand<Context, Perms> : Command<Context>
         where Context : CommandContext<*>,
               Perms : CommandPermissions {
     public val defaultMemberPermissions: Perms?
         get() = null
 }
 
-public sealed class AbstractRootCommand<Context, Perms>(
+public sealed class AbstractTopLevelCommand<Context, Perms>(
     private val defaultName: String,
-) : AbstractCommand<Context>(defaultName), RootCommand<Context, Perms>
+) : AbstractCommand<Context>(defaultName), TopLevelCommand<Context, Perms>
         where Context : CommandContext<*>,
               Perms : CommandPermissions {
     // TODO: for guild commands, the syntax is name @guildId, but we should allow a syntax like name @*
@@ -40,7 +40,8 @@ public sealed class AbstractRootCommand<Context, Perms>(
 }
 // TODO: override componentPath
 
-public sealed interface GuildRootCommand : RootCommand<GuildCommandContext, GuildCommandPermissions>, GuildCommandType
+public sealed interface GuildTopLevelCommand : TopLevelCommand<GuildCommandContext, GuildCommandPermissions>,
+    GuildCommandType
 
-public sealed interface GlobalRootCommand : RootCommand<GlobalCommandContext, GlobalCommandPermissions>,
+public sealed interface GlobalTopLevelCommand : TopLevelCommand<GlobalCommandContext, GlobalCommandPermissions>,
     GlobalCommandType

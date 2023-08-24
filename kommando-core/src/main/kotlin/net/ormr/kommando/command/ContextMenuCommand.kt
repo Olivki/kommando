@@ -19,14 +19,14 @@ package net.ormr.kommando.command
 import dev.kord.core.entity.Entity
 import net.ormr.kommando.command.permission.CommandPermissions
 
-public sealed interface ContextMenuCommand<Context, Perms, Value> : RootCommand<Context, Perms>
+public sealed interface ContextMenuCommand<Context, Perms, Value> : TopLevelCommand<Context, Perms>
         where Context : CommandContext<*>,
               Perms : CommandPermissions,
               Value : Entity
 
 public sealed class AbstractContextMenuCommand<Context, Perms, Value>(
     defaultName: String,
-) : AbstractRootCommand<Context, Perms>(defaultName), ContextMenuCommand<Context, Perms, Value>
+) : AbstractTopLevelCommand<Context, Perms>(defaultName), ContextMenuCommand<Context, Perms, Value>
         where Context : CommandContext<*>,
               Perms : CommandPermissions,
               Value : Entity {

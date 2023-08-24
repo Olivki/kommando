@@ -33,8 +33,8 @@ public sealed class UserCommand<Context, Perms>(
 public abstract class GuildUserCommand(
     defaultName: String,
     override val commandGuildId: Snowflake,
-) : UserCommand<GuildCommandContext, GuildCommandPermissions>(defaultName), GuildRootCommand
+) : UserCommand<GuildCommandContext, GuildCommandPermissions>(defaultName), GuildTopLevelCommand
 
 public abstract class GlobalUserCommand(
     defaultName: String,
-) : UserCommand<GlobalCommandContext, GlobalCommandPermissions>(defaultName), GlobalRootCommand
+) : UserCommand<GlobalCommandContext, GlobalCommandPermissions>(defaultName), GlobalTopLevelCommand

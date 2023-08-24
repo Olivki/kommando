@@ -33,8 +33,8 @@ public sealed class MessageCommand<Context, Perms>(
 public abstract class GuildMessageCommand(
     defaultName: String,
     override val commandGuildId: Snowflake,
-) : MessageCommand<GuildCommandContext, GuildCommandPermissions>(defaultName), GuildRootCommand
+) : MessageCommand<GuildCommandContext, GuildCommandPermissions>(defaultName), GuildTopLevelCommand
 
 public abstract class GlobalMessageCommand(
     defaultName: String,
-) : MessageCommand<GlobalCommandContext, GlobalCommandPermissions>(defaultName), GlobalRootCommand
+) : MessageCommand<GlobalCommandContext, GlobalCommandPermissions>(defaultName), GlobalTopLevelCommand

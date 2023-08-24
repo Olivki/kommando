@@ -84,6 +84,6 @@ public inline fun <Cmd, Context, Perms> commandFactory(
 
 context(KommandoBuilder)
 @KommandoDsl
-public fun commandFactory(factory: DirectDI.() -> RootCommand<*, *>) {
+public fun commandFactory(factory: DirectDI.() -> TopLevelCommand<*, *>) {
     commandFactories += SingleCommandFactory(factory)
 }

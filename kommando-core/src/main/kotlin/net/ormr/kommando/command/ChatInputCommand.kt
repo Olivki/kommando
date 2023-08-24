@@ -23,11 +23,13 @@ import net.ormr.kommando.command.permission.GuildCommandPermissions
 public sealed interface ChatInputCommand<Context> : Command<Context>
         where Context : CommandContext<*>
 
-public sealed interface RootChatInputCommand<Context, Perms> : ChatInputCommand<Context>, RootCommand<Context, Perms>
+public sealed interface TopLevelChatInputCommand<Context, Perms> : ChatInputCommand<Context>,
+    TopLevelCommand<Context, Perms>
         where Context : CommandContext<*>,
               Perms : CommandPermissions
 
-public sealed interface GuildRootChatInputCommand : RootChatInputCommand<GuildCommandContext, GuildCommandPermissions>
+public sealed interface GuildTopLevelChatInputCommand :
+    TopLevelChatInputCommand<GuildCommandContext, GuildCommandPermissions>
 
-public sealed interface GlobalRootChatInputCommand :
-    RootChatInputCommand<GlobalCommandContext, GlobalCommandPermissions>
+public sealed interface GlobalTopLevelChatInputCommand :
+    TopLevelChatInputCommand<GlobalCommandContext, GlobalCommandPermissions>

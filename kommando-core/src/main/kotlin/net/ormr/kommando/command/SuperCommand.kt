@@ -22,7 +22,7 @@ import net.ormr.kommando.localeBundle
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
-public sealed interface SuperCommand<Context, Perms> : RootCommand<Context, Perms>, CustomizableCommand<Context>,
+public sealed interface SuperCommand<Context, Perms> : TopLevelCommand<Context, Perms>, CustomizableCommand<Context>,
     DescribableCommandComponent, ChatInputCommand<Context>, InheritableCommandComponent
         where Context : CommandContext<*>,
               Perms : CommandPermissions
@@ -30,7 +30,7 @@ public sealed interface SuperCommand<Context, Perms> : RootCommand<Context, Perm
 public sealed class AbstractSuperCommand<Context, Perms>(
     name: String,
     private val defaultDescription: String,
-) : AbstractRootCommand<Context, Perms>(name), SuperCommand<Context, Perms>
+) : AbstractTopLevelCommand<Context, Perms>(name), SuperCommand<Context, Perms>
         where Context : CommandContext<*>,
               Perms : CommandPermissions {
     override val componentDescription: Message

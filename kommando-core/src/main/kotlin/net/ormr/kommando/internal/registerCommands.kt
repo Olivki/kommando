@@ -51,9 +51,9 @@ internal suspend fun registerCommands(
 ): Map<Snowflake, RegisteredCommand> {
     val commands = createWrappers(direct, factories)
     val globalCommands = commands
-        .filter { it.instance is GlobalRootCommand }
+        .filter { it.instance is GlobalTopLevelCommand }
     val guildCommands = commands
-        .filter { it.instance is GuildRootCommand }
+        .filter { it.instance is GuildTopLevelCommand }
         .mergeGuildCommands(kord)
     check(globalCommands.size + guildCommands.size == factories.size) { unknownCommandType(commands) }
     val commandCache = commands
@@ -105,7 +105,7 @@ internal suspend fun registerCommands(
         kord.createGlobalApplicationCommands {
             for (wrapper in globalCommands) {
                 logger.info { "Registering global command ${wrapper.instance::class.qualifiedName}#${wrapper.instance.defaultCommandName}" }
-                when (val command = wrapper.instance as GlobalRootCommand) {
+                when (val command = wrapper.instance as GlobalTopLevelCommand) {
                     is GlobalCommand -> input(command.defaultCommandName, command.defaultComponentDescription) {
                         applyPermissions(globalPerms, command)
                         buildCommand(wrapper)
@@ -125,7 +125,7 @@ internal suspend fun registerCommands(
             kord.createGuildApplicationCommands(guildId) {
                 for (wrapper in wrappers) {
                     logger.info { "Registering guild command ${wrapper.instance::class.qualifiedName}#${wrapper.instance.defaultCommandName} @$guildId" }
-                    when (val command = wrapper.instance as GuildRootCommand) {
+                    when (val command = wrapper.instance as GuildTopLevelCommand) {
                         is GuildCommand -> input(command.defaultCommandName, command.defaultComponentDescription) {
                             applyPermissions(guildPerms, command)
                             buildCommand(wrapper)
@@ -146,7 +146,7 @@ internal suspend fun registerCommands(
 private suspend fun <Cmd> GlobalApplicationCommandCreateBuilder.applyPermissions(
     defaultFactory: GlobalCommandPermissionsFactory?,
     command: Cmd,
-) where Cmd : GlobalRootCommand {
+) where Cmd : GlobalTopLevelCommand {
     val permissions = command.defaultMemberPermissions ?: defaultFactory?.invoke(command)
     defaultMemberPermissions = permissions?.defaultMemberPermissions
     dmPermission = permissions?.isAllowedInDms
@@ -155,7 +155,7 @@ private suspend fun <Cmd> GlobalApplicationCommandCreateBuilder.applyPermissions
 private suspend fun <Cmd> ApplicationCommandCreateBuilder.applyPermissions(
     defaultFactory: GuildCommandPermissionsFactory?,
     command: Cmd,
-) where Cmd : GuildRootCommand {
+) where Cmd : GuildTopLevelCommand {
     val permissions = command.defaultMemberPermissions ?: defaultFactory?.invoke(command)
     defaultMemberPermissions = permissions?.defaultMemberPermissions
 }
@@ -227,7 +227,7 @@ private suspend fun List<CommandWrapper>.mergeGuildCommands(
 ): Map<Snowflake, Pair<Guild, List<CommandWrapper>>> =
     buildMap<_, Pair<Guild, MutableList<CommandWrapper>>> {
         for (wrapper in this@mergeGuildCommands) {
-            val command = wrapper.instance as GuildRootCommand
+            val command = wrapper.instance as GuildTopLevelCommand
             val id = command.commandGuildId
             val guild = try {
                 kord.getGuild(id)
@@ -297,21 +297,21 @@ private fun unknownCommandType(commands: List<CommandWrapper>): String {
 }
 
 private sealed interface CommandWrapper {
-    val instance: RootCommand<*, *>
+    val instance: TopLevelCommand<*, *>
     val factory: CommandFactory
 
-    operator fun component1(): RootCommand<*, *>
+    operator fun component1(): TopLevelCommand<*, *>
 
     operator fun component2(): CommandFactory
 }
 
 private data class SingleCommandWrapper(
-    override val instance: RootCommand<*, *>,
+    override val instance: TopLevelCommand<*, *>,
     override val factory: SingleCommandFactory,
 ) : CommandWrapper
 
 private data class ParentCommandWrapper(
-    override val instance: RootCommand<*, *>,
+    override val instance: TopLevelCommand<*, *>,
     override val factory: ParentCommandFactory,
     val children: List<CommandChildWrapper>,
 ) : CommandWrapper

@@ -26,8 +26,8 @@ public sealed interface GuildInheritableCommandComponent : InheritableCommandCom
 public abstract class GuildCommand(
     name: String,
     description: String,
-) : AbstractSuperCommand<GuildCommandContext, GuildCommandPermissions>(name, description), GuildRootCommand,
-    GuildRootChatInputCommand, GuildChatInputCommand, GuildInheritableCommandComponent {
+) : AbstractSuperCommand<GuildCommandContext, GuildCommandPermissions>(name, description), GuildTopLevelCommand,
+    GuildTopLevelChatInputCommand, GuildChatInputCommand, GuildInheritableCommandComponent {
     context(GuildCommandContext)
     override suspend fun execute() {
         error("Command ${this::class.qualifiedName} should never be executed")
@@ -43,11 +43,11 @@ public abstract class GuildSubCommand<out Super>(
         get() = findRoot().commandGuildId
 }
 
-private fun GuildSubCommand<*>.findRoot(): GuildRootCommand {
+private fun GuildSubCommand<*>.findRoot(): GuildTopLevelCommand {
     var current: InheritableCommandComponent = superComponent
     while (current is CommandGroup<*>) {
         current = current.superCommand
     }
-    require(current is GuildRootCommand) { "Could not find root for $this" }
+    require(current is GuildTopLevelCommand) { "Could not find root for $this" }
     return current
 }

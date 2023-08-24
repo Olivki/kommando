@@ -17,20 +17,20 @@
 package net.ormr.kommando.command.factory
 
 import kotlinx.collections.immutable.PersistentList
-import net.ormr.kommando.command.RootCommand
 import net.ormr.kommando.command.SuperCommand
+import net.ormr.kommando.command.TopLevelCommand
 import org.kodein.di.DirectDI
 
 public sealed interface CommandFactory {
-    public val factory: DirectDI.() -> RootCommand<*, *>
+    public val factory: DirectDI.() -> TopLevelCommand<*, *>
 
-    public fun create(di: DirectDI): RootCommand<*, *>
+    public fun create(di: DirectDI): TopLevelCommand<*, *>
 }
 
 public class SingleCommandFactory internal constructor(
-    override val factory: DirectDI.() -> RootCommand<*, *>,
+    override val factory: DirectDI.() -> TopLevelCommand<*, *>,
 ) : CommandFactory {
-    override fun create(di: DirectDI): RootCommand<*, *> = factory(di)
+    override fun create(di: DirectDI): TopLevelCommand<*, *> = factory(di)
 }
 
 public class ParentCommandFactory internal constructor(
