@@ -26,9 +26,12 @@ public interface Component : KommandoDI {
     /**
      * The path to this component.
      *
-     * This is not guaranteed to be a "full" path, as it may be a path relative to the parent component.
+     * This is not guaranteed to be a "full" path, as it may be a path relative to the parent component. For "full"
+     * paths, see [ComposableComponent.fullComponentPath].
      */
     public val componentPath: ComponentPath
+    // TODO: make a second interface that can implement a 'fullComponentPath' property
+    //       that can create a full path by combining the 'componentPath' with the parent's 'componentPath'
 }
 
 public abstract class AbstractComponent : Component {
@@ -37,9 +40,14 @@ public abstract class AbstractComponent : Component {
     final override val kommando: Kommando by instance()
 }
 
+// TODO: better name, 'Composable' doesn't really convey what this does differently from 'Component'
+public interface ComposableComponent {
+    /**
+     * The full path to this component, including the parent's path.
+     */
+    public val fullComponentPath: ComponentPath
+}
+
 public interface DescribableComponent : Component {
     public val componentDescription: Message
 }
-
-public inline val DescribableComponent.defaultComponentDescription: String
-    get() = componentDescription.defaultString

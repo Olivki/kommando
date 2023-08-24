@@ -24,6 +24,19 @@ import net.ormr.kommando.localization.Message
 public inline val Component.localeBundle: LocaleBundle
     get() = kommando.localeBundle
 
+public inline val DescribableComponent.defaultComponentDescription: String
+    get() = componentDescription.defaultString
+
+/**
+ * Returns the [fullComponentPath][ComposableComponent.fullComponentPath] of this component, or the
+ * [componentPath][Component.componentPath] if this component is not a [ComposableComponent].
+ */
+// TODO: better name
+public fun Component.findFullComponentPath(): ComponentPath = when (this) {
+    is ComposableComponent -> fullComponentPath
+    else -> componentPath
+}
+
 context(Component)
 public inline fun LocaleBundle.getMessage(key: String): Message = getMessage(componentPath, key)
 

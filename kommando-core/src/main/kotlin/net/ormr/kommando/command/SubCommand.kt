@@ -16,14 +16,12 @@
 
 package net.ormr.kommando.command
 
-import net.ormr.kommando.ComponentPath
-import net.ormr.kommando.getMessageOrNull
-import net.ormr.kommando.localeBundle
+import net.ormr.kommando.*
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
 public sealed interface SubCommand<Context, out Super> : Command<Context>, CustomizableCommand<Context>,
-    DescribableCommandComponent, ChatInputCommand<Context>
+    DescribableCommandComponent, ChatInputCommand<Context>, ComposableComponent
         where Context : CommandContext<*>,
               Super : InheritableCommandComponent {
     public val superComponent: @UnsafeVariance Super
@@ -43,6 +41,9 @@ public sealed class AbstractSubCommand<Context, out Super>(
 
     final override val componentPath: ComponentPath
         get() = ComponentPath("subCommands", defaultName)
+
+    final override val fullComponentPath: ComponentPath
+        get() = superComponent.findFullComponentPath() / componentPath
 
     // Workaround for 'Setter for property is removed by type projection' error
     internal fun initSuperComponent(parent: @UnsafeVariance Super) {

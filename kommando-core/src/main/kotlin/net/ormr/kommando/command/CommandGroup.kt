@@ -16,10 +16,7 @@
 
 package net.ormr.kommando.command
 
-import net.ormr.kommando.AbstractComponent
-import net.ormr.kommando.ComponentPath
-import net.ormr.kommando.getMessageOrNull
-import net.ormr.kommando.localeBundle
+import net.ormr.kommando.*
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
@@ -27,7 +24,7 @@ public abstract class CommandGroup<out Super>(
     private val name: String,
     private val description: String,
 ) : AbstractComponent(), DescribableCommandComponent, GlobalInheritableCommandComponent,
-    GuildInheritableCommandComponent
+    GuildInheritableCommandComponent, ComposableComponent
         where Super : SuperCommand<*, *> {
     public lateinit var superCommand: @UnsafeVariance Super
         private set
@@ -40,6 +37,9 @@ public abstract class CommandGroup<out Super>(
 
     final override val componentPath: ComponentPath
         get() = ComponentPath("groups", name)
+
+    final override val fullComponentPath: ComponentPath
+        get() = superCommand.componentPath / componentPath
 
     // Workaround for 'Setter for property is removed by type projection' error
     internal fun initSuperCommand(parent: @UnsafeVariance Super) {
