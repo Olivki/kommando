@@ -16,23 +16,18 @@
 
 package net.ormr.kommando.command.factory
 
-import net.ormr.kommando.Component
+import net.ormr.kommando.command.CommandComponent
 import net.ormr.kommando.command.CommandGroup
 import net.ormr.kommando.command.SubCommand
+import net.ormr.kommando.command.TopLevelCommand
 import org.kodein.di.DirectDI
 
-public sealed interface CommandChildFactory<Comp>
-        where Comp : Component {
-    public val factory: DirectDI.() -> Comp
+internal typealias TopLevelCommandProvider<Context, Perms> = CommandComponentProvider<TopLevelCommand<Context, Perms>>
+internal typealias SubCommandProvider<Context, Parent> = CommandComponentProvider<SubCommand<Context, Parent>>
+internal typealias CommandGroupProvider<Parent> = CommandComponentProvider<CommandGroup<Parent>>
 
-    public fun create(di: DirectDI): Comp = factory(di)
+public fun interface CommandComponentProvider<out Comp>
+        where Comp : CommandComponent {
+    context(DirectDI)
+    public fun get(): Comp
 }
-
-public class SubCommandFactory internal constructor(override val factory: DirectDI.() -> SubCommand<*, *>) :
-    CommandChildFactory<SubCommand<*, *>>
-
-public class CommandGroupFactory internal constructor(
-    override val factory: DirectDI.() -> CommandGroup<*>,
-    public val factories: List<DirectDI.() -> SubCommand<*, *>>,
-) : CommandChildFactory<CommandGroup<*>>
-

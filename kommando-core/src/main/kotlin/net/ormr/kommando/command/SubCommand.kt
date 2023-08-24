@@ -16,12 +16,15 @@
 
 package net.ormr.kommando.command
 
-import net.ormr.kommando.*
+import net.ormr.kommando.ComponentPath
+import net.ormr.kommando.findFullComponentPath
+import net.ormr.kommando.getMessageOrNull
+import net.ormr.kommando.localeBundle
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
 public sealed interface SubCommand<Context, out Parent> : Command<Context>, CustomizableCommand<Context>,
-    DescribableCommandComponent, ChatInputCommand<Context>, ComposableComponent
+    DescribableCommandComponent, ChatInputCommand<Context>, ChildCommandComponent
         where Context : CommandContext<*>,
               Parent : InheritableCommandComponent {
     public val parentComponent: @UnsafeVariance Parent

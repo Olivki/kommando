@@ -21,21 +21,19 @@ import net.ormr.kommando.command.RootCommand
 import net.ormr.kommando.command.TopLevelCommand
 import org.kodein.di.DirectDI
 
-public sealed interface CommandFactory {
-    public val factory: DirectDI.() -> TopLevelCommand<*, *>
-
-    public fun create(di: DirectDI): TopLevelCommand<*, *>
+public sealed interface CommandFactory<Cmd>
+        where Cmd : TopLevelCommand<*, *> {
+    public val provider: CommandComponentProvider<Cmd>
 }
+
+public fun <Cmd> CommandFactory<Cmd>.create(di: DirectDI): Cmd
+        where Cmd : TopLevelCommand<*, *> = with(di) { provider.get() }
 
 public class SingleCommandFactory internal constructor(
-    override val factory: DirectDI.() -> TopLevelCommand<*, *>,
-) : CommandFactory {
-    override fun create(di: DirectDI): TopLevelCommand<*, *> = factory(di)
-}
+    override val provider: CommandComponentProvider<TopLevelCommand<*, *>>,
+) : CommandFactory<TopLevelCommand<*, *>>
 
 public class RootCommandFactory internal constructor(
-    override val factory: DirectDI.() -> RootCommand<*, *>,
-    public val children: PersistentList<CommandChildFactory<*>>,
-) : CommandFactory {
-    override fun create(di: DirectDI): RootCommand<*, *> = factory(di)
-}
+    override val provider: CommandComponentProvider<RootCommand<*, *>>,
+    public val children: PersistentList<ChildCommandFactory<*>>,
+) : CommandFactory<RootCommand<*, *>>

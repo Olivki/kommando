@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-@file:Suppress("NOTHING_TO_INLINE")
-
 package net.ormr.kommando.command.factory
 
 import kotlinx.collections.immutable.toPersistentList
 import net.ormr.kommando.KommandoBuilder
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.command.*
+import net.ormr.kommando.command.CommandContext
+import net.ormr.kommando.command.CommandGroup
+import net.ormr.kommando.command.RootCommand
 import net.ormr.kommando.command.permission.CommandPermissions
-import org.kodein.di.DirectDI
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 @KommandoDsl
-public class CommandFactoryBuilder<Cmd, Context, Perms>(private val factory: DirectDI.() -> Cmd)
+public class CommandFactoryBuilder<Cmd, Context, Perms>(private val provider: CommandComponentProvider<Cmd>)
         where Cmd : RootCommand<Context, Perms>,
               Context : CommandContext<*>,
               Perms : CommandPermissions {
-    private val children = mutableListOf<CommandChildFactory<*>>()
+    private val children = mutableListOf<ChildCommandFactory<*>>()
 
     @KommandoDsl
     public fun subCommands(
-        first: DirectDI.() -> SubCommand<Context, Cmd>,
-        vararg rest: DirectDI.() -> SubCommand<Context, Cmd>,
+        first: SubCommandProvider<Context, Cmd>,
+        vararg rest: SubCommandProvider<Context, Cmd>,
     ) {
         children.add(SubCommandFactory(first))
         for (factory in rest) {
@@ -48,9 +47,9 @@ public class CommandFactoryBuilder<Cmd, Context, Perms>(private val factory: Dir
     // TODO: separate builder for groups
     @KommandoDsl
     public fun <Group> group(
-        group: DirectDI.() -> Group,
-        firstCommand: DirectDI.() -> SubCommand<Context, Group>,
-        vararg restCommands: DirectDI.() -> SubCommand<Context, Group>,
+        group: CommandComponentProvider<Group>,
+        firstCommand: SubCommandProvider<Context, Group>,
+        vararg restCommands: SubCommandProvider<Context, Group>,
     ) where Group : CommandGroup<Cmd> {
         val factories = buildList(restCommands.size + 1) {
             add(firstCommand)
@@ -61,16 +60,16 @@ public class CommandFactoryBuilder<Cmd, Context, Perms>(private val factory: Dir
     }
 
     @PublishedApi
-    internal fun createFactory(): CommandFactory = when {
-        children.isEmpty() -> SingleCommandFactory(factory)
-        else -> RootCommandFactory(factory, children.toPersistentList())
+    internal fun build(): CommandFactory<*> = when {
+        children.isEmpty() -> SingleCommandFactory(provider)
+        else -> RootCommandFactory(provider, children.toPersistentList())
     }
 }
 
 context(KommandoBuilder)
 @KommandoDsl
 public inline fun <Cmd, Context, Perms> commandFactory(
-    noinline factory: DirectDI.() -> Cmd,
+    provider: CommandComponentProvider<Cmd>,
     builder: CommandFactoryBuilder<Cmd, Context, Perms>.() -> Unit,
 ) where Cmd : RootCommand<Context, Perms>,
         Context : CommandContext<*>,
@@ -79,11 +78,11 @@ public inline fun <Cmd, Context, Perms> commandFactory(
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    commandFactories += CommandFactoryBuilder(factory).apply(builder).createFactory()
+    commandFactories += CommandFactoryBuilder(provider).apply(builder).build()
 }
 
 context(KommandoBuilder)
 @KommandoDsl
-public fun commandFactory(factory: DirectDI.() -> TopLevelCommand<*, *>) {
-    commandFactories += SingleCommandFactory(factory)
+public fun commandFactory(provider: TopLevelCommandProvider<*, *>) {
+    commandFactories += SingleCommandFactory(provider)
 }

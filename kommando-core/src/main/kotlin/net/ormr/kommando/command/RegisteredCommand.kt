@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando.command.factory
+package net.ormr.kommando.command
+
+import net.ormr.kommando.command.factory.CommandFactory
+import net.ormr.kommando.command.factory.CommandGroupFactory
+import net.ormr.kommando.command.factory.SubCommandFactory
 
 public sealed interface RegisteredSubCommandContainer {
     public val subCommands: Map<String, SubCommandFactory>
 }
 
-public class RegisteredCommand(
-    public val factory: CommandFactory,
+public data class RegisteredCommand(
+    public val builder: CommandFactory<*>,
     public val groups: Map<String, RegisteredGroup>,
     override val subCommands: Map<String, SubCommandFactory>,
 ) : RegisteredSubCommandContainer
 
-public class RegisteredGroup(
+public data class RegisteredGroup(
     public val factory: CommandGroupFactory,
     override val subCommands: Map<String, SubCommandFactory>,
 ) : RegisteredSubCommandContainer

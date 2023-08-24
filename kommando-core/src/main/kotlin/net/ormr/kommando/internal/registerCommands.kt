@@ -23,6 +23,8 @@ import dev.kord.core.entity.Guild
 import dev.kord.core.entity.application.ApplicationCommand
 import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.rest.builder.interaction.*
+import kotlinx.collections.immutable.persistentHashMapOf
+import kotlinx.collections.immutable.toPersistentHashMap
 import net.ormr.kommando.Kommando
 import net.ormr.kommando.command.*
 import net.ormr.kommando.command.argument.Argument
@@ -34,6 +36,8 @@ import net.ormr.kommando.defaultComponentDescription
 import net.ormr.kommando.localization.toMutableMapOrNull
 import org.kodein.di.DirectDI
 import org.kodein.di.direct
+import dev.kord.rest.builder.interaction.BaseInputChatBuilder as KordBaseInputChatBuilder
+import dev.kord.rest.builder.interaction.SubCommandBuilder as KordSubCommandBuilder
 
 // Here be dragons
 
@@ -47,7 +51,7 @@ private val logger = InlineLogger()
 
 context(Kommando)
 internal suspend fun registerCommands(
-    factories: List<CommandFactory>,
+    factories: List<CommandFactory<*>>,
 ): Map<Snowflake, RegisteredCommand> {
     val commands = createWrappers(direct, factories)
     val globalCommands = commands
@@ -96,8 +100,8 @@ internal suspend fun registerCommands(
     fun MutableMap<Snowflake, RegisteredCommand>.collectCommands(command: ApplicationCommand) {
         val key = command.toCommandKey()
         val factory = commandCache.getValue(key)
-        val groups = commandGroupCache[key] ?: emptyMap()
-        val subCommands = subCommandCache[key] ?: emptyMap()
+        val groups = commandGroupCache[key]?.toPersistentHashMap() ?: persistentHashMapOf()
+        val subCommands = subCommandCache[key]?.toPersistentHashMap() ?: persistentHashMapOf()
         put(command.id, RegisteredCommand(factory, groups, subCommands))
     }
 
@@ -210,12 +214,12 @@ private fun buildCommand(wrapper: CommandWrapper) {
     }
 }
 
-context(ArgumentBuildContext, SubCommandBuilder)
+context(ArgumentBuildContext, KordSubCommandBuilder)
 private fun buildSubCommand(subCommand: SubCommand<*, *>) {
     buildArguments(subCommand.findDirectArguments().values)
 }
 
-context(ArgumentBuildContext, BaseInputChatBuilder)
+context(ArgumentBuildContext, KordBaseInputChatBuilder)
 private fun buildArguments(arguments: Iterable<Argument<*, *, *>>) {
     for (argument in arguments) {
         argument.buildArgument(isRequired = true)
@@ -244,7 +248,7 @@ private suspend fun List<CommandWrapper>.mergeGuildCommands(
 context(Kommando)
 private fun createWrappers(
     di: DirectDI,
-    factories: List<CommandFactory>,
+    factories: List<CommandFactory<*>>,
 ): List<CommandWrapper> = factories.map { parent ->
     val paths = argumentCache.pathStack
     when (parent) {
@@ -263,10 +267,10 @@ private fun createWrappers(
                             CommandGroupWrapper(
                                 instance = group,
                                 subCommands = child
-                                    .factories
-                                    .map { it(di) }
+                                    .providers
+                                    .map { with(di) { it.get() } }
                                     .onEach { it.fixSubCommand().initParentComponent(group) },
-                                subCommandFactories = child.factories.map { SubCommandFactory(it) },
+                                subCommandFactories = child.providers.map { SubCommandFactory(it) },
                                 factory = child,
                             ).also {
                                 paths.removeFirst()
@@ -298,11 +302,11 @@ private fun unknownCommandType(commands: List<CommandWrapper>): String {
 
 private sealed interface CommandWrapper {
     val instance: TopLevelCommand<*, *>
-    val factory: CommandFactory
+    val factory: CommandFactory<*>
 
     operator fun component1(): TopLevelCommand<*, *>
 
-    operator fun component2(): CommandFactory
+    operator fun component2(): CommandFactory<*>
 }
 
 private data class SingleCommandWrapper(

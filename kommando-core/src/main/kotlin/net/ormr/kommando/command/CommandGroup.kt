@@ -16,7 +16,10 @@
 
 package net.ormr.kommando.command
 
-import net.ormr.kommando.*
+import net.ormr.kommando.AbstractComponent
+import net.ormr.kommando.ComponentPath
+import net.ormr.kommando.getMessageOrNull
+import net.ormr.kommando.localeBundle
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
@@ -24,7 +27,7 @@ public abstract class CommandGroup<out Parent>(
     private val name: String,
     private val description: String,
 ) : AbstractComponent(), DescribableCommandComponent, GlobalInheritableCommandComponent,
-    GuildInheritableCommandComponent, ComposableComponent
+    GuildInheritableCommandComponent, ChildCommandComponent
         where Parent : RootCommand<*, *> {
     public lateinit var parentCommand: @UnsafeVariance Parent
         private set

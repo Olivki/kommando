@@ -17,7 +17,6 @@
 package net.ormr.kommando.command
 
 import net.ormr.kommando.AbstractComponent
-import net.ormr.kommando.Component
 import net.ormr.kommando.getMessageOrNull
 import net.ormr.kommando.localeBundle
 import net.ormr.kommando.localization.BasicMessage
@@ -25,7 +24,7 @@ import net.ormr.kommando.localization.Message
 
 // TODO: implement nsfw flag
 
-public sealed interface Command<Context> : Component
+public sealed interface Command<Context> : CommandComponent
         where Context : CommandContext<*> {
     public val commandName: Message
 

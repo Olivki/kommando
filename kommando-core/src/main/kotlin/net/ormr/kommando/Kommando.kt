@@ -20,9 +20,9 @@ import com.github.michaelbull.logging.InlineLogger
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import net.ormr.kommando.command.CommandMessageConverters
+import net.ormr.kommando.command.RegisteredCommand
 import net.ormr.kommando.command.argument.ArgumentCache
 import net.ormr.kommando.command.factory.CommandFactory
-import net.ormr.kommando.command.factory.RegisteredCommand
 import net.ormr.kommando.command.permission.DefaultCommandPermissions
 import net.ormr.kommando.internal.handleCommands
 import net.ormr.kommando.internal.registerCommands
@@ -41,12 +41,12 @@ public class Kommando internal constructor(
     internal val argumentCache: ArgumentCache = ArgumentCache()
 
     @PublishedApi
-    internal suspend fun setup(factories: List<CommandFactory>) {
+    internal suspend fun setup(factories: List<CommandFactory<*>>) {
         registerComponents(factories)
         registerHandlers()
     }
 
-    private suspend fun registerComponents(commands: List<CommandFactory>) {
+    private suspend fun registerComponents(commands: List<CommandFactory<*>>) {
         // TODO: actually quit the application if there's problems with registering the commands,
         //       as Kord is probably gonna force the application to be alive even though it will throw exceptions
         logger.info { "Registering commands..." }

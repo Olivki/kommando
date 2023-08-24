@@ -39,7 +39,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
     public val intents: Intents,
     override val directDI: DirectDI,
 ) : DirectDIAware {
-    public val commandFactories: MutableList<CommandFactory> = mutableListOf()
+    public val commandFactories: MutableList<CommandFactory<*>> = mutableListOf()
 
     public var defaultCommandPermissions: DefaultCommandPermissions? = null
 

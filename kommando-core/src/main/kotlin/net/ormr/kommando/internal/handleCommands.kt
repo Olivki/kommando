@@ -27,7 +27,9 @@ import dev.kord.core.on
 import net.ormr.kommando.*
 import net.ormr.kommando.command.*
 import net.ormr.kommando.command.argument.AutoCompletableArgument
-import net.ormr.kommando.command.factory.*
+import net.ormr.kommando.command.factory.RootCommandFactory
+import net.ormr.kommando.command.factory.SingleCommandFactory
+import net.ormr.kommando.command.factory.create
 import org.kodein.di.DirectDI
 import org.kodein.di.direct
 import dev.kord.core.entity.interaction.GroupCommand as KordGroupCommand
@@ -66,7 +68,7 @@ internal suspend fun handleCommands() {
             val commandName = interaction.command.rootName
             val commandId = interaction.command.rootId
             val registeredCommand = getRegisteredCommand(commandId, commandName)
-            val command = registeredCommand.factory.create(direct)
+            val command = registeredCommand.builder.create(direct)
 
             if (command is RootCommand<*, *>) {
                 when (val interactionCommand = interaction.command) {
@@ -127,7 +129,7 @@ private suspend inline fun <reified Cmd> inputCommand(
     val rootName = interactionCommand.rootName
     val registeredCommand = getRegisteredCommand(id, rootName)
     val event = this@ChatInputCommandInteractionCreateEvent
-    val command = registeredCommand.factory.create(di)
+    val command = registeredCommand.builder.create(di)
     if (command is Cmd) {
         check(command is RootCommand<*, *>)
         when (interactionCommand) {
@@ -162,7 +164,7 @@ private fun RegisteredGroup.createGroup(di: DirectDI, command: RootCommand<*, *>
 private fun RegisteredCommand.getRegisteredGroup(
     command: Command<*>,
     name: String,
-): RegisteredGroup = when (factory) {
+): RegisteredGroup = when (builder) {
     is RootCommandFactory -> groups[name] ?: noSuchCommandGroup(name, command)
     is SingleCommandFactory -> noSuchCommandGroup(name, command)
 }
@@ -249,7 +251,7 @@ private inline fun <reified Cmd> withCommand(di: DirectDI, block: (command: Cmd)
         where Cmd : Command<*> {
     val id = interaction.invokedCommandId
     val registeredCommand = getRegisteredCommand(id, interaction.invokedCommandName)
-    val command = registeredCommand.factory.create(di)
+    val command = registeredCommand.builder.create(di)
     if (command is Cmd) {
         block(command)
     } else {
