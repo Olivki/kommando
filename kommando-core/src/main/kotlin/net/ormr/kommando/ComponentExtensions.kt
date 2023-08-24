@@ -18,11 +18,11 @@
 
 package net.ormr.kommando
 
-import net.ormr.kommando.localization.LocaleBundle
+import net.ormr.kommando.localization.Localization
 import net.ormr.kommando.localization.Message
 
-public inline val Component.localeBundle: LocaleBundle
-    get() = kommando.localeBundle
+public inline val Component.localization: Localization
+    get() = kommando.localization
 
 public inline val DescribableComponent.defaultComponentDescription: String
     get() = componentDescription.defaultString
@@ -38,16 +38,16 @@ public fun Component.findFullComponentPath(): ComponentPath = when (this) {
 }
 
 context(Component)
-public inline fun LocaleBundle.getMessage(key: String): Message = getMessage(componentPath, key)
+public inline fun Localization.getMessage(key: String): Message = getMessage(componentPath, key)
 
 context(Component)
-public inline fun LocaleBundle.getMessage(path: ComponentPath, key: String): Message =
+public inline fun Localization.getMessage(path: ComponentPath, key: String): Message =
     getMessage(this@Component, path, key)
 
 context(Component)
-public inline fun LocaleBundle.getMessageOrNull(key: String): Message? =
+public inline fun Localization.getMessageOrNull(key: String): Message? =
     getMessageOrNull(componentPath, key)
 
 context(Component)
-public inline fun LocaleBundle.getMessageOrNull(path: ComponentPath, key: String): Message? =
+public inline fun Localization.getMessageOrNull(path: ComponentPath, key: String): Message? =
     getMessageOrNull(this@Component, path, key)

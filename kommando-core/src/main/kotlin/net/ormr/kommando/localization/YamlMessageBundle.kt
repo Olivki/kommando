@@ -21,6 +21,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
 import com.github.michaelbull.logging.InlineLogger
 import dev.kord.common.Locale
 import net.ormr.kommando.ComponentPath
+import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.forEach
 import net.ormr.kommando.util.toPersistentHashMap
 
@@ -66,6 +67,21 @@ private data class YamlObject(val locale: Locale, private val root: JsonNode) {
         }
         return current
     }
+}
+
+@KommandoDsl
+public fun MessageBundleBuilder.yaml(resource: LocalizedResource) {
+    require(resource.defaultLocale == defaultLocale) { "Resource default locale (${resource.defaultLocale}) != builder default locale ($defaultLocale)" }
+    +YamlMessageBundle(resource)
+}
+
+@KommandoDsl
+public fun MessageBundleBuilder.yamlFromClassPath(
+    path: String,
+    extension: String = "yaml",
+    clz: Class<*> = javaClass,
+) {
+    yaml(LocalizedResource.fromClass(clz, path, extension, defaultLocale))
 }
 
 public fun loadYamlMessageBundle(resource: LocalizedResource): MessageBundle = YamlMessageBundle(resource)

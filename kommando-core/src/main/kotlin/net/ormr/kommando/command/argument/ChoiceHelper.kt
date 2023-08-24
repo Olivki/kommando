@@ -18,14 +18,14 @@ package net.ormr.kommando.command.argument
 
 import dev.kord.common.entity.optional.Optional
 import dev.kord.rest.builder.interaction.BaseChoiceBuilder
-import net.ormr.kommando.localeBundle
+import net.ormr.kommando.localization
 import net.ormr.kommando.localization.LocalizedMessage
 import net.ormr.kommando.localization.toMutableMap
 
 context(ArgumentWithChoice<*, *, *>, ArgumentBuildContext, BaseChoiceBuilder<Value>)
 internal fun <Value> addChoices(choices: List<ArgumentChoice<Value>>)
         where Value : Any {
-    val bundle = parentCommand.localeBundle
+    val bundle = parentCommand.localization
     val path = parentCommand.componentPath / "arguments" / key / "choices"
     for ((name, value) in choices) {
         val strings = when (val message = bundle.getMessageOrNull(parentCommand, path, name)) {

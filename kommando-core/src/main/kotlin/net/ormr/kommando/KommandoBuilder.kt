@@ -17,13 +17,12 @@
 package net.ormr.kommando
 
 import com.github.michaelbull.logging.InlineLogger
-import dev.kord.common.Locale
 import dev.kord.core.Kord
 import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
 import net.ormr.kommando.command.CommandsBuilder
-import net.ormr.kommando.localization.LocaleBundle
-import net.ormr.kommando.localization.emptyMessageBundle
+import net.ormr.kommando.localization.Localization
+import net.ormr.kommando.localization.LocalizationBuilder
 import org.kodein.di.DI
 import org.kodein.di.DirectDI
 import org.kodein.di.DirectDIAware
@@ -40,27 +39,24 @@ public class KommandoBuilder @PublishedApi internal constructor(
     @PublishedApi
     internal var exceptionHandler: KommandoExceptionHandler? = null
 
-    // TODO: make a builder?
-    public var localeBundle: LocaleBundle = LocaleBundle(
-        defaultLocale = Locale.ENGLISH_UNITED_STATES,
-        messageBundle = emptyMessageBundle(),
-        finder = { bundle, _, path, key -> bundle.getMessageOrNull(path, key) },
-    )
+    @PublishedApi
+    internal var localization: Localization? = null
 
     @PublishedApi
     internal var commandsBuilder: CommandsBuilder? = null
 
     @PublishedApi
     internal suspend fun build(): Kommando {
+        val localization = localization ?: LocalizationBuilder().build()
         val (commands, commandFactories) = commandsBuilder?.build() ?: CommandsBuilder().build()
         val kommando = Kommando(
             kord = kord,
-            localeBundle = localeBundle,
+            localization = localization,
             commands = commands,
             exceptionHandler = exceptionHandler,
         )
 
-        if (localeBundle.messageBundle.isEmpty()) {
+        if (localization.messageBundle.isEmpty()) {
             logger.warn { "MessageBundle is currently empty." }
         }
 

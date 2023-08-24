@@ -18,7 +18,7 @@ package net.ormr.kommando.command
 
 import net.ormr.kommando.AbstractComponent
 import net.ormr.kommando.getMessageOrNull
-import net.ormr.kommando.localeBundle
+import net.ormr.kommando.localization
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
@@ -37,7 +37,7 @@ public sealed class AbstractCommand<Context>(
 ) : AbstractComponent(), Command<Context>
         where Context : CommandContext<*> {
     override val commandName: Message
-        get() = localeBundle.getMessageOrNull("name") ?: BasicMessage(this.defaultName)
+        get() = localization.getMessageOrNull("name") ?: BasicMessage(this.defaultName)
 
     internal val registry: CommandArgumentRegistry by lazy {
         CommandArgumentRegistry(this)

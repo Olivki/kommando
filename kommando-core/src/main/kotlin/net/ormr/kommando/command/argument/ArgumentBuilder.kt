@@ -19,7 +19,7 @@ package net.ormr.kommando.command.argument
 import com.github.michaelbull.logging.InlineLogger
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.internal.findRegistry
-import net.ormr.kommando.localeBundle
+import net.ormr.kommando.localization
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 import net.ormr.kommando.localization.forEach
@@ -48,7 +48,7 @@ public class ArgumentBuilder<Cmd, Value, Arg>(
         val isFirstRun = cacheKey !in cache
         val (key, name, description) = cache.getOrPut(cacheKey) {
             val key = nameConverter.convert(property.name)
-            val bundle = thisRef.localeBundle
+            val bundle = thisRef.localization
             val selfPath = thisRef.componentPath
             val firstPath = cache.pathStack.firstOrNull()?.let { it / selfPath } ?: selfPath
             val argPath = firstPath / "arguments" / property.name

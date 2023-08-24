@@ -20,15 +20,15 @@ import dev.kord.common.Locale
 import net.ormr.kommando.Component
 import net.ormr.kommando.ComponentPath
 
-public data class LocaleBundle(
+public data class Localization(
     public val defaultLocale: Locale,
     public val messageBundle: MessageBundle,
-    private val finder: MessageFinder,
+    public val messageFinder: MessageFinder,
 ) {
     public fun getMessage(component: Component, path: ComponentPath, key: String): Message =
         getMessageOrNull(component, path, key)
             ?: throw NoSuchElementException("No message found for '$path/$key'")
 
     public fun getMessageOrNull(component: Component, path: ComponentPath, key: String): Message? =
-        finder.findMessage(messageBundle, component, path, key)
+        messageFinder.findMessage(messageBundle, component, path, key)
 }

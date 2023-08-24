@@ -19,7 +19,7 @@ package net.ormr.kommando.command
 import net.ormr.kommando.ComponentPath
 import net.ormr.kommando.findFullComponentPath
 import net.ormr.kommando.getMessageOrNull
-import net.ormr.kommando.localeBundle
+import net.ormr.kommando.localization
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
@@ -37,7 +37,7 @@ public sealed class AbstractSubCommand<Context, out Parent>(
         where Context : CommandContext<*>,
               Parent : InheritableCommandComponent {
     override val componentDescription: Message
-        get() = localeBundle.getMessageOrNull("description") ?: BasicMessage(defaultDescription)
+        get() = localization.getMessageOrNull("description") ?: BasicMessage(defaultDescription)
 
     final override lateinit var parentComponent: @UnsafeVariance Parent
         private set

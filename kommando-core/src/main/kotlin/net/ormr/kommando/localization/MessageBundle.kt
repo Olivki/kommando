@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("NOTHING_TO_INLINE")
-
 package net.ormr.kommando.localization
 
 import net.ormr.kommando.ComponentPath
@@ -27,8 +25,6 @@ import net.ormr.kommando.ComponentPath
  *
  * Users are encouraged to implement this interface if they wish to use a different data structure than what's provided
  * by default.
- *
- * @see [loadYamlMessageBundle]
  */
 public interface MessageBundle {
     /**

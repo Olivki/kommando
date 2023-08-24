@@ -18,7 +18,7 @@ package net.ormr.kommando.command
 
 import net.ormr.kommando.command.permission.CommandPermissions
 import net.ormr.kommando.getMessageOrNull
-import net.ormr.kommando.localeBundle
+import net.ormr.kommando.localization
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
@@ -34,7 +34,7 @@ public sealed class AbstractRootCommand<Context, Perms>(
         where Context : CommandContext<*>,
               Perms : CommandPermissions {
     override val componentDescription: Message
-        get() = localeBundle.getMessageOrNull("description") ?: BasicMessage(defaultDescription)
+        get() = localization.getMessageOrNull("description") ?: BasicMessage(defaultDescription)
 
     final override fun toString(): String = "${this::class.simpleName}(name='$name', description='$defaultDescription')"
 }

@@ -19,7 +19,7 @@ package net.ormr.kommando.command
 import net.ormr.kommando.AbstractComponent
 import net.ormr.kommando.ComponentPath
 import net.ormr.kommando.getMessageOrNull
-import net.ormr.kommando.localeBundle
+import net.ormr.kommando.localization
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
@@ -33,10 +33,10 @@ public abstract class CommandGroup<out Parent>(
         private set
 
     public val groupName: Message
-        get() = localeBundle.getMessageOrNull("name") ?: BasicMessage(name)
+        get() = localization.getMessageOrNull("name") ?: BasicMessage(name)
 
     override val componentDescription: Message
-        get() = localeBundle.getMessageOrNull("description") ?: BasicMessage(description)
+        get() = localization.getMessageOrNull("description") ?: BasicMessage(description)
 
     final override val componentPath: ComponentPath
         get() = ComponentPath("groups", name)
