@@ -16,20 +16,26 @@
 
 package net.ormr.kommando.command.permission
 
-import net.ormr.kommando.KommandoBuilder
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.command.GlobalCommandType
-import net.ormr.kommando.command.GuildCommandType
+import net.ormr.kommando.command.CommandsBuilder
+import net.ormr.kommando.command.GlobalTopLevelCommand
+import net.ormr.kommando.command.GuildTopLevelCommand
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-internal typealias GlobalCommandPermissionsFactory = suspend (GlobalCommandType) -> GlobalCommandPermissions
-internal typealias GuildCommandPermissionsFactory = suspend (GuildCommandType) -> GuildCommandPermissions
+internal typealias GuildCommandPermissionsFactory = suspend (GuildTopLevelCommand) -> GuildCommandPermissions
+internal typealias GlobalCommandPermissionsFactory = suspend (GlobalTopLevelCommand) -> GlobalCommandPermissions
 
-public class DefaultCommandPermissions(
-    public val globalPermissionsFactory: GlobalCommandPermissionsFactory?,
-    public val guildPermissionsFactory: GuildCommandPermissionsFactory?,
-)
+public class DefaultCommandPermissions internal constructor(
+    private val guildPermissionsFactory: GuildCommandPermissionsFactory?,
+    private val globalPermissionsFactory: GlobalCommandPermissionsFactory?,
+) {
+    public suspend fun getGuildPermissions(command: GuildTopLevelCommand): GuildCommandPermissions? =
+        guildPermissionsFactory?.invoke(command)
+
+    public suspend fun getGlobalPermissions(command: GlobalTopLevelCommand): GlobalCommandPermissions? =
+        globalPermissionsFactory?.invoke(command)
+}
 
 @KommandoDsl
 public class DefaultCommandPermissionsBuilder @PublishedApi internal constructor() {
@@ -37,24 +43,21 @@ public class DefaultCommandPermissionsBuilder @PublishedApi internal constructor
     private var guild: GuildCommandPermissionsFactory? = null
 
     @KommandoDsl
-    public fun global(factory: GlobalCommandPermissionsFactory) {
-        global = factory
-    }
-
-    @KommandoDsl
     public fun guild(factory: GuildCommandPermissionsFactory) {
         guild = factory
     }
 
+    @KommandoDsl
+    public fun global(factory: GlobalCommandPermissionsFactory) {
+        global = factory
+    }
+
     @PublishedApi
-    internal fun build(): DefaultCommandPermissions = DefaultCommandPermissions(global, guild)
+    internal fun build(): DefaultCommandPermissions = DefaultCommandPermissions(guild, global)
 }
 
-context(KommandoBuilder)
 @KommandoDsl
-public inline fun defaultCommandPermissions(
-    builder: DefaultCommandPermissionsBuilder.() -> Unit,
-) {
+public inline fun CommandsBuilder.defaultCommandPermissions(builder: DefaultCommandPermissionsBuilder.() -> Unit) {
     contract {
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }

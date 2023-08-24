@@ -17,58 +17,54 @@
 package net.ormr.kommando.command.factory
 
 import kotlinx.collections.immutable.toPersistentList
-import net.ormr.kommando.KommandoBuilder
 import net.ormr.kommando.KommandoDsl
-import net.ormr.kommando.command.CommandContext
-import net.ormr.kommando.command.CommandGroup
-import net.ormr.kommando.command.RootCommand
+import net.ormr.kommando.command.*
 import net.ormr.kommando.command.permission.CommandPermissions
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.reflect.KType
+import kotlin.reflect.typeOf
 
 @KommandoDsl
-public class CommandFactoryBuilder<Cmd, Context, Perms>(private val provider: CommandComponentProvider<Cmd>)
-        where Cmd : RootCommand<Context, Perms>,
-              Context : CommandContext<*>,
-              Perms : CommandPermissions {
+public class CommandFactoryBuilder<Cmd, Context, Perms>(
+    private val provider: CommandComponentProvider<Cmd>,
+    private val type: KType,
+) where Cmd : RootCommand<Context, Perms>,
+        Context : CommandContext<*>,
+        Perms : CommandPermissions {
     private val children = mutableListOf<ChildCommandFactory<*>>()
 
     @KommandoDsl
-    public fun subCommands(
-        first: SubCommandProvider<Context, Cmd>,
-        vararg rest: SubCommandProvider<Context, Cmd>,
-    ) {
-        children.add(SubCommandFactory(first))
-        for (factory in rest) {
-            children.add(SubCommandFactory(factory))
-        }
+    public fun subCommand(provider: SubCommandProvider<Context, Cmd>) {
+        addChild(SubCommandFactory(provider))
     }
 
-    // TODO: separate builder for groups
     @KommandoDsl
-    public fun <Group> group(
-        group: CommandComponentProvider<Group>,
-        firstCommand: SubCommandProvider<Context, Group>,
-        vararg restCommands: SubCommandProvider<Context, Group>,
+    public inline fun <Group> group(
+        provider: CommandComponentProvider<Group>,
+        builder: CommandGroupFactoryBuilder<Group, Cmd, Context, Perms>.() -> Unit,
     ) where Group : CommandGroup<Cmd> {
-        val factories = buildList(restCommands.size + 1) {
-            add(firstCommand)
-            addAll(restCommands)
+        contract {
+            callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
         }
 
-        children += CommandGroupFactory(group, factories)
+        addChild(CommandGroupFactoryBuilder<Group, Cmd, Context, Perms>(provider).apply(builder).build())
+    }
+
+    @PublishedApi
+    internal fun addChild(child: ChildCommandFactory<*>) {
+        children += child
     }
 
     @PublishedApi
     internal fun build(): CommandFactory<*> = when {
-        children.isEmpty() -> SingleCommandFactory(provider)
-        else -> RootCommandFactory(provider, children.toPersistentList())
+        children.isEmpty() -> SingleCommandFactory(provider, type)
+        else -> RootCommandFactory(provider, type, children.toPersistentList())
     }
 }
 
-context(KommandoBuilder)
 @KommandoDsl
-public inline fun <Cmd, Context, Perms> commandFactory(
+public inline fun <reified Cmd, Context, Perms> CommandsBuilder.command(
     provider: CommandComponentProvider<Cmd>,
     builder: CommandFactoryBuilder<Cmd, Context, Perms>.() -> Unit,
 ) where Cmd : RootCommand<Context, Perms>,
@@ -78,11 +74,11 @@ public inline fun <Cmd, Context, Perms> commandFactory(
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
-    commandFactories += CommandFactoryBuilder(provider).apply(builder).build()
+    commandFactories += CommandFactoryBuilder(provider, typeOf<Cmd>()).apply(builder).build()
 }
 
-context(KommandoBuilder)
 @KommandoDsl
-public fun commandFactory(provider: TopLevelCommandProvider<*, *>) {
-    commandFactories += SingleCommandFactory(provider)
+public inline fun <reified Cmd> CommandsBuilder.command(provider: CommandComponentProvider<Cmd>)
+        where Cmd : TopLevelCommand<*, *> {
+    commandFactories += SingleCommandFactory(provider, typeOf<Cmd>())
 }

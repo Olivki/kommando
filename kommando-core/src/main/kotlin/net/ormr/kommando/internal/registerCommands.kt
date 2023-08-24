@@ -30,12 +30,12 @@ import net.ormr.kommando.command.*
 import net.ormr.kommando.command.argument.Argument
 import net.ormr.kommando.command.argument.ArgumentBuildContext
 import net.ormr.kommando.command.factory.*
-import net.ormr.kommando.command.permission.GlobalCommandPermissionsFactory
-import net.ormr.kommando.command.permission.GuildCommandPermissionsFactory
+import net.ormr.kommando.command.permission.DefaultCommandPermissions
 import net.ormr.kommando.defaultComponentDescription
 import net.ormr.kommando.localization.toMutableMapOrNull
 import org.kodein.di.DirectDI
 import org.kodein.di.direct
+import kotlin.reflect.KType
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder as KordBaseInputChatBuilder
 import dev.kord.rest.builder.interaction.SubCommandBuilder as KordSubCommandBuilder
 
@@ -53,16 +53,16 @@ context(Kommando)
 internal suspend fun registerCommands(
     factories: List<CommandFactory<*>>,
 ): Map<Snowflake, RegisteredCommand> {
-    val commands = createWrappers(direct, factories)
-    val globalCommands = commands
+    val commandWrappers = createWrappers(direct, factories)
+    val globalCommandWrappers = commandWrappers
         .filter { it.instance is GlobalTopLevelCommand }
-    val guildCommands = commands
+    val guildCommandWrappers = commandWrappers
         .filter { it.instance is GuildTopLevelCommand }
         .mergeGuildCommands(kord)
-    check(globalCommands.size + guildCommands.size == factories.size) { unknownCommandType(commands) }
-    val commandCache = commands
+    check(globalCommandWrappers.size + guildCommandWrappers.size == factories.size) { unknownCommandType(commandWrappers) }
+    val commandCache = commandWrappers
         .associateByTo(hashMapOf(), { it.instance.toCommandKey() }, CommandWrapper::factory)
-    val commandGroupCache = commands
+    val commandGroupCache = commandWrappers
         .filterIsInstance<ParentCommandWrapper>()
         .associateByTo(
             hashMapOf(),
@@ -84,7 +84,7 @@ internal suspend fun registerCommands(
                     )
             }
         )
-    val subCommandCache = commands.filterIsInstance<ParentCommandWrapper>()
+    val subCommandCache = commandWrappers.filterIsInstance<ParentCommandWrapper>()
         .associateBy(
             { it.instance.toCommandKey() },
             { parent ->
@@ -94,8 +94,7 @@ internal suspend fun registerCommands(
                     .associateByTo(hashMapOf(), { it.instance.defaultCommandName }, { it.factory })
             }
         )
-    val globalPerms = defaultCommandPermissions?.globalPermissionsFactory
-    val guildPerms = defaultCommandPermissions?.guildPermissionsFactory
+    val defaultPerms = commands.defaultCommandPermissions
 
     fun MutableMap<Snowflake, RegisteredCommand>.collectCommands(command: ApplicationCommand) {
         val key = command.toCommandKey()
@@ -107,38 +106,38 @@ internal suspend fun registerCommands(
 
     return buildMap {
         kord.createGlobalApplicationCommands {
-            for (wrapper in globalCommands) {
-                logger.info { "Registering global command ${wrapper.instance::class.qualifiedName}#${wrapper.instance.defaultCommandName}" }
+            for (wrapper in globalCommandWrappers) {
+                logger.info { "Registering global command: ${wrapper.type}" }
                 when (val command = wrapper.instance as GlobalTopLevelCommand) {
                     is GlobalCommand -> input(command.defaultCommandName, command.defaultComponentDescription) {
-                        applyPermissions(globalPerms, command)
+                        applyPermissions(defaultPerms, command)
                         buildCommand(wrapper)
                     }
                     is GlobalMessageCommand -> message(command.defaultCommandName) {
-                        applyPermissions(globalPerms, command)
+                        applyPermissions(defaultPerms, command)
                     }
                     is GlobalUserCommand -> user(command.defaultCommandName) {
-                        applyPermissions(globalPerms, command)
+                        applyPermissions(defaultPerms, command)
                     }
                 }
             }
         }.collect(::collectCommands)
 
-        for ((guildId, commandData) in guildCommands) {
+        for ((guildId, commandData) in guildCommandWrappers) {
             val (_, wrappers) = commandData
             kord.createGuildApplicationCommands(guildId) {
                 for (wrapper in wrappers) {
-                    logger.info { "Registering guild command ${wrapper.instance::class.qualifiedName}#${wrapper.instance.defaultCommandName} @$guildId" }
+                    logger.info { "Registering guild command: ${wrapper.type} @$guildId" }
                     when (val command = wrapper.instance as GuildTopLevelCommand) {
                         is GuildCommand -> input(command.defaultCommandName, command.defaultComponentDescription) {
-                            applyPermissions(guildPerms, command)
+                            applyPermissions(defaultPerms, command)
                             buildCommand(wrapper)
                         }
                         is GuildMessageCommand -> message(command.defaultCommandName) {
-                            applyPermissions(guildPerms, command)
+                            applyPermissions(defaultPerms, command)
                         }
                         is GuildUserCommand -> user(command.defaultCommandName) {
-                            applyPermissions(guildPerms, command)
+                            applyPermissions(defaultPerms, command)
                         }
                     }
                 }
@@ -148,19 +147,19 @@ internal suspend fun registerCommands(
 }
 
 private suspend fun <Cmd> GlobalApplicationCommandCreateBuilder.applyPermissions(
-    defaultFactory: GlobalCommandPermissionsFactory?,
+    default: DefaultCommandPermissions?,
     command: Cmd,
 ) where Cmd : GlobalTopLevelCommand {
-    val permissions = command.defaultMemberPermissions ?: defaultFactory?.invoke(command)
+    val permissions = command.defaultMemberPermissions ?: default?.getGlobalPermissions(command)
     defaultMemberPermissions = permissions?.defaultMemberPermissions
     dmPermission = permissions?.isAllowedInDms
 }
 
 private suspend fun <Cmd> ApplicationCommandCreateBuilder.applyPermissions(
-    defaultFactory: GuildCommandPermissionsFactory?,
+    default: DefaultCommandPermissions?,
     command: Cmd,
 ) where Cmd : GuildTopLevelCommand {
-    val permissions = command.defaultMemberPermissions ?: defaultFactory?.invoke(command)
+    val permissions = command.defaultMemberPermissions ?: default?.getGuildPermissions(command)
     defaultMemberPermissions = permissions?.defaultMemberPermissions
 }
 
@@ -250,7 +249,8 @@ private fun createWrappers(
     di: DirectDI,
     factories: List<CommandFactory<*>>,
 ): List<CommandWrapper> = factories.map { parent ->
-    val paths = argumentCache.pathStack
+    val paths = commands.argumentCache.pathStack
+    logger.info { "Building command: ${parent.type}" }
     when (parent) {
         is RootCommandFactory -> {
             val instance = parent.create(di)
@@ -319,6 +319,9 @@ private data class ParentCommandWrapper(
     override val factory: RootCommandFactory,
     val children: List<CommandChildWrapper>,
 ) : CommandWrapper
+
+private val CommandWrapper.type: KType
+    get() = factory.type
 
 private sealed interface CommandChildWrapper
 

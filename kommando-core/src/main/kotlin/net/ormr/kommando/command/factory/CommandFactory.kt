@@ -20,20 +20,24 @@ import kotlinx.collections.immutable.PersistentList
 import net.ormr.kommando.command.RootCommand
 import net.ormr.kommando.command.TopLevelCommand
 import org.kodein.di.DirectDI
+import kotlin.reflect.KType
 
 public sealed interface CommandFactory<Cmd>
         where Cmd : TopLevelCommand<*, *> {
     public val provider: CommandComponentProvider<Cmd>
+    public val type: KType
 }
 
 public fun <Cmd> CommandFactory<Cmd>.create(di: DirectDI): Cmd
         where Cmd : TopLevelCommand<*, *> = with(di) { provider.get() }
 
-public class SingleCommandFactory internal constructor(
+public class SingleCommandFactory @PublishedApi internal constructor(
     override val provider: CommandComponentProvider<TopLevelCommand<*, *>>,
+    override val type: KType,
 ) : CommandFactory<TopLevelCommand<*, *>>
 
 public class RootCommandFactory internal constructor(
     override val provider: CommandComponentProvider<RootCommand<*, *>>,
+    override val type: KType,
     public val children: PersistentList<ChildCommandFactory<*>>,
 ) : CommandFactory<RootCommand<*, *>>

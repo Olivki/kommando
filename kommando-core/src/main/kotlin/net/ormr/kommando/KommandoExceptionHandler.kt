@@ -18,6 +18,8 @@ package net.ormr.kommando
 
 import dev.kord.core.event.interaction.ApplicationCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 public fun interface EventFailureHandler<Event> {
     public fun handle(cause: Exception, event: Event)
@@ -26,7 +28,7 @@ public fun interface EventFailureHandler<Event> {
 private typealias SlashCommandFailure = EventFailureHandler<ApplicationCommandInteractionCreateEvent>
 private typealias AutoCompleteFailure = EventFailureHandler<AutoCompleteInteractionCreateEvent>
 
-public class KommandoExceptionHandler(
+public class KommandoExceptionHandler internal constructor(
     public val slashCommandInvoke: SlashCommandFailure?,
     public val autoCompleteInvoke: AutoCompleteFailure?,
 )
@@ -53,8 +55,11 @@ public class KommandoExceptionHandlerBuilder @PublishedApi internal constructor(
     )
 }
 
-context(KommandoBuilder)
 @KommandoDsl
-public inline fun exceptionHandler(builder: KommandoExceptionHandlerBuilder.() -> Unit) {
+public inline fun KommandoBuilder.exceptionHandler(builder: KommandoExceptionHandlerBuilder.() -> Unit) {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
     exceptionHandler = KommandoExceptionHandlerBuilder().apply(builder).build()
 }

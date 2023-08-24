@@ -18,7 +18,6 @@ package net.ormr.kommando.command.argument
 
 import com.github.michaelbull.logging.InlineLogger
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.command.defaultCommandName
 import net.ormr.kommando.internal.findRegistry
 import net.ormr.kommando.localeBundle
 import net.ormr.kommando.localization.BasicMessage
@@ -42,9 +41,9 @@ public class ArgumentBuilder<Cmd, Value, Arg>(
     override fun provideDelegate(thisRef: Cmd, property: KProperty<*>): ReadOnlyProperty<Cmd, Value> {
         // TODO: verify that argument name is valid
         //       https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-naming
-        val kommando = thisRef.kommando
-        val cache = kommando.argumentCache
-        val nameConverter = kommando.commandMessageConverters.argumentNameConverter
+        val commands = thisRef.kommando.commands
+        val cache = commands.argumentCache
+        val nameConverter = commands.nameConverters.forArgument
         val cacheKey = ArgumentCache.Key(property.name, thisRef::class.java)
         val isFirstRun = cacheKey !in cache
         val (key, name, description) = cache.getOrPut(cacheKey) {
@@ -68,7 +67,7 @@ public class ArgumentBuilder<Cmd, Value, Arg>(
         }
         val argument = argumentFactory.create(key, name, description)
         if (isFirstRun) {
-            logger.info { "Registered argument $argument for command ${thisRef::class.qualifiedName}#${thisRef.defaultCommandName}" }
+            logger.info { "Built argument: $argument" }
         }
         thisRef.findRegistry().registerArgument(key, argument)
         return ArgumentPropertyDelegate(argument)

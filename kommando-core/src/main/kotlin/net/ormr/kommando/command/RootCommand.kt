@@ -28,11 +28,13 @@ public sealed interface RootCommand<Context, Perms> : TopLevelCommand<Context, P
               Perms : CommandPermissions
 
 public sealed class AbstractRootCommand<Context, Perms>(
-    name: String,
+    private val name: String,
     private val defaultDescription: String,
 ) : AbstractTopLevelCommand<Context, Perms>(name), RootCommand<Context, Perms>
         where Context : CommandContext<*>,
               Perms : CommandPermissions {
     override val componentDescription: Message
         get() = localeBundle.getMessageOrNull("description") ?: BasicMessage(defaultDescription)
+
+    final override fun toString(): String = "${this::class.simpleName}(name='$name', description='$defaultDescription')"
 }

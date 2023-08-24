@@ -21,9 +21,7 @@ import dev.kord.common.Locale
 import dev.kord.core.Kord
 import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
-import net.ormr.kommando.command.CommandMessageConverters
-import net.ormr.kommando.command.factory.CommandFactory
-import net.ormr.kommando.command.permission.DefaultCommandPermissions
+import net.ormr.kommando.command.CommandsBuilder
 import net.ormr.kommando.localization.LocaleBundle
 import net.ormr.kommando.localization.emptyMessageBundle
 import org.kodein.di.DI
@@ -39,28 +37,27 @@ public class KommandoBuilder @PublishedApi internal constructor(
     public val intents: Intents,
     override val directDI: DirectDI,
 ) : DirectDIAware {
-    public val commandFactories: MutableList<CommandFactory<*>> = mutableListOf()
+    @PublishedApi
+    internal var exceptionHandler: KommandoExceptionHandler? = null
 
-    public var defaultCommandPermissions: DefaultCommandPermissions? = null
-
-    public var exceptionHandler: KommandoExceptionHandler? = null
-
+    // TODO: make a builder?
     public var localeBundle: LocaleBundle = LocaleBundle(
         defaultLocale = Locale.ENGLISH_UNITED_STATES,
         messageBundle = emptyMessageBundle(),
         finder = { bundle, _, path, key -> bundle.getMessageOrNull(path, key) },
     )
 
-    public var commandMessageConverters: CommandMessageConverters = CommandMessageConverters.DEFAULT
+    @PublishedApi
+    internal var commandsBuilder: CommandsBuilder? = null
 
     @PublishedApi
     internal suspend fun build(): Kommando {
+        val (commands, commandFactories) = commandsBuilder?.build() ?: CommandsBuilder().build()
         val kommando = Kommando(
             kord = kord,
             localeBundle = localeBundle,
-            defaultCommandPermissions = defaultCommandPermissions,
+            commands = commands,
             exceptionHandler = exceptionHandler,
-            commandMessageConverters = commandMessageConverters,
         )
 
         if (localeBundle.messageBundle.isEmpty()) {

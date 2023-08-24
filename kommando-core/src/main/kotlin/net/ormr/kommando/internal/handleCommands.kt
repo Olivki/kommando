@@ -261,7 +261,7 @@ private inline fun <reified Cmd> withCommand(di: DirectDI, block: (command: Cmd)
 
 context(Kommando)
 private fun getRegisteredCommand(id: Snowflake, name: String): RegisteredCommand =
-    registeredCommands[id] ?: noSuchCommand(id, name)
+    commands.registeredCommands[id] ?: noSuchCommand(id, name)
 
 private data class GuildCommandContextImpl(
     override val interaction: GuildChatInputCommandInteraction,

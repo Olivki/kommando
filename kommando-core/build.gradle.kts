@@ -45,6 +45,8 @@ dependencies {
     api(libs.bundles.kodein)
     api(libs.bundles.kord)
 
+    implementation(kotlin("reflect"))
+
     testImplementation(kotlin("test"))
 }
 
