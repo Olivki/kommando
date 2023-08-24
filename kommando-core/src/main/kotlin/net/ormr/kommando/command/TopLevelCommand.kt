@@ -38,7 +38,6 @@ public sealed class AbstractTopLevelCommand<Context, Perms>(
     final override val componentPath: ComponentPath
         get() = ComponentPath("commands", this.formatAsCommandKey(defaultName))
 }
-// TODO: override componentPath
 
 public sealed interface GuildTopLevelCommand : TopLevelCommand<GuildCommandContext, GuildCommandPermissions>,
     GuildCommandType
