@@ -39,6 +39,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(libs.cache4k)
     implementation(libs.inlineLogger)
     implementation(libs.kasechange)
     implementation(libs.jackson.dataformat.yaml)
