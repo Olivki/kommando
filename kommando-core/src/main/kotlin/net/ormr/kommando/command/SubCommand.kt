@@ -20,33 +20,33 @@ import net.ormr.kommando.*
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
-public sealed interface SubCommand<Context, out Root> : Command<Context>, CustomizableCommand<Context>,
+public sealed interface SubCommand<Context, out Parent> : Command<Context>, CustomizableCommand<Context>,
     DescribableCommandComponent, ChatInputCommand<Context>, ComposableComponent
         where Context : CommandContext<*>,
-              Root : InheritableCommandComponent {
-    public val rootComponent: @UnsafeVariance Root
+              Parent : InheritableCommandComponent {
+    public val parentComponent: @UnsafeVariance Parent
 }
 
-public sealed class AbstractSubCommand<Context, out Root>(
+public sealed class AbstractSubCommand<Context, out Parent>(
     private val defaultName: String,
     private val defaultDescription: String,
-) : AbstractCommand<Context>(defaultName), SubCommand<Context, Root>
+) : AbstractCommand<Context>(defaultName), SubCommand<Context, Parent>
         where Context : CommandContext<*>,
-              Root : InheritableCommandComponent {
+              Parent : InheritableCommandComponent {
     override val componentDescription: Message
         get() = localeBundle.getMessageOrNull("description") ?: BasicMessage(defaultDescription)
 
-    final override lateinit var rootComponent: @UnsafeVariance Root
+    final override lateinit var parentComponent: @UnsafeVariance Parent
         private set
 
     final override val componentPath: ComponentPath
         get() = ComponentPath("subCommands", defaultName)
 
     final override val fullComponentPath: ComponentPath
-        get() = rootComponent.findFullComponentPath() / componentPath
+        get() = parentComponent.findFullComponentPath() / componentPath
 
     // Workaround for 'Setter for property is removed by type projection' error
-    internal fun initRootComponent(parent: @UnsafeVariance Root) {
-        rootComponent = parent
+    internal fun initParentComponent(parent: @UnsafeVariance Parent) {
+        parentComponent = parent
     }
 }

@@ -248,7 +248,7 @@ private fun createWrappers(
 ): List<CommandWrapper> = factories.map { parent ->
     val paths = argumentCache.pathStack
     when (parent) {
-        is ParentCommandFactory -> {
+        is RootCommandFactory -> {
             val instance = parent.create(di)
             paths.addFirst(instance.componentPath)
             ParentCommandWrapper(
@@ -258,14 +258,14 @@ private fun createWrappers(
                     when (child) {
                         is CommandGroupFactory -> {
                             val group = child.create(di).fix()
-                            group.initRootComponent(instance)
+                            group.initParentCommand(instance)
                             paths.addFirst(paths.first() / group.componentPath)
                             CommandGroupWrapper(
                                 instance = group,
                                 subCommands = child
                                     .factories
                                     .map { it(di) }
-                                    .onEach { it.fixSubCommand().initRootComponent(group) },
+                                    .onEach { it.fixSubCommand().initParentComponent(group) },
                                 subCommandFactories = child.factories.map { SubCommandFactory(it) },
                                 factory = child,
                             ).also {
@@ -274,7 +274,7 @@ private fun createWrappers(
                         }
                         is SubCommandFactory -> {
                             val subCommand = child.create(di)
-                            subCommand.fixSubCommand().initRootComponent(instance)
+                            subCommand.fixSubCommand().initParentComponent(instance)
                             SubCommandWrapper(
                                 instance = subCommand,
                                 factory = child,
@@ -312,7 +312,7 @@ private data class SingleCommandWrapper(
 
 private data class ParentCommandWrapper(
     override val instance: TopLevelCommand<*, *>,
-    override val factory: ParentCommandFactory,
+    override val factory: RootCommandFactory,
     val children: List<CommandChildWrapper>,
 ) : CommandWrapper
 

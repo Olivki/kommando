@@ -44,9 +44,9 @@ public abstract class GuildSubCommand<out Root>(
 }
 
 private fun GuildSubCommand<*>.findRoot(): GuildTopLevelCommand {
-    var current: InheritableCommandComponent = rootComponent
+    var current: InheritableCommandComponent = parentComponent
     while (current is CommandGroup<*>) {
-        current = current.rootCommand
+        current = current.parentCommand
     }
     require(current is GuildTopLevelCommand) { "Could not find root for $this" }
     return current

@@ -63,7 +63,7 @@ public class CommandFactoryBuilder<Cmd, Context, Perms>(private val factory: Dir
     @PublishedApi
     internal fun createFactory(): CommandFactory = when {
         children.isEmpty() -> SingleCommandFactory(factory)
-        else -> ParentCommandFactory(factory, children.toPersistentList())
+        else -> RootCommandFactory(factory, children.toPersistentList())
     }
 }
 

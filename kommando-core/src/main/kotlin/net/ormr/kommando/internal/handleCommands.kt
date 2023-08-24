@@ -155,7 +155,7 @@ private suspend inline fun <reified Cmd> inputCommand(
 
 private fun RegisteredGroup.createGroup(di: DirectDI, command: RootCommand<*, *>): CommandGroup<*> {
     val group = factory.create(di).fix()
-    group.initRootComponent(command)
+    group.initParentCommand(command)
     return group
 }
 
@@ -163,7 +163,7 @@ private fun RegisteredCommand.getRegisteredGroup(
     command: Command<*>,
     name: String,
 ): RegisteredGroup = when (factory) {
-    is ParentCommandFactory -> groups[name] ?: noSuchCommandGroup(name, command)
+    is RootCommandFactory -> groups[name] ?: noSuchCommandGroup(name, command)
     is SingleCommandFactory -> noSuchCommandGroup(name, command)
 }
 
@@ -173,7 +173,7 @@ private fun RegisteredSubCommandContainer.getSubCommand(
     name: String,
 ): SubCommand<*, *> {
     val result = subCommands[name]?.create(di) ?: noSuchSubCommand(name, command)
-    result.fixSubCommand().initRootComponent(command)
+    result.fixSubCommand().initParentComponent(command)
     return result
 }
 

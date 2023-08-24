@@ -33,7 +33,7 @@ public class SingleCommandFactory internal constructor(
     override fun create(di: DirectDI): TopLevelCommand<*, *> = factory(di)
 }
 
-public class ParentCommandFactory internal constructor(
+public class RootCommandFactory internal constructor(
     override val factory: DirectDI.() -> RootCommand<*, *>,
     public val children: PersistentList<CommandChildFactory<*>>,
 ) : CommandFactory {
