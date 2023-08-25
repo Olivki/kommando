@@ -41,7 +41,7 @@ public data class LocalizedResource(
     public fun asMap(): Map<Locale, Resource> = resources
 
     public companion object {
-        // TODO: explain that this does not check if the resource actually exists
+        // TODO: document that the path should not contain the extension
         public fun fromClass(
             clz: Class<*>,
             path: String,
@@ -51,8 +51,27 @@ public data class LocalizedResource(
         ): LocalizedResource = LocalizedResource(
             defaultLocale = defaultLocale,
             resources = buildPersistentHashMap {
+                val defaultLocaleResource = clz.getClassResource("$path.$extension")
+                if (defaultLocaleResource.exists()) {
+                    put(defaultLocale, defaultLocaleResource)
+                }
                 for (locale in locales) {
-                    put(locale, clz.getClassResource("$path.${locale.asString()}.$extension"))
+                    val resource = clz.getClassResource("$path.${locale.asString()}.$extension")
+                    if (resource.exists()) {
+                        if (locale == defaultLocale && locale in this) {
+                            throw IllegalArgumentException(
+                                """
+                                Found explicit locale file for default locale (${locale.asString()}), '$path.${locale.asString()}.$extension'.
+                                
+                                Please remove either the default locale file ($path.$extension) or the explicit locale file ($path.${locale.asString()}.$extension).
+                                """.trimIndent()
+                            )
+                        }
+                        put(locale, resource)
+                    }
+                }
+                require(defaultLocale in this) {
+                    "Could not find default locale (${defaultLocale.asString()}) file, '$path.$extension' or '$path.${defaultLocale.asString()}.$extension'."
                 }
             },
         )
