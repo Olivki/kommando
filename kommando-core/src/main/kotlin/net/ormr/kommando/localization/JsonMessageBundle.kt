@@ -16,11 +16,11 @@
 
 package net.ormr.kommando.localization
 
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
+import com.fasterxml.jackson.databind.json.JsonMapper
 import net.ormr.kommando.ComponentPath
 import net.ormr.kommando.KommandoDsl
 
-private class YamlMessageBundle(private val resource: LocalizedResource) : MessageBundle {
+private class JsonMessageBundle(private val resource: LocalizedResource) : MessageBundle {
     private val helper = JacksonMessageBundleHelper(mapper, resource)
 
     override fun getMessageOrNull(path: ComponentPath, key: String): Message? =
@@ -29,21 +29,21 @@ private class YamlMessageBundle(private val resource: LocalizedResource) : Messa
     override fun isEmpty(): Boolean = resource.isEmpty()
 
     private companion object {
-        private val mapper = YAMLMapper()
+        private val mapper = JsonMapper()
     }
 }
 
 @KommandoDsl
-public fun MessageBundleBuilder.yaml(resource: LocalizedResource) {
+public fun MessageBundleBuilder.json(resource: LocalizedResource) {
     require(resource.defaultLocale == defaultLocale) { "Resource default locale (${resource.defaultLocale}) != builder default locale ($defaultLocale)" }
-    +YamlMessageBundle(resource)
+    +JsonMessageBundle(resource)
 }
 
 @KommandoDsl
-public fun MessageBundleBuilder.yamlFromClassPath(
+public fun MessageBundleBuilder.jsonFromClassPath(
     path: String,
-    extension: String = "yaml",
+    extension: String = "json",
     clz: Class<*> = javaClass,
 ) {
-    yaml(LocalizedResource.fromClass(clz, path, extension, defaultLocale))
+    json(LocalizedResource.fromClass(clz, path, extension, defaultLocale))
 }
