@@ -17,14 +17,12 @@
 package net.ormr.kommando.command.argument
 
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.localization.Message
 
-// namespace to hide 'createDelegate' from top-level IDE suggestions
 public object ArgumentHelper {
     context(Cmd)
     public fun <Value, Cmd, Arg> newBuilder(
-        name: Message?,
-        description: Message?,
+        name: String?,
+        description: String,
         argumentFactory: ArgumentFactory<Value, Arg>,
     ): ArgumentBuilder<Cmd, Value, Arg>
             where Cmd : CustomizableCommand<*>,

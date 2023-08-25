@@ -20,8 +20,6 @@ import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.boolean
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.localization.BasicMessage
-import net.ormr.kommando.localization.LocalizedMessage
 import net.ormr.kommando.localization.Message
 
 public class BooleanArgument(
@@ -51,19 +49,8 @@ public class BooleanArgument(
 context(Cmd)
 @KommandoDsl
 public fun <Cmd> boolean(
-    name: Message? = null,
+    name: String? = null,
     description: String,
-): ArgumentBuilder<Cmd, Boolean, BooleanArgument>
-        where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
-        BooleanArgument(key, resolvedName, desc)
-    }
-
-context(Cmd)
-@KommandoDsl
-public fun <Cmd> boolean(
-    name: Message? = null,
-    description: LocalizedMessage? = null,
 ): ArgumentBuilder<Cmd, Boolean, BooleanArgument>
         where Cmd : CustomizableCommand<*> =
     ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->

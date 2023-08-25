@@ -38,7 +38,7 @@ public fun Component.findFullComponentPath(): ComponentPath = when (this) {
 }
 
 context(Component)
-public inline fun Localization.getMessage(key: String): Message = getMessage(componentPath, key)
+public inline fun Localization.getMessage(key: String): Message = getMessage(findFullComponentPath(), key)
 
 context(Component)
 public inline fun Localization.getMessage(path: ComponentPath, key: String): Message =
@@ -46,7 +46,7 @@ public inline fun Localization.getMessage(path: ComponentPath, key: String): Mes
 
 context(Component)
 public inline fun Localization.getMessageOrNull(key: String): Message? =
-    getMessageOrNull(componentPath, key)
+    getMessageOrNull(findFullComponentPath(), key)
 
 context(Component)
 public inline fun Localization.getMessageOrNull(path: ComponentPath, key: String): Message? =

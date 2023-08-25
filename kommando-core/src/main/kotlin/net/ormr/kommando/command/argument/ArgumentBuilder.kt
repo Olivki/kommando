@@ -19,6 +19,7 @@ package net.ormr.kommando.command.argument
 import com.github.michaelbull.logging.InlineLogger
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.internal.findRegistry
+import net.ormr.kommando.kord.asString
 import net.ormr.kommando.localization
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
@@ -29,8 +30,8 @@ import kotlin.reflect.KProperty
 
 // TODO: we could probably eliminate the generic for 'Cmd' and just use 'CustomizableCommand<*>'
 public class ArgumentBuilder<Cmd, Value, Arg>(
-    public val name: Message?,
-    public val description: Message?,
+    public val name: String?,
+    public val description: String,
     private val argumentFactory: ArgumentFactory<Value, Arg>,
 ) : PropertyDelegateProvider<Cmd, ReadOnlyProperty<Cmd, Value>>
         where Cmd : CustomizableCommand<*>,
@@ -51,18 +52,16 @@ public class ArgumentBuilder<Cmd, Value, Arg>(
             val bundle = thisRef.localization
             val selfPath = thisRef.componentPath
             val firstPath = cache.pathStack.firstOrNull()?.let { it / selfPath } ?: selfPath
-            val argPath = firstPath / "arguments" / property.name
-            val name = this.name
-                ?: bundle.getMessageOrNull(thisRef, argPath, "name")
-                ?: BasicMessage(key)
-            name.forEach { _, s ->
-                require(s.isNotBlank()) { "Argument name must not be blank" }
+            val argPath = firstPath / "arguments" / key
+            val name = bundle.getMessageOrNull(thisRef, argPath, "name") ?: BasicMessage(this.name ?: key)
+            name.forEach { locale, s ->
+                require(s.isNotBlank()) { "Argument name must not be blank (${locale?.asString()})" }
                 if (s.length !in 1..32) {
                     // TODO: custom exception
-                    throw IllegalArgumentException("Argument name ($s) length (${s.length}) !in 1..32")
+                    throw IllegalArgumentException("Argument name ($s) length (${s.length}) !in 1..32 (${locale?.asString()})")
                 }
             }
-            val description = this.description ?: bundle.getMessage(thisRef, argPath, "description")
+            val description = bundle.getMessageOrNull(thisRef, argPath, "description") ?: BasicMessage(this.description)
             ArgumentCache.Data(key, name, description)
         }
         val argument = argumentFactory.create(key, name, description)

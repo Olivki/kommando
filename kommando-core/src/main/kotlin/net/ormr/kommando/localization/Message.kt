@@ -104,7 +104,7 @@ public data class BasicMessage(override val defaultString: String) : Message {
  */
 public data class LocalizedMessage(val defaultLocale: Locale, val strings: LocalizedStrings) : Message {
     init {
-        require(defaultLocale in strings) { "defaultLocale ($defaultLocale) is not defined in 'strings'" }
+        require(defaultLocale in strings) { "defaultLocale (${defaultLocale.asString()}) missing from $strings" }
     }
 
     override val defaultString: String = strings.getValue(defaultLocale)

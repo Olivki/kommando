@@ -20,8 +20,6 @@ import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.integer
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.localization.BasicMessage
-import net.ormr.kommando.localization.LocalizedMessage
 import net.ormr.kommando.localization.Message
 
 public class LongArgument(
@@ -75,22 +73,8 @@ public class LongArgument(
 context(Cmd)
 @KommandoDsl
 public fun <Cmd> long(
-    name: Message? = null,
+    name: String? = null,
     description: String,
-    min: Long? = null,
-    max: Long? = null,
-    autoComplete: AutoCompleteAction? = null,
-): ArgumentBuilder<Cmd, Long, LongArgument>
-        where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
-        LongArgument(key, resolvedName, desc, min, max, autoComplete)
-    }
-
-context(Cmd)
-@KommandoDsl
-public fun <Cmd> long(
-    name: Message? = null,
-    description: LocalizedMessage? = null,
     min: Long? = null,
     max: Long? = null,
     autoComplete: AutoCompleteAction? = null,

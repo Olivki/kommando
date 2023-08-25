@@ -21,8 +21,6 @@ import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.mentionable
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.localization.BasicMessage
-import net.ormr.kommando.localization.LocalizedMessage
 import net.ormr.kommando.localization.Message
 
 public class MentionableArgument(
@@ -52,19 +50,8 @@ public class MentionableArgument(
 context(Cmd)
 @KommandoDsl
 public fun <Cmd> mentionable(
-    name: Message? = null,
+    name: String? = null,
     description: String,
-): ArgumentBuilder<Cmd, Entity, MentionableArgument>
-        where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
-        MentionableArgument(key, resolvedName, desc)
-    }
-
-context(Cmd)
-@KommandoDsl
-public fun <Cmd> mentionable(
-    name: Message? = null,
-    description: LocalizedMessage? = null,
 ): ArgumentBuilder<Cmd, Entity, MentionableArgument>
         where Cmd : CustomizableCommand<*> =
     ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->

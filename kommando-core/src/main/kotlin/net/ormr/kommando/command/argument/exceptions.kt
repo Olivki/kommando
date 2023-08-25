@@ -18,7 +18,7 @@ package net.ormr.kommando.command.argument
 
 import kotlin.reflect.typeOf
 
-@Suppress("CanBeParameter", "MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate")
 public class NoSuchArgumentWithTypeException(
     public val name: String,
     public val type: ArgumentType<*>,

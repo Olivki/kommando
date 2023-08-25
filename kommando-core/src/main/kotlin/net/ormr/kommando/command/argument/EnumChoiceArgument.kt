@@ -23,7 +23,6 @@ import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.findFullComponentPath
 import net.ormr.kommando.localization
-import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.LocalizedMessage
 import net.ormr.kommando.localization.Message
 import net.ormr.kommando.localization.toMutableMap
@@ -74,25 +73,12 @@ public class EnumChoiceArgument<Value>(
 context(Cmd)
 @KommandoDsl
 public inline fun <reified Value, Cmd> enum(
-    name: Message? = null,
+    name: String? = null,
     description: String,
 ): ArgumentBuilder<Cmd, Value, EnumChoiceArgument<Value>>
         where Value : Enum<Value>,
               Value : EnumArgumentChoice,
               Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
-        EnumChoiceArgument(key, resolvedName, desc, enumValues<Value>().asList())
-    }
-
-context(Cmd)
-@KommandoDsl
-public inline fun <reified Value, Cmd> enum(
-    name: Message? = null,
-    description: Message? = null,
-): ArgumentBuilder<Cmd, Value, EnumChoiceArgument<Value>>
-        where Value : Enum<Value>,
-              Value : EnumArgumentChoice,
-              Cmd : CustomizableCommand<Cmd> =
     ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
         EnumChoiceArgument(key, resolvedName, desc, enumValues<Value>().asList())
     }

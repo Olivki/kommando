@@ -20,8 +20,6 @@ import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.number
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.localization.BasicMessage
-import net.ormr.kommando.localization.LocalizedMessage
 import net.ormr.kommando.localization.Message
 
 public class DoubleArgument(
@@ -75,22 +73,8 @@ public class DoubleArgument(
 context(Cmd)
 @KommandoDsl
 public fun <Cmd> double(
-    name: Message? = null,
+    name: String? = null,
     description: String,
-    min: Double? = null,
-    max: Double? = null,
-    autoComplete: AutoCompleteAction? = null,
-): ArgumentBuilder<Cmd, Double, DoubleArgument>
-        where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
-        DoubleArgument(key, resolvedName, desc, min, max, autoComplete)
-    }
-
-context(Cmd)
-@KommandoDsl
-public fun <Cmd> double(
-    name: Message? = null,
-    description: LocalizedMessage? = null,
     min: Double? = null,
     max: Double? = null,
     autoComplete: AutoCompleteAction? = null,

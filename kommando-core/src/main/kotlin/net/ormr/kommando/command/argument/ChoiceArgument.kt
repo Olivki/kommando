@@ -20,6 +20,7 @@ import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
 
+// TODO: this might be putting the wrong values in
 public class ChoiceArgument<Value, ArgValue, out ArgType>(
     private val delegate: ArgumentWithChoice<Value, ArgValue, ArgType>,
     choices: List<ArgumentChoice<Value>>,

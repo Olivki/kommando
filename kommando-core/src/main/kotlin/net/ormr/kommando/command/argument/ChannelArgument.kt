@@ -21,8 +21,6 @@ import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.channel
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.localization.BasicMessage
-import net.ormr.kommando.localization.LocalizedMessage
 import net.ormr.kommando.localization.Message
 
 public class ChannelArgument(
@@ -52,19 +50,8 @@ public class ChannelArgument(
 context(Cmd)
 @KommandoDsl
 public fun <Cmd> channel(
-    name: Message? = null,
+    name: String? = null,
     description: String,
-): ArgumentBuilder<Cmd, ResolvedChannel, ChannelArgument>
-        where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
-        ChannelArgument(key, resolvedName, desc)
-    }
-
-context(Cmd)
-@KommandoDsl
-public fun <Cmd> channel(
-    name: Message? = null,
-    description: LocalizedMessage? = null,
 ): ArgumentBuilder<Cmd, ResolvedChannel, ChannelArgument>
         where Cmd : CustomizableCommand<*> =
     ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->

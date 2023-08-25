@@ -20,8 +20,6 @@ import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.string
 import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.localization.BasicMessage
-import net.ormr.kommando.localization.LocalizedMessage
 import net.ormr.kommando.localization.Message
 
 public class StringArgument(
@@ -75,22 +73,8 @@ public class StringArgument(
 context(Cmd)
 @KommandoDsl
 public fun <Cmd> string(
-    name: Message? = null,
+    name: String? = null,
     description: String,
-    min: Int? = null,
-    max: Int? = null,
-    autoComplete: AutoCompleteAction? = null,
-): ArgumentBuilder<Cmd, String, StringArgument>
-        where Cmd : CustomizableCommand<*> =
-    ArgumentHelper.newBuilder(name, BasicMessage(description)) { key, resolvedName, desc ->
-        StringArgument(key, resolvedName, desc, min, max, autoComplete)
-    }
-
-context(Cmd)
-@KommandoDsl
-public fun <Cmd> string(
-    name: Message? = null,
-    description: LocalizedMessage? = null,
     min: Int? = null,
     max: Int? = null,
     autoComplete: AutoCompleteAction? = null,
