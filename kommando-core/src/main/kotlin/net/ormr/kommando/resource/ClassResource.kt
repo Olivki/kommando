@@ -30,7 +30,7 @@ public data class ClassResource(override val path: String, val clz: Class<*>) : 
         clz.getResourceAsStream(path)
             ?: throw ResourceNotFoundException("Could not open resource stream for '$path' @ $clz")
 
-    override fun asString(): String = "$path @ $clz"
+    override fun asString(): String = "$path ($clz)"
 }
 
 /**
