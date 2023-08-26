@@ -17,14 +17,26 @@
 package net.ormr.kommando.modal
 
 import io.github.reactivecircus.cache4k.CacheEvent
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import net.ormr.kommando.internal.buildCache
 import net.ormr.kommando.storage.MutableStorage
+import net.ormr.kommando.storage.asMutexProtectedStorage
 import kotlin.time.Duration
 
-public class ModalStorage(public val timeout: Duration) : MutableStorage<String, Modal<*>> {
-    private val delegate = buildCache<String, Modal<*>> {
+public class ModalStorage internal constructor(
+    public val timeout: Duration,
+    private val delegate: MutableStorage<String, Modal<*>>,
+) : MutableStorage<String, Modal<*>> by delegate {
+    public suspend fun addModal(modal: Modal<*>) {
+        put(modal.modalId, modal)
+    }
+
+    public suspend fun removeModal(modal: Modal<*>) {
+        remove(modal.modalId)
+    }
+}
+
+public fun ModalStorage(timeout: Duration): ModalStorage {
+    val cache = buildCache<String, Modal<*>> {
         expireAfterWrite(timeout)
         eventListener { event ->
             when (event) {
@@ -39,32 +51,6 @@ public class ModalStorage(public val timeout: Duration) : MutableStorage<String,
                 }
             }
         }
-    }
-    private val mutex = Mutex()
-
-    override suspend fun get(key: String): Modal<*>? = mutex.withLock {
-        delegate.get(key)
-    }
-
-    override suspend fun put(key: String, value: Modal<*>): Unit = mutex.withLock {
-        delegate.put(key, value)
-    }
-
-    override suspend fun remove(key: String): Unit = mutex.withLock {
-        delegate.invalidate(key)
-    }
-
-    override suspend fun hasKey(key: String): Boolean = mutex.withLock { delegate.get(key) != null }
-
-    override suspend fun clear(): Unit = mutex.withLock {
-        delegate.invalidateAll()
-    }
-
-    public suspend fun addModal(modal: Modal<*>) {
-        put(modal.modalId, modal)
-    }
-
-    public suspend fun removeModal(modal: Modal<*>) {
-        remove(modal.modalId)
-    }
+    }.asMutexProtectedStorage()
+    return ModalStorage(timeout, cache)
 }
