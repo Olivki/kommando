@@ -19,7 +19,6 @@ package net.ormr.kommando.command.argument
 import dev.kord.common.entity.optional.Optional
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.string
-import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.findFullComponentPath
 import net.ormr.kommando.localization
@@ -71,7 +70,6 @@ public class EnumChoiceArgument<Value>(
 }
 
 context(Cmd)
-@KommandoDsl
 public inline fun <reified Value, Cmd> enum(
     name: String? = null,
     description: String,

@@ -19,7 +19,6 @@ package net.ormr.kommando.command.argument
 import dev.kord.core.entity.interaction.InteractionCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.Message
 
@@ -66,7 +65,6 @@ public class OptionalArgument<Value, ArgValue, out ArgType>(
  * Returns a new argument that will return `null` if the user did not provide a value.
  */
 context(Cmd)
-@KommandoDsl
 public fun <Cmd, Value, ArgValue, Arg> ArgumentBuilder<Cmd, Value, Arg>.optional(): ArgumentBuilder<Cmd, Value?, OptionalArgument<Value, ArgValue, *>>
         where Value : Any,
               ArgValue : Any,

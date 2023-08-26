@@ -17,7 +17,6 @@
 package net.ormr.kommando.command.argument
 
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
 
 // TODO: this might be putting the wrong values in
@@ -50,7 +49,6 @@ public class ChoiceArgument<Value, ArgValue, out ArgType>(
 }
 
 context(Cmd)
-@KommandoDsl
 public fun <Cmd, Value, ArgValue, ArgType, Arg> ArgumentBuilder<Cmd, Value, Arg>.choices(
     first: ArgumentChoice<Value>,
     vararg rest: ArgumentChoice<Value>,

@@ -18,7 +18,6 @@ package net.ormr.kommando.command.argument
 
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.string
-import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.Message
 
@@ -71,7 +70,6 @@ public class StringArgument(
 }
 
 context(Cmd)
-@KommandoDsl
 public fun <Cmd> string(
     name: String? = null,
     description: String,

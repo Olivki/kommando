@@ -19,7 +19,6 @@ package net.ormr.kommando.command.argument
 import dev.kord.core.entity.Role
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.role
-import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.Message
 
@@ -48,7 +47,6 @@ public class RoleArgument(
 }
 
 context(Cmd)
-@KommandoDsl
 public fun <Cmd> role(
     name: String? = null,
     description: String,

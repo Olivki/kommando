@@ -19,7 +19,6 @@ package net.ormr.kommando.command.argument
 import dev.kord.core.entity.interaction.InteractionCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
-import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
 
 public class DefaultArgument<Value, ArgValue, out ArgType>(
@@ -64,7 +63,6 @@ public fun interface DefaultArgumentSupplier<Value> {
  * Returns a new argument that will use the [supplier] to get the value if the user did not provide one.
  */
 context(Cmd)
-@KommandoDsl
 public infix fun <Cmd, Value, ArgValue, Arg> ArgumentBuilder<Cmd, Value, Arg>.default(
     supplier: DefaultArgumentSupplier<Value>,
 ): ArgumentBuilder<Cmd, Value, DefaultArgument<Value, ArgValue, *>>

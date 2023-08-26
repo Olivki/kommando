@@ -18,15 +18,12 @@
 
 package net.ormr.kommando.command.argument
 
-import net.ormr.kommando.KommandoDsl
 import net.ormr.kommando.command.CustomizableCommand
 
 public data class ArgumentChoice<Value>(public val key: String, public val value: Value) where Value : Any {
     override fun toString(): String = "'$key' = $value"
 }
 
-// TODO: handle localization of the name
 context(CustomizableCommand<*>)
-@KommandoDsl
 public inline infix fun <Value> String.returns(value: Value): ArgumentChoice<Value>
         where Value : Any = ArgumentChoice(this, value)
