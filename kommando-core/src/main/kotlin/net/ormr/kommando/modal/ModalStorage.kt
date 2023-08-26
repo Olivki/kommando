@@ -16,34 +16,48 @@
 
 package net.ormr.kommando.modal
 
+import io.github.reactivecircus.cache4k.CacheEvent
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import net.ormr.kommando.internal.buildCache
 import net.ormr.kommando.storage.MutableStorage
 import kotlin.time.Duration
 
-public class ModalStorage internal constructor(
-    public val timeout: Duration,
-    private val delegate: MutableMap<String, Modal<*>>,
-) : MutableStorage<String, Modal<*>> {
+public class ModalStorage internal constructor(public val timeout: Duration) : MutableStorage<String, Modal<*>> {
+    private val delegate = buildCache<String, Modal<*>> {
+        expireAfterWrite(timeout)
+        eventListener { event ->
+            when (event) {
+                is CacheEvent.Removed -> {
+                    event.value.modalResponse.close()
+                }
+                is CacheEvent.Expired -> {
+                    event.value.modalResponse.close()
+                }
+                else -> {
+                    // do nothing
+                }
+            }
+        }
+    }
     private val mutex = Mutex()
 
     override suspend fun get(key: String): Modal<*>? = mutex.withLock {
-        delegate[key]
+        delegate.get(key)
     }
 
     override suspend fun put(key: String, value: Modal<*>): Unit = mutex.withLock {
-        delegate[key] = value
+        delegate.put(key, value)
     }
 
     override suspend fun remove(key: String): Unit = mutex.withLock {
-        val modal = delegate.remove(key)
-        modal?.modalResponse?.close()
+        delegate.invalidate(key)
     }
 
-    override suspend fun hasKey(key: String): Boolean = mutex.withLock { key in delegate }
+    override suspend fun hasKey(key: String): Boolean = mutex.withLock { delegate.get(key) != null }
 
     override suspend fun clear(): Unit = mutex.withLock {
-        delegate.clear()
+        delegate.invalidateAll()
     }
 
     public suspend fun addModal(modal: Modal<*>) {
@@ -54,5 +68,3 @@ public class ModalStorage internal constructor(
         remove(modal.modalId)
     }
 }
-
-public fun ModalStorage(timeout: Duration): ModalStorage = ModalStorage(timeout, hashMapOf())
