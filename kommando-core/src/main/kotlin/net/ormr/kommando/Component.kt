@@ -20,9 +20,7 @@ import net.ormr.kommando.localization.Message
 import org.kodein.di.DI
 import org.kodein.di.instance
 
-public interface Component : KommandoDI {
-    public val kommando: Kommando
-
+public interface Component : KommandoDI, KommandoContext {
     /**
      * The path to this component.
      *
@@ -30,8 +28,6 @@ public interface Component : KommandoDI {
      * paths, see [ComposableComponent.fullComponentPath].
      */
     public val componentPath: ComponentPath
-    // TODO: make a second interface that can implement a 'fullComponentPath' property
-    //       that can create a full path by combining the 'componentPath' with the parent's 'componentPath'
 }
 
 public abstract class AbstractComponent : Component {
