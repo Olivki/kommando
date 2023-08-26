@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando.command.argument
+package net.ormr.kommando.modal.component
 
-import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.internal.fixCommand
+import net.ormr.kommando.modal.Modal
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-internal class ArgumentPropertyDelegate<Cmd, Value>(argument: Argument<Value, *, *>) : ReadOnlyProperty<Cmd, Value>
-        where Cmd : CustomizableCommand<*> {
-    private var argument: Argument<Value, *, *>? = argument
+internal class ModalComponentPropertyDelegate<Value>(
+    component: ModalComponent<Value, *, *>,
+) : ReadOnlyProperty<Modal<*>, Value> {
+    private var component: ModalComponent<Value, *, *>? = component
     private val lock = this
 
     private var value: Any? = NOT_SET
@@ -32,7 +32,7 @@ internal class ArgumentPropertyDelegate<Cmd, Value>(argument: Argument<Value, *,
     private object NOT_SET
 
     @Suppress("UNCHECKED_CAST")
-    override fun getValue(thisRef: Cmd, property: KProperty<*>): Value {
+    override fun getValue(thisRef: Modal<*>, property: KProperty<*>): Value {
         val v1 = value
 
         if (v1 !== NOT_SET) {
@@ -45,10 +45,9 @@ internal class ArgumentPropertyDelegate<Cmd, Value>(argument: Argument<Value, *,
             if (v2 !== NOT_SET) {
                 v2 as Value
             } else {
-                val fixedCmd = thisRef.fixCommand()
-                val retrievedValue = fixedCmd.registry.findValue(argument!!.key, property) as Value
+                val retrievedValue = thisRef.modalRegistry.findValue(component!!.customId, property) as Value
                 value = retrievedValue
-                argument = null
+                component = null
                 retrievedValue
             }
         }

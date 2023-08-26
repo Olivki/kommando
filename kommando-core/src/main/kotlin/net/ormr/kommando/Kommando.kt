@@ -20,6 +20,7 @@ import dev.kord.core.Kord
 import net.ormr.kommando.command.Commands
 import net.ormr.kommando.command.factory.CommandFactory
 import net.ormr.kommando.internal.handleCommands
+import net.ormr.kommando.internal.handleModals
 import net.ormr.kommando.localization.Localization
 import net.ormr.kommando.modal.ModalStorage
 
@@ -42,5 +43,6 @@ public class Kommando internal constructor(
 
     private suspend fun registerHandlers() {
         handleCommands()
+        handleModals()
     }
 }

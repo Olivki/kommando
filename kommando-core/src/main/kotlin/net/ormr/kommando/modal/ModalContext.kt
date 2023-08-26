@@ -16,4 +16,9 @@
 
 package net.ormr.kommando.modal
 
-public interface ModalContext
+import dev.kord.core.entity.interaction.ModalSubmitInteraction
+import net.ormr.kommando.InteractionContext
+
+// TODO: document that responding to the interaction is not needed, as it should be done from the caller context
+//       and not the modal context
+public interface ModalContext : InteractionContext<ModalSubmitInteraction>

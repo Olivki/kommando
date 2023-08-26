@@ -14,25 +14,15 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando.modal
+package net.ormr.kommando.modal.component
 
-import dev.kord.rest.builder.component.ActionRowBuilder
+import net.ormr.kommando.modal.Modal
 
-public sealed interface ModalComponent {
-    /**
-     * The unique identifier of the modal.
-     *
-     * This only needs to be unique for the modal that it belongs to.
-     */
-    public val id: String
-
-    /**
-     * Whether the component is disabled or not.
-     *
-     * A disabled component can't be interacted with and is also rendered differently.
-     */
-    public val isDisabled: Boolean
-
-    context(ActionRowBuilder)
-    public fun buildComponent()
+public data object ModalComponentHelper {
+    context(Modal<*>)
+    public fun <Value, Comp> newBuilder(
+        customId: String?,
+        componentFactory: ModalComponentFactory<Value, Comp>,
+    ): ModalComponentBuilder<Value, Comp>
+            where Comp : ModalComponent<Value, *, *> = ModalComponentBuilder(customId, componentFactory)
 }

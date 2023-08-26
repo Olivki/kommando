@@ -16,29 +16,43 @@
 
 package net.ormr.kommando.modal
 
-import net.ormr.kommando.internal.buildCache
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import net.ormr.kommando.storage.MutableStorage
-import net.ormr.kommando.storage.asMutexLockedStorage
 import kotlin.time.Duration
 
 public class ModalStorage internal constructor(
-    public val expirationDuration: Duration? = null,
-    private val delegate: MutableStorage<String, Modal<*>>,
-) : MutableStorage<String, Modal<*>> by delegate {
+    public val timeout: Duration,
+    private val delegate: MutableMap<String, Modal<*>>,
+) : MutableStorage<String, Modal<*>> {
+    private val mutex = Mutex()
+
+    override suspend fun get(key: String): Modal<*>? = mutex.withLock {
+        delegate[key]
+    }
+
+    override suspend fun put(key: String, value: Modal<*>): Unit = mutex.withLock {
+        delegate[key] = value
+    }
+
+    override suspend fun remove(key: String): Unit = mutex.withLock {
+        val modal = delegate.remove(key)
+        modal?.modalResponse?.close()
+    }
+
+    override suspend fun hasKey(key: String): Boolean = mutex.withLock { key in delegate }
+
+    override suspend fun clear(): Unit = mutex.withLock {
+        delegate.clear()
+    }
+
     public suspend fun addModal(modal: Modal<*>) {
-        delegate.put(modal.modalId, modal)
+        put(modal.modalId, modal)
     }
 
     public suspend fun removeModal(modal: Modal<*>) {
-        delegate.remove(modal.modalId)
+        remove(modal.modalId)
     }
 }
 
-public fun ModalStorage(expireAfter: Duration? = null): ModalStorage {
-    val storage = buildCache<String, Modal<*>> {
-        if (expireAfter != null) {
-            expireAfterWrite(expireAfter)
-        }
-    }.asMutexLockedStorage()
-    return ModalStorage(expireAfter, storage)
-}
+public fun ModalStorage(timeout: Duration): ModalStorage = ModalStorage(timeout, hashMapOf())

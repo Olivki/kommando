@@ -32,12 +32,12 @@ internal class CommandArgumentRegistry(private val command: Command<*>) {
     }
 
     fun findArgument(key: String): Argument<*, *, *> {
-        check(isInitialized.get()) { "Command argument registry has not been initialized yet" }
+        checkInitialized()
         return arguments[key] ?: noSuchCommandArgument(key, command)
     }
 
     fun findValue(key: String, property: KProperty<*>): Any? {
-        check(isInitialized.get()) { "Command argument registry has not been initialized yet" }
+        checkInitialized()
         return when (val arguments = populatedArguments) {
             null -> error(
                 """
@@ -61,4 +61,8 @@ internal class CommandArgumentRegistry(private val command: Command<*>) {
     fun toMap(): Map<String, Argument<*, *, *>> = arguments.toMap()
 
     override fun toString(): String = "CommandArgumentRegistry(command=$command)"
+
+    private fun checkInitialized() {
+        check(isInitialized.get()) { "Command argument registry has not been initialized yet" }
+    }
 }

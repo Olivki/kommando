@@ -16,10 +16,46 @@
 
 package net.ormr.kommando.internal
 
+import dev.kord.core.behavior.interaction.ModalParentInteractionBehavior
+import dev.kord.core.behavior.interaction.modal
+import dev.kord.core.behavior.interaction.response.PopupInteractionResponseBehavior
 import net.ormr.kommando.Component
 import net.ormr.kommando.modal.Modal
+import net.ormr.kommando.modal.ModalResult
+import net.ormr.kommando.modal.ModalStorage
+import kotlin.time.Duration
+
+internal typealias ModalResponseCallback = suspend (PopupInteractionResponseBehavior) -> Unit
 
 context(Component)
-internal suspend fun <Value> showModal0(modal: Modal<Value>) {
-    val modals = kommando.modalStorage
+@PublishedApi
+internal suspend inline fun <Value> showModal0(
+    modal: Modal<Value>,
+    timeout: Duration?,
+    onResponse: ModalResponseCallback,
+    interaction: ModalParentInteractionBehavior,
+): ModalResult<Value>? {
+    val storage = kommando.modalStorage
+    val response = showModal1(storage, modal, interaction)
+    onResponse(response)
+    return modal.modalResponse.await(timeout ?: storage.timeout)
+}
+
+@PublishedApi
+internal suspend fun showModal1(
+    storage: ModalStorage,
+    modal: Modal<*>,
+    interaction: ModalParentInteractionBehavior,
+): PopupInteractionResponseBehavior {
+    val components = modal.modalRegistry.asMap()
+    require(components.isNotEmpty()) { "Modal (${modal::class.qualifiedName}) must have at least one component" }
+    require(components.size <= 5) { "Modal (${modal::class.qualifiedName}) can only have up to 5 components" }
+    storage.addModal(modal)
+    return interaction.modal(modal.modalTitle, modal.modalId) {
+        for ((_, component) in components) {
+            actionRow {
+                component.buildComponent()
+            }
+        }
+    }
 }

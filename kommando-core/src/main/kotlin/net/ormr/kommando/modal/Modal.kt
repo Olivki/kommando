@@ -18,14 +18,19 @@ package net.ormr.kommando.modal
 
 import net.ormr.kommando.AbstractComponent
 import net.ormr.kommando.ComponentPath
+import net.ormr.kommando.internal.createUuidString
 
-// TODO: localization for title and stuff?
-public abstract class Modal<Value>(id: String, title: String) : AbstractComponent() {
-    public val modalId: String = id
-    private val defaultTitle: String = title
+public abstract class Modal<Value>(name: String, title: String) : AbstractComponent() {
+    public val modalName: String = name
+    public val modalTitle: String = title
+    public val modalId: String = createUuidString()
+    internal val modalRegistry by lazy { ModalComponentRegistry(this) }
+
+    @PublishedApi
+    internal val modalResponse: DeferredModalResponse<Value> by lazy { DeferredModalResponse(this) }
 
     final override val componentPath: ComponentPath
-        get() = ComponentPath("modals", modalId)
+        get() = ComponentPath("modals", modalName)
 
     context(ModalContext)
     public abstract suspend fun execute(): Value

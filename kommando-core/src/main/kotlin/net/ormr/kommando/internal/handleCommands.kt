@@ -43,6 +43,7 @@ private val logger = InlineLogger()
 context(Kommando)
 internal suspend fun handleCommands() {
     val direct = direct
+    
     kord.on<ApplicationCommandInteractionCreateEvent> {
         try {
             when (this) {

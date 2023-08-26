@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando.command
+package net.ormr.kommando
 
-import dev.kord.core.entity.interaction.ApplicationCommandInteraction
-import dev.kord.core.entity.interaction.ChatInputCommandInteraction
-import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
-import net.ormr.kommando.InteractionContext
+import dev.kord.common.Locale
+import dev.kord.core.entity.interaction.Interaction
 
-public sealed interface CommandContext<out I> : InteractionContext<I>
-        where I : ApplicationCommandInteraction
+/**
+ * See [Interaction.locale].
+ */
+context(InteractionContext<Interaction>)
+public inline val locale: Locale?
+    get() = interaction.locale
 
-public interface GuildCommandContext : CommandContext<GuildChatInputCommandInteraction>
-
-public interface GlobalCommandContext : CommandContext<ChatInputCommandInteraction>
+/**
+ * See [Interaction.guildLocale].
+ */
+context(InteractionContext<Interaction>)
+public inline val guildLocale: Locale?
+    get() = interaction.guildLocale

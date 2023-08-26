@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando.command
+package net.ormr.kommando.modal
 
-import dev.kord.core.entity.interaction.ApplicationCommandInteraction
-import dev.kord.core.entity.interaction.ChatInputCommandInteraction
-import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
-import net.ormr.kommando.InteractionContext
+import dev.kord.core.entity.interaction.ModalSubmitInteraction
 
-public sealed interface CommandContext<out I> : InteractionContext<I>
-        where I : ApplicationCommandInteraction
-
-public interface GuildCommandContext : CommandContext<GuildChatInputCommandInteraction>
-
-public interface GlobalCommandContext : CommandContext<ChatInputCommandInteraction>
+/**
+ * The result of [executing][Modal.execute] a modal via [showModal].
+ *
+ * @property [value] The value returned by the [execution][Modal.execute] of the modal.
+ * @property [interaction] The [interaction][ModalSubmitInteraction] returned after the modal was submitted.
+ */
+public data class ModalResult<Value>(val value: Value, val interaction: ModalSubmitInteraction)

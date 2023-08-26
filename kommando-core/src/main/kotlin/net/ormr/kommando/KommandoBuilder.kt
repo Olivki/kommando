@@ -38,7 +38,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
     public val intents: Intents,
     override val directDI: DirectDI,
 ) : DirectDIAware {
-    public var modalStorage: ModalStorage = ModalStorage(expireAfter = 30.minutes)
+    public var modalStorage: ModalStorage = ModalStorage(timeout = 7.minutes)
 
     @PublishedApi
     internal var exceptionHandler: KommandoExceptionHandler? = null

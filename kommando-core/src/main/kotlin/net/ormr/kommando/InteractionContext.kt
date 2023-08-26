@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando.command
+package net.ormr.kommando
 
-import dev.kord.core.entity.interaction.ApplicationCommandInteraction
-import dev.kord.core.entity.interaction.ChatInputCommandInteraction
-import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
-import net.ormr.kommando.InteractionContext
+import dev.kord.core.behavior.interaction.InteractionBehavior
 
-public sealed interface CommandContext<out I> : InteractionContext<I>
-        where I : ApplicationCommandInteraction
-
-public interface GuildCommandContext : CommandContext<GuildChatInputCommandInteraction>
-
-public interface GlobalCommandContext : CommandContext<ChatInputCommandInteraction>
+public interface InteractionContext<out I>
+        where I : InteractionBehavior {
+    public val interaction: I
+}
