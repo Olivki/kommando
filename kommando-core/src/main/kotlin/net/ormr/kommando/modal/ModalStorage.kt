@@ -23,7 +23,7 @@ import net.ormr.kommando.internal.buildCache
 import net.ormr.kommando.storage.MutableStorage
 import kotlin.time.Duration
 
-public class ModalStorage internal constructor(public val timeout: Duration) : MutableStorage<String, Modal<*>> {
+public class ModalStorage(public val timeout: Duration) : MutableStorage<String, Modal<*>> {
     private val delegate = buildCache<String, Modal<*>> {
         expireAfterWrite(timeout)
         eventListener { event ->
