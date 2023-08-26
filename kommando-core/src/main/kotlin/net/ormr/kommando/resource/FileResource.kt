@@ -38,7 +38,7 @@ public data class FileResource(public val file: Path) : Resource {
         throw ResourceNotFoundException("Could not find resource at path '$path'", e)
     }
 
-    override fun asString(): String = file.pathString
+    override fun asString(): String = "file:${file.pathString}"
 }
 
 /**
