@@ -46,12 +46,11 @@ public class AttachmentArgument(
         "AttachmentArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}')"
 }
 
-context(Cmd)
-public fun <Cmd> attachment(
+context(CustomizableCommand<*>)
+public fun attachment(
     name: String? = null,
     description: String,
-): ArgumentBuilder<Cmd, Attachment, AttachmentArgument>
-        where Cmd : CustomizableCommand<*> =
+): ArgumentBuilder<Attachment, AttachmentArgument> =
     ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
         AttachmentArgument(key, resolvedName, desc)
     }

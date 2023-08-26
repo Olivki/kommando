@@ -69,15 +69,14 @@ public class StringArgument(
         "StringArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}', min=$min, max=$max)"
 }
 
-context(Cmd)
-public fun <Cmd> string(
+context(CustomizableCommand<*>)
+public fun string(
     name: String? = null,
     description: String,
     min: Int? = null,
     max: Int? = null,
     autoComplete: AutoCompleteAction? = null,
-): ArgumentBuilder<Cmd, String, StringArgument>
-        where Cmd : CustomizableCommand<*> =
+): ArgumentBuilder<String, StringArgument> =
     ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
         StringArgument(key, resolvedName, desc, min, max, autoComplete)
     }

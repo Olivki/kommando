@@ -48,13 +48,12 @@ public class ChoiceArgument<Value, ArgValue, out ArgType>(
     override fun toString(): String = "WithChoices<$delegate, $choices>"
 }
 
-context(Cmd)
-public fun <Cmd, Value, ArgValue, ArgType, Arg> ArgumentBuilder<Cmd, Value, Arg>.choices(
+context(CustomizableCommand<*>)
+public fun <Value, ArgValue, ArgType, Arg> ArgumentBuilder<Value, Arg>.choices(
     first: ArgumentChoice<Value>,
     vararg rest: ArgumentChoice<Value>,
-): ArgumentBuilder<Cmd, Value, ChoiceArgument<Value, ArgValue, ArgType>>
-        where Cmd : CustomizableCommand<*>,
-              Value : Any,
+): ArgumentBuilder<Value, ChoiceArgument<Value, ArgValue, ArgType>>
+        where Value : Any,
               ArgValue : Any,
               ArgType : ChoiceArgumentType<ArgValue>,
               Arg : ArgumentWithChoice<Value, ArgValue, ArgType> {

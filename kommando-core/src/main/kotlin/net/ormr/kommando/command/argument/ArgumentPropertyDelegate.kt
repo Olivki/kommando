@@ -21,8 +21,9 @@ import net.ormr.kommando.internal.fixCommand
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-internal class ArgumentPropertyDelegate<Cmd, Value>(argument: Argument<Value, *, *>) : ReadOnlyProperty<Cmd, Value>
-        where Cmd : CustomizableCommand<*> {
+internal class ArgumentPropertyDelegate<Value>(
+    argument: Argument<Value, *, *>,
+) : ReadOnlyProperty<CustomizableCommand<*>, Value> {
     private var argument: Argument<Value, *, *>? = argument
     private val lock = this
 
@@ -32,7 +33,7 @@ internal class ArgumentPropertyDelegate<Cmd, Value>(argument: Argument<Value, *,
     private object NOT_SET
 
     @Suppress("UNCHECKED_CAST")
-    override fun getValue(thisRef: Cmd, property: KProperty<*>): Value {
+    override fun getValue(thisRef: CustomizableCommand<*>, property: KProperty<*>): Value {
         val v1 = value
 
         if (v1 !== NOT_SET) {

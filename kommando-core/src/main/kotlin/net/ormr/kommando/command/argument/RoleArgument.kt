@@ -46,12 +46,11 @@ public class RoleArgument(
         "RoleArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}')"
 }
 
-context(Cmd)
-public fun <Cmd> role(
+context(CustomizableCommand<*>)
+public fun role(
     name: String? = null,
     description: String,
-): ArgumentBuilder<Cmd, Role, RoleArgument>
-        where Cmd : CustomizableCommand<*> =
+): ArgumentBuilder<Role, RoleArgument> =
     ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
         RoleArgument(key, resolvedName, desc)
     }

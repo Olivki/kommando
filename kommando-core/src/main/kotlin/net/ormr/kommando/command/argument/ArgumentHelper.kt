@@ -19,12 +19,11 @@ package net.ormr.kommando.command.argument
 import net.ormr.kommando.command.CustomizableCommand
 
 public data object ArgumentHelper {
-    context(Cmd)
-    public fun <Value, Cmd, Arg> newBuilder(
+    context(CustomizableCommand<*>)
+    public fun <Value, Arg> newBuilder(
         name: String?,
         description: String,
         argumentFactory: ArgumentFactory<Value, Arg>,
-    ): ArgumentBuilder<Cmd, Value, Arg>
-            where Cmd : CustomizableCommand<*>,
-                  Arg : Argument<Value, *, *> = ArgumentBuilder(name, description, argumentFactory)
+    ): ArgumentBuilder<Value, Arg>
+            where Arg : Argument<Value, *, *> = ArgumentBuilder(name, description, argumentFactory)
 }

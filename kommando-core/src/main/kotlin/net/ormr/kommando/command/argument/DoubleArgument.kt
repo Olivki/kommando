@@ -69,15 +69,14 @@ public class DoubleArgument(
         "DoubleArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}', min=$min, max=$max)"
 }
 
-context(Cmd)
-public fun <Cmd> double(
+context(CustomizableCommand<*>)
+public fun double(
     name: String? = null,
     description: String,
     min: Double? = null,
     max: Double? = null,
     autoComplete: AutoCompleteAction? = null,
-): ArgumentBuilder<Cmd, Double, DoubleArgument>
-        where Cmd : CustomizableCommand<*> =
+): ArgumentBuilder<Double, DoubleArgument> =
     ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
         DoubleArgument(key, resolvedName, desc, min, max, autoComplete)
     }

@@ -46,12 +46,11 @@ public class ChannelArgument(
         "ChannelArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}')"
 }
 
-context(Cmd)
-public fun <Cmd> channel(
+context(CustomizableCommand<*>)
+public fun channel(
     name: String? = null,
     description: String,
-): ArgumentBuilder<Cmd, ResolvedChannel, ChannelArgument>
-        where Cmd : CustomizableCommand<*> =
+): ArgumentBuilder<ResolvedChannel, ChannelArgument> =
     ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
         ChannelArgument(key, resolvedName, desc)
     }

@@ -62,12 +62,11 @@ public fun interface DefaultArgumentSupplier<Value> {
 /**
  * Returns a new argument that will use the [supplier] to get the value if the user did not provide one.
  */
-context(Cmd)
-public infix fun <Cmd, Value, ArgValue, Arg> ArgumentBuilder<Cmd, Value, Arg>.default(
+context(CustomizableCommand<*>)
+public infix fun <Value, ArgValue, Arg> ArgumentBuilder<Value, Arg>.default(
     supplier: DefaultArgumentSupplier<Value>,
-): ArgumentBuilder<Cmd, Value, DefaultArgument<Value, ArgValue, *>>
+): ArgumentBuilder<Value, DefaultArgument<Value, ArgValue, *>>
         where ArgValue : Any,
-              Cmd : CustomizableCommand<*>,
               Arg : Argument<Value, ArgValue, *> =
     ArgumentHelper.newBuilder(name, description) { key, name, desc ->
         DefaultArgument(createArgument(key, name, desc), supplier)

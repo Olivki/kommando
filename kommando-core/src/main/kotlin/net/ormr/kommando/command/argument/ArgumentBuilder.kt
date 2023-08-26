@@ -28,18 +28,18 @@ import kotlin.properties.PropertyDelegateProvider
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-// TODO: we could probably eliminate the generic for 'Cmd' and just use 'CustomizableCommand<*>'
-public class ArgumentBuilder<Cmd, Value, Arg>(
+private typealias ArgumentProperty<Value> = ReadOnlyProperty<CustomizableCommand<*>, Value>
+
+public class ArgumentBuilder<Value, Arg>(
     public val name: String?,
     public val description: String,
     private val argumentFactory: ArgumentFactory<Value, Arg>,
-) : PropertyDelegateProvider<Cmd, ReadOnlyProperty<Cmd, Value>>
-        where Cmd : CustomizableCommand<*>,
-              Arg : Argument<Value, *, *> {
+) : PropertyDelegateProvider<CustomizableCommand<*>, ArgumentProperty<Value>>
+        where Arg : Argument<Value, *, *> {
     public fun createArgument(key: String, name: Message, description: Message): Arg =
         argumentFactory.create(key, name, description)
 
-    override fun provideDelegate(thisRef: Cmd, property: KProperty<*>): ReadOnlyProperty<Cmd, Value> {
+    override fun provideDelegate(thisRef: CustomizableCommand<*>, property: KProperty<*>): ArgumentProperty<Value> {
         // TODO: verify that argument name is valid
         //       https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-naming
         val commands = thisRef.kommando.commands

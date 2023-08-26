@@ -69,15 +69,14 @@ public class LongArgument(
         "LongArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}', min=$min, max=$max)"
 }
 
-context(Cmd)
-public fun <Cmd> long(
+context(CustomizableCommand<*>)
+public fun long(
     name: String? = null,
     description: String,
     min: Long? = null,
     max: Long? = null,
     autoComplete: AutoCompleteAction? = null,
-): ArgumentBuilder<Cmd, Long, LongArgument>
-        where Cmd : CustomizableCommand<*> =
+): ArgumentBuilder<Long, LongArgument> =
     ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
         LongArgument(key, resolvedName, desc, min, max, autoComplete)
     }

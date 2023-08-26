@@ -45,12 +45,11 @@ public class BooleanArgument(
         "BooleanArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}')"
 }
 
-context(Cmd)
-public fun <Cmd> boolean(
+context(CustomizableCommand<*>)
+public fun boolean(
     name: String? = null,
     description: String,
-): ArgumentBuilder<Cmd, Boolean, BooleanArgument>
-        where Cmd : CustomizableCommand<*> =
+): ArgumentBuilder<Boolean, BooleanArgument> =
     ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
         BooleanArgument(key, resolvedName, desc)
     }

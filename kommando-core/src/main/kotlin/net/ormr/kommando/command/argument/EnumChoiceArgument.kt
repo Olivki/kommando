@@ -69,14 +69,13 @@ public class EnumChoiceArgument<Value>(
         "EnumChoiceArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}', entries=$nameToEntry)"
 }
 
-context(Cmd)
-public inline fun <reified Value, Cmd> enum(
+context(CustomizableCommand<*>)
+public inline fun <reified Value> enum(
     name: String? = null,
     description: String,
-): ArgumentBuilder<Cmd, Value, EnumChoiceArgument<Value>>
+): ArgumentBuilder<Value, EnumChoiceArgument<Value>>
         where Value : Enum<Value>,
-              Value : EnumArgumentChoice,
-              Cmd : CustomizableCommand<*> =
+              Value : EnumArgumentChoice =
     ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
         EnumChoiceArgument(key, resolvedName, desc, enumValues<Value>().asList())
     }

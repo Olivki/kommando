@@ -64,11 +64,10 @@ public class OptionalArgument<Value, ArgValue, out ArgType>(
 /**
  * Returns a new argument that will return `null` if the user did not provide a value.
  */
-context(Cmd)
-public fun <Cmd, Value, ArgValue, Arg> ArgumentBuilder<Cmd, Value, Arg>.optional(): ArgumentBuilder<Cmd, Value?, OptionalArgument<Value, ArgValue, *>>
+context(CustomizableCommand<*>)
+public fun <Value, ArgValue, Arg> ArgumentBuilder<Value, Arg>.optional(): ArgumentBuilder<Value?, OptionalArgument<Value, ArgValue, *>>
         where Value : Any,
               ArgValue : Any,
-              Cmd : CustomizableCommand<*>,
               Arg : Argument<Value, ArgValue, *> =
     ArgumentHelper.newBuilder(name, description) { key, name, desc ->
         OptionalArgument(createArgument(key, name, desc))

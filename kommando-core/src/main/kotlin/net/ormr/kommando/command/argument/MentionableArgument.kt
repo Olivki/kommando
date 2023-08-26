@@ -46,12 +46,11 @@ public class MentionableArgument(
         "MentionableArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}')"
 }
 
-context(Cmd)
-public fun <Cmd> mentionable(
+context(CustomizableCommand<*>)
+public fun mentionable(
     name: String? = null,
     description: String,
-): ArgumentBuilder<Cmd, Entity, MentionableArgument>
-        where Cmd : CustomizableCommand<*> =
+): ArgumentBuilder<Entity, MentionableArgument> =
     ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
         MentionableArgument(key, resolvedName, desc)
     }
