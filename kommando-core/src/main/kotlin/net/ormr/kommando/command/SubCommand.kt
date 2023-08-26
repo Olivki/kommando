@@ -16,17 +16,17 @@
 
 package net.ormr.kommando.command
 
-import net.ormr.kommando.ComponentPath
-import net.ormr.kommando.findFullComponentPath
+import net.ormr.kommando.ElementPath
+import net.ormr.kommando.findFullElementPath
 import net.ormr.kommando.getMessageOrNull
 import net.ormr.kommando.localization
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
 public sealed interface SubCommand<Context, out Parent> : Command<Context>, CustomizableCommand<Context>,
-    DescribableCommandComponent, ChatInputCommand<Context>, ChildCommandComponent
+    DescribableCommandElement, ChatInputCommand<Context>, ChildCommandElement
         where Context : CommandContext<*>,
-              Parent : InheritableCommandComponent {
+              Parent : InheritableCommandElement {
     public val parentComponent: @UnsafeVariance Parent
 }
 
@@ -35,18 +35,18 @@ public sealed class AbstractSubCommand<Context, out Parent>(
     private val defaultDescription: String,
 ) : AbstractCommand<Context>(defaultName), SubCommand<Context, Parent>
         where Context : CommandContext<*>,
-              Parent : InheritableCommandComponent {
-    override val componentDescription: Message
+              Parent : InheritableCommandElement {
+    override val elementDescription: Message
         get() = localization.getMessageOrNull("description") ?: BasicMessage(defaultDescription)
 
     final override lateinit var parentComponent: @UnsafeVariance Parent
         private set
 
-    final override val componentPath: ComponentPath
-        get() = ComponentPath("subCommands", defaultName)
+    final override val elementPath: ElementPath
+        get() = ElementPath("subCommands", defaultName)
 
-    final override val fullComponentPath: ComponentPath
-        get() = parentComponent.findFullComponentPath() / componentPath
+    final override val fullElementPath: ElementPath
+        get() = parentComponent.findFullElementPath() / elementPath
 
     // Workaround for 'Setter for property is removed by type projection' error
     internal fun initParentComponent(parent: @UnsafeVariance Parent) {

@@ -16,7 +16,7 @@
 
 package net.ormr.kommando.localization
 
-import net.ormr.kommando.ComponentPath
+import net.ormr.kommando.ElementPath
 
 /**
  * A bundle of [Message]s.
@@ -33,14 +33,14 @@ public interface MessageBundle {
      *
      * @throws [NoSuchElementException] if no message exists for the given [key]
      */
-    public fun getMessage(path: ComponentPath, key: String): Message =
+    public fun getMessage(path: ElementPath, key: String): Message =
         getMessageOrNull(path, key)
             ?: throw NoSuchElementException("No message found at '${path.asString()}/$key'")
 
     /**
      * Returns the [Message] associated with the given [key], or `null` if no such message exists.
      */
-    public fun getMessageOrNull(path: ComponentPath, key: String): Message?
+    public fun getMessageOrNull(path: ElementPath, key: String): Message?
 
     /**
      * Returns `true` if this bundle contains no messages.
@@ -59,10 +59,10 @@ public fun emptyMessageBundle(): MessageBundle = EmptyMessageBundle
 public fun messageBundleOf(): MessageBundle = emptyMessageBundle()
 
 private data object EmptyMessageBundle : MessageBundle {
-    override fun getMessage(path: ComponentPath, key: String): Message =
+    override fun getMessage(path: ElementPath, key: String): Message =
         throw UnsupportedOperationException("Can't get message from empty bundle")
 
-    override fun getMessageOrNull(path: ComponentPath, key: String): Message? = null
+    override fun getMessageOrNull(path: ElementPath, key: String): Message? = null
 
     override fun isEmpty(): Boolean = true
 }

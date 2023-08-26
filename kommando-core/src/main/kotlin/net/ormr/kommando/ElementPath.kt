@@ -25,17 +25,17 @@ internal const val PATH_SEP_CHAR = '/'
 internal const val PATH_SEP_STR = "/"
 
 @JvmInline
-public value class ComponentPath internal constructor(private val parts: PersistentList<String>) {
+public value class ElementPath internal constructor(private val parts: PersistentList<String>) {
     init {
         require(parts.isNotEmpty()) { "Path must not be empty" }
         require(parts.all { it.isNotEmpty() }) { "Path must not contain empty parts" }
         require(parts.all { PATH_SEP_CHAR !in it }) { "Path must not contain '$PATH_SEP_CHAR'" }
     }
 
-    public operator fun div(other: ComponentPath): ComponentPath =
-        ComponentPath(parts + other.parts)
+    public operator fun div(other: ElementPath): ElementPath =
+        ElementPath(parts + other.parts)
 
-    public operator fun div(other: String): ComponentPath = ComponentPath(parts + other)
+    public operator fun div(other: String): ElementPath = ElementPath(parts + other)
 
     public operator fun get(index: Int): String = parts[index]
 
@@ -46,9 +46,9 @@ public value class ComponentPath internal constructor(private val parts: Persist
     public operator fun iterator(): Iterator<String> = parts.iterator()
 }
 
-public inline fun ComponentPath.forEach(action: (String) -> Unit): Unit = asList().forEach(action)
+public inline fun ElementPath.forEach(action: (String) -> Unit): Unit = asList().forEach(action)
 
-public fun ComponentPath(first: String, vararg rest: String): ComponentPath = ComponentPath(
+public fun ElementPath(first: String, vararg rest: String): ElementPath = ElementPath(
     parts = persistentListOf<String>().mutate {
         it.add(first)
         it.addAll(rest)

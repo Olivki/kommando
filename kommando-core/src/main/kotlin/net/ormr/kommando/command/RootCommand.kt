@@ -23,7 +23,7 @@ import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
 public sealed interface RootCommand<Context, Perms> : TopLevelCommand<Context, Perms>, CustomizableCommand<Context>,
-    DescribableCommandComponent, ChatInputCommand<Context>, InheritableCommandComponent
+    DescribableCommandElement, ChatInputCommand<Context>, InheritableCommandElement
         where Context : CommandContext<*>,
               Perms : CommandPermissions
 
@@ -33,7 +33,7 @@ public sealed class AbstractRootCommand<Context, Perms>(
 ) : AbstractTopLevelCommand<Context, Perms>(name), RootCommand<Context, Perms>
         where Context : CommandContext<*>,
               Perms : CommandPermissions {
-    override val componentDescription: Message
+    override val elementDescription: Message
         get() = localization.getMessageOrNull("description") ?: BasicMessage(defaultDescription)
 
     final override fun toString(): String = "${this::class.simpleName}(name='$name', description='$defaultDescription')"

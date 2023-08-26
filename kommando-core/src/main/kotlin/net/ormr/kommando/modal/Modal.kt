@@ -16,11 +16,11 @@
 
 package net.ormr.kommando.modal
 
-import net.ormr.kommando.AbstractComponent
-import net.ormr.kommando.ComponentPath
+import net.ormr.kommando.AbstractElement
+import net.ormr.kommando.ElementPath
 import net.ormr.kommando.internal.createUuidString
 
-public abstract class Modal<Value>(name: String, title: String) : AbstractComponent() {
+public abstract class Modal<Value>(name: String, title: String) : AbstractElement() {
     public val modalName: String = name
     public val modalTitle: String = title
     public val modalId: String = createUuidString()
@@ -29,8 +29,8 @@ public abstract class Modal<Value>(name: String, title: String) : AbstractCompon
     @PublishedApi
     internal val modalResponse: DeferredModalResponse<Value> by lazy { DeferredModalResponse(this) }
 
-    final override val componentPath: ComponentPath
-        get() = ComponentPath("modals", modalName)
+    final override val elementPath: ElementPath
+        get() = ElementPath("modals", modalName)
 
     context(ModalContext)
     public abstract suspend fun execute(): Value

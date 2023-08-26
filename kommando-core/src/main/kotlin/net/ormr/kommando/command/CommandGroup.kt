@@ -16,8 +16,8 @@
 
 package net.ormr.kommando.command
 
-import net.ormr.kommando.AbstractComponent
-import net.ormr.kommando.ComponentPath
+import net.ormr.kommando.AbstractElement
+import net.ormr.kommando.ElementPath
 import net.ormr.kommando.getMessageOrNull
 import net.ormr.kommando.localization
 import net.ormr.kommando.localization.BasicMessage
@@ -26,8 +26,8 @@ import net.ormr.kommando.localization.Message
 public abstract class CommandGroup<out Parent>(
     private val name: String,
     private val description: String,
-) : AbstractComponent(), DescribableCommandComponent, GlobalInheritableCommandComponent,
-    GuildInheritableCommandComponent, ChildCommandComponent
+) : AbstractElement(), DescribableCommandElement, GlobalInheritableCommandElement,
+    GuildInheritableCommandElement, ChildCommandElement
         where Parent : RootCommand<*, *> {
     public lateinit var parentCommand: @UnsafeVariance Parent
         private set
@@ -35,14 +35,14 @@ public abstract class CommandGroup<out Parent>(
     public val groupName: Message
         get() = localization.getMessageOrNull("name") ?: BasicMessage(name)
 
-    override val componentDescription: Message
+    override val elementDescription: Message
         get() = localization.getMessageOrNull("description") ?: BasicMessage(description)
 
-    final override val componentPath: ComponentPath
-        get() = ComponentPath("groups", name)
+    final override val elementPath: ElementPath
+        get() = ElementPath("groups", name)
 
-    final override val fullComponentPath: ComponentPath
-        get() = parentCommand.componentPath / componentPath
+    final override val fullElementPath: ElementPath
+        get() = parentCommand.elementPath / elementPath
 
     // Workaround for 'Setter for property is removed by type projection' error
     internal fun initParentCommand(parent: @UnsafeVariance Parent) {

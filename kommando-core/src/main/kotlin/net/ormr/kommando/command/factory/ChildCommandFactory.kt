@@ -16,18 +16,18 @@
 
 package net.ormr.kommando.command.factory
 
-import net.ormr.kommando.command.ChildCommandComponent
+import net.ormr.kommando.command.ChildCommandElement
 import net.ormr.kommando.command.CommandGroup
 import net.ormr.kommando.command.SubCommand
 import org.kodein.di.DirectDI
 
 public sealed interface ChildCommandFactory<Comp>
-        where Comp : ChildCommandComponent {
+        where Comp : ChildCommandElement {
     public val provider: CommandComponentProvider<Comp>
 }
 
 public fun <Comp> ChildCommandFactory<Comp>.create(di: DirectDI): Comp
-        where Comp : ChildCommandComponent = with(di) { provider.get() }
+        where Comp : ChildCommandElement = with(di) { provider.get() }
 
 public class SubCommandFactory internal constructor(override val provider: SubCommandProvider<*, *>) :
     ChildCommandFactory<SubCommand<*, *>>

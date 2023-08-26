@@ -17,8 +17,8 @@
 package net.ormr.kommando.localization
 
 import dev.kord.common.Locale
-import net.ormr.kommando.Component
-import net.ormr.kommando.ComponentPath
+import net.ormr.kommando.Element
+import net.ormr.kommando.ElementPath
 import net.ormr.kommando.KommandoBuilder
 import net.ormr.kommando.KommandoDsl
 import kotlin.contracts.InvocationKind
@@ -47,7 +47,7 @@ public class LocalizationBuilder @PublishedApi internal constructor(
 }
 
 private data object DefaultMessageFinder : MessageFinder {
-    override fun findMessage(bundle: MessageBundle, component: Component, path: ComponentPath, key: String): Message? =
+    override fun findMessage(bundle: MessageBundle, element: Element, path: ElementPath, key: String): Message? =
         bundle.getMessageOrNull(path, key)
 }
 

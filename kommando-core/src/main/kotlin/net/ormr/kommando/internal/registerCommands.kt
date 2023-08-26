@@ -191,7 +191,7 @@ private fun buildCommand(wrapper: CommandWrapper) {
     }
 
     if (command is RootCommand<*, *> && builder is LocalizedDescriptionBuilder) {
-        builder.descriptionLocalizations = command.componentDescription.toMutableMapOrNull()
+        builder.descriptionLocalizations = command.elementDescription.toMutableMapOrNull()
     }
 
     if (wrapper is ParentCommandWrapper) {
@@ -201,7 +201,7 @@ private fun buildCommand(wrapper: CommandWrapper) {
                     val group = child.instance
                     group(group.defaultGroupName, group.defaultComponentDescription) {
                         nameLocalizations = group.groupName.toMutableMapOrNull()
-                        descriptionLocalizations = group.componentDescription.toMutableMapOrNull()
+                        descriptionLocalizations = group.elementDescription.toMutableMapOrNull()
                         for (subCommand in child.subCommands) {
                             subCommand(subCommand.defaultCommandName, subCommand.defaultComponentDescription) {
                                 with(buildContext) {
@@ -265,7 +265,7 @@ private fun createWrappers(
     when (parent) {
         is RootCommandFactory -> {
             val instance = parent.create(di)
-            paths.addFirst(instance.componentPath)
+            paths.addFirst(instance.elementPath)
             ParentCommandWrapper(
                 instance = instance,
                 factory = parent,
@@ -274,7 +274,7 @@ private fun createWrappers(
                         is CommandGroupFactory -> {
                             val group = child.create(di).fix()
                             group.initParentCommand(instance)
-                            paths.addFirst(paths.first() / group.componentPath)
+                            paths.addFirst(paths.first() / group.elementPath)
                             CommandGroupWrapper(
                                 instance = group,
                                 subCommands = child

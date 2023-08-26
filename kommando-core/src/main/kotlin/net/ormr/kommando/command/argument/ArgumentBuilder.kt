@@ -50,7 +50,7 @@ public class ArgumentBuilder<Value, Arg>(
         val (key, name, description) = cache.getOrPut(cacheKey) {
             val key = nameConverter.convert(property.name)
             val bundle = thisRef.localization
-            val selfPath = thisRef.componentPath
+            val selfPath = thisRef.elementPath
             val firstPath = cache.pathStack.firstOrNull()?.let { it / selfPath } ?: selfPath
             val argPath = firstPath / "arguments" / key
             val name = bundle.getMessageOrNull(thisRef, argPath, "name") ?: BasicMessage(this.name ?: key)

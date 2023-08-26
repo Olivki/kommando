@@ -16,6 +16,5 @@
 
 package net.ormr.kommando.command
 
-import net.ormr.kommando.Component
-
-public sealed interface CommandComponent : Component
+// TODO: better name
+public sealed interface InheritableCommandElement : CommandElement

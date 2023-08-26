@@ -36,7 +36,7 @@ internal inline fun Command<*>.findRegistry(): CommandArgumentRegistry = fixComm
 
 internal inline fun CommandGroup<*>.fix(): CommandGroup<RootCommand<*, *>> = this
 
-internal inline fun SubCommand<*, *>.fixSubCommand(): AbstractSubCommand<*, InheritableCommandComponent> =
+internal inline fun SubCommand<*, *>.fixSubCommand(): AbstractSubCommand<*, InheritableCommandElement> =
     fixType { "SubCommand" }
 
 internal inline fun Command<*>.fixCommand(): AbstractCommand<*> = fixType { "Command" }

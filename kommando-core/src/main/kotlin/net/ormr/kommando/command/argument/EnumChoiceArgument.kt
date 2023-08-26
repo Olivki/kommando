@@ -20,7 +20,7 @@ import dev.kord.common.entity.optional.Optional
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
 import dev.kord.rest.builder.interaction.string
 import net.ormr.kommando.command.CustomizableCommand
-import net.ormr.kommando.findFullComponentPath
+import net.ormr.kommando.findFullElementPath
 import net.ormr.kommando.localization
 import net.ormr.kommando.localization.LocalizedMessage
 import net.ormr.kommando.localization.Message
@@ -51,7 +51,7 @@ public class EnumChoiceArgument<Value>(
     context(ArgumentBuildContext, BaseInputChatBuilder)
     override fun buildArgument(isRequired: Boolean) {
         val bundle = parentCommand.localization
-        val path = parentCommand.findFullComponentPath() / "arguments" / key / "choices"
+        val path = parentCommand.findFullElementPath() / "arguments" / key / "choices"
         string(defaultName, defaultDescription) {
             this.required = isRequired
             for (entry in entries) {

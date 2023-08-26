@@ -16,13 +16,13 @@
 
 package net.ormr.kommando.localization
 
-import net.ormr.kommando.ComponentPath
+import net.ormr.kommando.ElementPath
 
 private class ChainedMessageBundle(
     private val left: MessageBundle,
     private val right: MessageBundle,
 ) : MessageBundle {
-    override fun getMessageOrNull(path: ComponentPath, key: String): Message? =
+    override fun getMessageOrNull(path: ElementPath, key: String): Message? =
         left.getMessageOrNull(path, key) ?: right.getMessageOrNull(path, key)
 
     override fun isEmpty(): Boolean = left.isEmpty() && right.isEmpty()

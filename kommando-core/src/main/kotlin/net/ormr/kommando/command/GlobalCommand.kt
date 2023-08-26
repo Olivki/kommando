@@ -20,13 +20,13 @@ import net.ormr.kommando.command.permission.GlobalCommandPermissions
 
 public sealed interface GlobalChatInputCommand : GlobalCommandType, ChatInputCommand<GlobalCommandContext>
 
-public sealed interface GlobalInheritableCommandComponent : InheritableCommandComponent
+public sealed interface GlobalInheritableCommandElement : InheritableCommandElement
 
 public abstract class GlobalCommand(
     name: String,
     description: String,
 ) : AbstractRootCommand<GlobalCommandContext, GlobalCommandPermissions>(name, description), GlobalTopLevelCommand,
-    GlobalTopLevelChatInputCommand, GlobalChatInputCommand, GlobalInheritableCommandComponent {
+    GlobalTopLevelChatInputCommand, GlobalChatInputCommand, GlobalInheritableCommandElement {
     context(GlobalCommandContext)
     override suspend fun execute() {
         error("Command ${this::class.qualifiedName} should never be executed")
@@ -37,4 +37,4 @@ public abstract class GlobalSubCommand<out Root>(
     name: String,
     description: String,
 ) : AbstractSubCommand<GlobalCommandContext, Root>(name, description), GlobalCommandType, GlobalChatInputCommand
-        where Root : GlobalInheritableCommandComponent
+        where Root : GlobalInheritableCommandElement

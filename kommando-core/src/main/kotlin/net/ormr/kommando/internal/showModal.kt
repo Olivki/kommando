@@ -19,7 +19,7 @@ package net.ormr.kommando.internal
 import dev.kord.core.behavior.interaction.ModalParentInteractionBehavior
 import dev.kord.core.behavior.interaction.modal
 import dev.kord.core.behavior.interaction.response.PopupInteractionResponseBehavior
-import net.ormr.kommando.Component
+import net.ormr.kommando.Element
 import net.ormr.kommando.modal.Modal
 import net.ormr.kommando.modal.ModalResult
 import net.ormr.kommando.modal.ModalStorage
@@ -27,7 +27,7 @@ import kotlin.time.Duration
 
 internal typealias ModalResponseCallback = suspend (PopupInteractionResponseBehavior) -> Unit
 
-context(Component)
+context(Element)
 @PublishedApi
 internal suspend inline fun <Value> showModal0(
     modal: Modal<Value>,

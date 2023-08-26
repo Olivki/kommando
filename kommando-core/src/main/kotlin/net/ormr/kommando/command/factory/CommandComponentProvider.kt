@@ -16,7 +16,7 @@
 
 package net.ormr.kommando.command.factory
 
-import net.ormr.kommando.command.CommandComponent
+import net.ormr.kommando.command.CommandElement
 import net.ormr.kommando.command.CommandGroup
 import net.ormr.kommando.command.SubCommand
 import net.ormr.kommando.command.TopLevelCommand
@@ -27,7 +27,7 @@ internal typealias SubCommandProvider<Context, Parent> = CommandComponentProvide
 internal typealias CommandGroupProvider<Parent> = CommandComponentProvider<CommandGroup<Parent>>
 
 public fun interface CommandComponentProvider<out Comp>
-        where Comp : CommandComponent {
+        where Comp : CommandElement {
     context(DirectDI)
     public fun get(): Comp
 }

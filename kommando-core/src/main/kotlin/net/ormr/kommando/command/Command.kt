@@ -16,13 +16,13 @@
 
 package net.ormr.kommando.command
 
-import net.ormr.kommando.AbstractComponent
+import net.ormr.kommando.AbstractElement
 import net.ormr.kommando.getMessageOrNull
 import net.ormr.kommando.localization
 import net.ormr.kommando.localization.BasicMessage
 import net.ormr.kommando.localization.Message
 
-public sealed interface Command<Context> : CommandComponent
+public sealed interface Command<Context> : CommandElement
         where Context : CommandContext<*> {
     public val commandName: Message
 
@@ -35,7 +35,7 @@ public sealed interface Command<Context> : CommandComponent
 
 public sealed class AbstractCommand<Context>(
     private val defaultName: String,
-) : AbstractComponent(), Command<Context>
+) : AbstractElement(), Command<Context>
         where Context : CommandContext<*> {
     override val commandName: Message
         get() = localization.getMessageOrNull("name") ?: BasicMessage(this.defaultName)

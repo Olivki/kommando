@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.michaelbull.logging.InlineLogger
 import dev.kord.common.Locale
-import net.ormr.kommando.ComponentPath
+import net.ormr.kommando.ElementPath
 import net.ormr.kommando.forEach
 import net.ormr.kommando.kord.asString
 import net.ormr.kommando.util.toPersistentHashMap
@@ -38,7 +38,7 @@ internal class JacksonMessageBundleHelper(private val mapper: ObjectMapper, reso
             resource.inputStream().use { LocalizedNode(locale, mapper.readTree(it)) }
         }
 
-    fun findMessage(defaultLocale: Locale, path: ComponentPath, key: String): Message? {
+    fun findMessage(defaultLocale: Locale, path: ElementPath, key: String): Message? {
         val strings = nodes
             .asSequence()
             .mapNotNull { obj -> obj.findString(path, key)?.let { obj.locale to it } }
@@ -49,12 +49,12 @@ internal class JacksonMessageBundleHelper(private val mapper: ObjectMapper, reso
     }
 
     private data class LocalizedNode(val locale: Locale, private val root: JsonNode) {
-        fun findString(path: ComponentPath, key: String): String? {
+        fun findString(path: ElementPath, key: String): String? {
             val node = walkToEndOf(path)?.get(key) ?: return null
             return node.textValue()
         }
 
-        private fun walkToEndOf(path: ComponentPath): JsonNode? {
+        private fun walkToEndOf(path: ElementPath): JsonNode? {
             var current = root
             path.forEach { component ->
                 current = current[component] ?: return null

@@ -16,6 +16,6 @@
 
 package net.ormr.kommando.command
 
-import net.ormr.kommando.ComposableComponent
+import net.ormr.kommando.Element
 
-public sealed interface ChildCommandComponent : CommandComponent, ComposableComponent
+public sealed interface CommandElement : Element

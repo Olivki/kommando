@@ -16,13 +16,13 @@
 
 package net.ormr.kommando.command.argument
 
-import net.ormr.kommando.ComponentPath
+import net.ormr.kommando.ElementPath
 import net.ormr.kommando.localization.Message
 import java.util.concurrent.ConcurrentHashMap
 
 internal class ArgumentCache {
     private val cache: MutableMap<Key, Data> = ConcurrentHashMap()
-    internal val pathStack = ArrayDeque<ComponentPath>()
+    internal val pathStack = ArrayDeque<ElementPath>()
 
     fun getOrPut(key: Key, defaultValue: (Key) -> Data): Data = cache.computeIfAbsent(key, defaultValue)
 

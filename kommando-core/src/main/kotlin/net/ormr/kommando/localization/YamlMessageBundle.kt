@@ -17,13 +17,13 @@
 package net.ormr.kommando.localization
 
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
-import net.ormr.kommando.ComponentPath
+import net.ormr.kommando.ElementPath
 import net.ormr.kommando.KommandoDsl
 
 private class YamlMessageBundle(private val resource: LocalizedResource) : MessageBundle {
     private val helper = JacksonMessageBundleHelper(mapper, resource)
 
-    override fun getMessageOrNull(path: ComponentPath, key: String): Message? =
+    override fun getMessageOrNull(path: ElementPath, key: String): Message? =
         helper.findMessage(resource.defaultLocale, path, key)
 
     override fun isEmpty(): Boolean = resource.isEmpty()

@@ -20,30 +20,30 @@ import net.ormr.kommando.localization.Message
 import org.kodein.di.DI
 import org.kodein.di.instance
 
-public interface Component : KommandoDI, KommandoContext {
+public interface Element : KommandoDI, KommandoContext {
     /**
-     * The path to this component.
+     * The path to the element.
      *
      * This is not guaranteed to be a "full" path, as it may be a path relative to the parent component. For "full"
-     * paths, see [ComposableComponent.fullComponentPath].
+     * paths, see [ComposableComponent.fullElementPath].
      */
-    public val componentPath: ComponentPath
+    public val elementPath: ElementPath
 }
 
-public abstract class AbstractComponent : Component {
+public abstract class AbstractElement : Element {
     final override val di: DI get() = super.di
 
     final override val kommando: Kommando by instance()
 }
 
-// TODO: better name, 'Composable' doesn't really convey what this does differently from 'Component'
+// TODO: better name, 'Composable' doesn't really convey what this does differently from 'Element'
 public interface ComposableComponent {
     /**
-     * The full path to this component, including the parent's path.
+     * The full path to the element, including the parent's path.
      */
-    public val fullComponentPath: ComponentPath
+    public val fullElementPath: ElementPath
 }
 
-public interface DescribableComponent : Component {
-    public val componentDescription: Message
+public interface DescribableElement : Element {
+    public val elementDescription: Message
 }
