@@ -69,6 +69,7 @@ public class EnumChoiceArgument<Value>(
         "EnumChoiceArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}', entries=$nameToEntry)"
 }
 
+// TODO: rename to 'enumChoice'?
 context(CustomizableCommand<*>)
 public inline fun <reified Value> enum(
     name: String? = null,

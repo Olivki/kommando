@@ -24,8 +24,8 @@ public interface Element : KommandoDI, KommandoContext {
     /**
      * The path to the element.
      *
-     * This is not guaranteed to be a "full" path, as it may be a path relative to the parent component. For "full"
-     * paths, see [ComposableComponent.fullElementPath].
+     * This is not guaranteed to be a "full" path, as it may be a path relative to the parent element. For "full"
+     * paths, see [ComposableElement.fullElementPath].
      */
     public val elementPath: ElementPath
 }
@@ -37,7 +37,7 @@ public abstract class AbstractElement : Element {
 }
 
 // TODO: better name, 'Composable' doesn't really convey what this does differently from 'Element'
-public interface ComposableComponent {
+public interface ComposableElement {
     /**
      * The full path to the element, including the parent's path.
      */

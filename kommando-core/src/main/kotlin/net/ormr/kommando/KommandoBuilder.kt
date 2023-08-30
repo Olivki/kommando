@@ -21,6 +21,7 @@ import dev.kord.core.Kord
 import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
 import net.ormr.kommando.command.CommandsBuilder
+import net.ormr.kommando.component.ComponentStorage
 import net.ormr.kommando.localization.Localization
 import net.ormr.kommando.localization.LocalizationBuilder
 import net.ormr.kommando.modal.ModalStorage
@@ -39,6 +40,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
     override val directDI: DirectDI,
 ) : DirectDIAware {
     public var modalStorage: ModalStorage = ModalStorage(timeout = 7.minutes)
+    public var componentStorage: ComponentStorage = ComponentStorage(timeout = 5.minutes)
 
     @PublishedApi
     internal var exceptionHandler: KommandoExceptionHandler? = null
@@ -59,6 +61,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
             commands = commands,
             exceptionHandler = exceptionHandler,
             modalStorage = modalStorage,
+            componentStorage = componentStorage,
         )
 
         if (localization.messageBundle.isEmpty()) {
