@@ -20,6 +20,7 @@ import dev.kord.core.Kord
 import net.ormr.kommando.command.Commands
 import net.ormr.kommando.command.factory.CommandFactory
 import net.ormr.kommando.component.ComponentStorage
+import net.ormr.kommando.filter.MessageFilter
 import net.ormr.kommando.internal.handleCommands
 import net.ormr.kommando.internal.handleModals
 import net.ormr.kommando.localization.Localization
@@ -29,6 +30,7 @@ public class Kommando internal constructor(
     public val kord: Kord,
     public val localization: Localization,
     public val commands: Commands,
+    public val messageFilters: List<MessageFilter>,
     public val exceptionHandler: KommandoExceptionHandler?,
     public val modalStorage: ModalStorage,
     public val componentStorage: ComponentStorage,

@@ -18,10 +18,16 @@ package net.ormr.kommando
 
 import com.github.michaelbull.logging.InlineLogger
 import dev.kord.core.Kord
+import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
+import dev.kord.gateway.PrivilegedIntent
 import dev.kord.gateway.builder.PresenceBuilder
 import net.ormr.kommando.command.CommandsBuilder
 import net.ormr.kommando.component.ComponentStorage
+import net.ormr.kommando.filter.MessageFilter
+import net.ormr.kommando.filter.ignoreBots
+import net.ormr.kommando.filter.ignoreSelf
+import net.ormr.kommando.filter.unaryPlus
 import net.ormr.kommando.localization.Localization
 import net.ormr.kommando.localization.LocalizationBuilder
 import net.ormr.kommando.modal.ModalStorage
@@ -42,6 +48,8 @@ public class KommandoBuilder @PublishedApi internal constructor(
     public var modalStorage: ModalStorage = ModalStorage(timeout = 7.minutes)
     public var componentStorage: ComponentStorage = ComponentStorage(timeout = 5.minutes)
 
+    public val messageFilters: MutableList<MessageFilter> = mutableListOf()
+
     @PublishedApi
     internal var exceptionHandler: KommandoExceptionHandler? = null
 
@@ -51,6 +59,14 @@ public class KommandoBuilder @PublishedApi internal constructor(
     @PublishedApi
     internal var commandsBuilder: CommandsBuilder? = null
 
+    init {
+        @OptIn(PrivilegedIntent::class)
+        if (Intent.MessageContent in intents) {
+            +ignoreSelf
+            +ignoreBots
+        }
+    }
+
     @PublishedApi
     internal suspend fun build(): Kommando {
         val localization = localization ?: LocalizationBuilder().build()
@@ -59,6 +75,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
             kord = kord,
             localization = localization,
             commands = commands,
+            messageFilters = messageFilters.toList(),
             exceptionHandler = exceptionHandler,
             modalStorage = modalStorage,
             componentStorage = componentStorage,
