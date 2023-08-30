@@ -28,6 +28,7 @@ import net.ormr.kommando.filter.MessageFilter
 import net.ormr.kommando.filter.ignoreBots
 import net.ormr.kommando.filter.ignoreSelf
 import net.ormr.kommando.filter.unaryPlus
+import net.ormr.kommando.listener.EventListener
 import net.ormr.kommando.localization.Localization
 import net.ormr.kommando.localization.LocalizationBuilder
 import net.ormr.kommando.modal.ModalStorage
@@ -47,8 +48,8 @@ public class KommandoBuilder @PublishedApi internal constructor(
 ) : DirectDIAware {
     public var modalStorage: ModalStorage = ModalStorage(timeout = 7.minutes)
     public var componentStorage: ComponentStorage = ComponentStorage(timeout = 5.minutes)
-
     public val messageFilters: MutableList<MessageFilter> = mutableListOf()
+    public val eventListeners: MutableList<EventListener> = mutableListOf()
 
     @PublishedApi
     internal var exceptionHandler: KommandoExceptionHandler? = null
@@ -73,9 +74,11 @@ public class KommandoBuilder @PublishedApi internal constructor(
         val (commands, commandFactories) = commandsBuilder?.build() ?: CommandsBuilder().build()
         val kommando = Kommando(
             kord = kord,
+            intents = intents,
             localization = localization,
             commands = commands,
             messageFilters = messageFilters.toList(),
+            eventListeners = eventListeners.toList(),
             exceptionHandler = exceptionHandler,
             modalStorage = modalStorage,
             componentStorage = componentStorage,

@@ -17,20 +17,24 @@
 package net.ormr.kommando
 
 import dev.kord.core.Kord
+import dev.kord.gateway.Intents
 import net.ormr.kommando.command.Commands
 import net.ormr.kommando.command.factory.CommandFactory
 import net.ormr.kommando.component.ComponentStorage
 import net.ormr.kommando.filter.MessageFilter
 import net.ormr.kommando.internal.handleCommands
 import net.ormr.kommando.internal.handleModals
+import net.ormr.kommando.listener.EventListener
 import net.ormr.kommando.localization.Localization
 import net.ormr.kommando.modal.ModalStorage
 
 public class Kommando internal constructor(
     public val kord: Kord,
+    public val intents: Intents,
     public val localization: Localization,
     public val commands: Commands,
     public val messageFilters: List<MessageFilter>,
+    public val eventListeners: List<EventListener>,
     public val exceptionHandler: KommandoExceptionHandler?,
     public val modalStorage: ModalStorage,
     public val componentStorage: ComponentStorage,
@@ -48,5 +52,6 @@ public class Kommando internal constructor(
     private suspend fun registerHandlers() {
         handleCommands()
         handleModals()
+        eventListeners.forEach { it.register() }
     }
 }

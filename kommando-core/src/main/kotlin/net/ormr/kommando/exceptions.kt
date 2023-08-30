@@ -19,13 +19,24 @@
 package net.ormr.kommando
 
 import dev.kord.common.entity.Snowflake
+import dev.kord.gateway.Intents
 import net.ormr.kommando.command.Command
 import net.ormr.kommando.command.CommandArgumentRequestInfo
 import net.ormr.kommando.command.CommandRequestInfo
 import net.ormr.kommando.command.argument.Argument
 import kotlin.reflect.KClass
+import kotlin.reflect.KType
 
 public open class KommandoException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
+
+/**
+ * Thrown if an event registered via [Kommando] requires intents that have not been registered.
+ */
+@Suppress("CanBeParameter", "MemberVisibilityCanBePrivate")
+public class MissingEventIntentException(
+    public val eventType: KType,
+    public val missingIntents: Intents,
+) : KommandoException("Intents for event $eventType is missing: ${missingIntents.values}.")
 
 public class NoSuchCommandException(message: String) : KommandoException(message)
 
