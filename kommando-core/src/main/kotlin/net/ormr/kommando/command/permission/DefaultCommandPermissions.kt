@@ -57,7 +57,7 @@ public class DefaultCommandPermissionsBuilder @PublishedApi internal constructor
 }
 
 @KommandoDsl
-public inline fun CommandsBuilder.defaultCommandPermissions(builder: DefaultCommandPermissionsBuilder.() -> Unit) {
+public inline fun CommandsBuilder.defaultPermissions(builder: DefaultCommandPermissionsBuilder.() -> Unit) {
     contract {
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
