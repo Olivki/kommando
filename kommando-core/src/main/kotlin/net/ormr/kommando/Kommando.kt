@@ -21,7 +21,7 @@ import dev.kord.gateway.Intents
 import net.ormr.kommando.command.Commands
 import net.ormr.kommando.command.factory.CommandFactory
 import net.ormr.kommando.component.ComponentStorage
-import net.ormr.kommando.filter.MessageFilter
+import net.ormr.kommando.filter.EventFilter
 import net.ormr.kommando.internal.handleCommands
 import net.ormr.kommando.internal.handleModals
 import net.ormr.kommando.listener.EventListener
@@ -33,7 +33,7 @@ public class Kommando internal constructor(
     public val intents: Intents,
     public val localization: Localization,
     public val commands: Commands,
-    public val messageFilters: List<MessageFilter>,
+    public val eventFilters: List<EventFilter<*>>,
     public val eventListeners: List<EventListener>,
     public val exceptionHandler: KommandoExceptionHandler?,
     public val modalStorage: ModalStorage,

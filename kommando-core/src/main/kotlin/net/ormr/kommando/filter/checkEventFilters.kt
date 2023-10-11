@@ -16,11 +16,25 @@
 
 package net.ormr.kommando.filter
 
-import dev.kord.core.event.message.MessageCreateEvent
 import net.ormr.kommando.KommandoContext
+import net.ormr.kommando.kord.KordEvent
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
-public typealias MessageFilter = EventFilter<MessageCreateEvent>
+context(KommandoContext)
+@PublishedApi
+@Suppress("UNCHECKED_CAST")
+internal suspend inline fun checkEventFilters(filters: List<EventFilter<*>>, event: KordEvent, action: () -> Unit) {
+    contract {
+        callsInPlace(action, InvocationKind.AT_MOST_ONCE)
+    }
 
-public inline fun MessageFilter(
-    crossinline predicate: suspend context(KommandoContext) (event: MessageCreateEvent) -> Boolean,
-): MessageFilter = EventFilter(predicate)
+    for (i in filters.indices) {
+        val filter = filters[i] as AbstractEventFilter<KordEvent>
+        if (!filter.isFilterFor(event)) continue
+        if (!filter.isOk(event)) {
+            action()
+            break
+        }
+    }
+}

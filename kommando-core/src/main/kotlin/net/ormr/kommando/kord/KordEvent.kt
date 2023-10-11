@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 
-package net.ormr.kommando.filter
+package net.ormr.kommando.kord
 
-import dev.kord.gateway.Intent
-import net.ormr.kommando.KommandoBuilder
-
-private val IgnoreBotsFilter = MessageFilter { it.message.author?.isBot != true }
-
-/**
- * Filters away any messages created by bots.
- *
- * Enabled by default if [Intent.MessageContent] is enabled in [intents][KommandoBuilder.intents].
- */
-context(KommandoBuilder)
-public val ignoreBots: MessageFilter
-    get() = IgnoreBotsFilter
+public typealias KordEvent = dev.kord.core.event.Event

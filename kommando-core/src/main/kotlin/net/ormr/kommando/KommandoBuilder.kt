@@ -24,7 +24,7 @@ import dev.kord.gateway.PrivilegedIntent
 import dev.kord.gateway.builder.PresenceBuilder
 import net.ormr.kommando.command.CommandsBuilder
 import net.ormr.kommando.component.ComponentStorage
-import net.ormr.kommando.filter.MessageFilter
+import net.ormr.kommando.filter.EventFilter
 import net.ormr.kommando.filter.ignoreBots
 import net.ormr.kommando.filter.ignoreSelf
 import net.ormr.kommando.filter.unaryPlus
@@ -48,7 +48,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
 ) : DirectDIAware {
     public var modalStorage: ModalStorage = ModalStorage(timeout = 7.minutes)
     public var componentStorage: ComponentStorage = ComponentStorage(timeout = 5.minutes)
-    public val messageFilters: MutableList<MessageFilter> = mutableListOf()
+    public val eventFilters: MutableList<EventFilter<*>> = mutableListOf()
     public val eventListeners: MutableList<EventListener> = mutableListOf()
 
     @PublishedApi
@@ -77,7 +77,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
             intents = intents,
             localization = localization,
             commands = commands,
-            messageFilters = messageFilters.toList(),
+            eventFilters = eventFilters.toList(),
             eventListeners = eventListeners.toList(),
             exceptionHandler = exceptionHandler,
             modalStorage = modalStorage,

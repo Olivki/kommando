@@ -16,10 +16,10 @@
 
 package net.ormr.kommando.listener
 
-import dev.kord.core.event.message.MessageCreateEvent
 import net.ormr.kommando.AbstractElement
 import net.ormr.kommando.ElementPath
 import net.ormr.kommando.KommandoBuilder
+import net.ormr.kommando.filter.checkEventFilters
 import net.ormr.kommando.util.checkIntents
 import dev.kord.core.event.Event as KordEvent
 import dev.kord.core.on as kordOn
@@ -32,8 +32,7 @@ public abstract class EventListener(public val id: String) : AbstractElement() {
             where Event : KordEvent {
         kommando.kord.kordOn<Event> {
             checkIntents<Event>(kommando.intents)
-
-            if (this is MessageCreateEvent && kommando.messageFilters.any { !it.isOk() }) return@kordOn
+            checkEventFilters(kommando.eventFilters, this) { return@kordOn }
             consumer()
         }
     }

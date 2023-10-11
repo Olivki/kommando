@@ -16,15 +16,10 @@
 
 package net.ormr.kommando.filter
 
-import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.gateway.Intent
 import net.ormr.kommando.KommandoBuilder
-import net.ormr.kommando.KommandoContext
 
-private data object IgnoreSelfFilter : MessageFilter {
-    context(KommandoContext, MessageCreateEvent)
-    override suspend fun isOk(): Boolean = message.author?.id != kommando.kord.selfId
-}
+private val IgnoreSelfFilter = MessageFilter { it.message.author?.id != kommando.kord.selfId }
 
 /**
  * Filters away any messages created by the bot itself.
