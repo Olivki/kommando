@@ -39,6 +39,9 @@ public class Kommando internal constructor(
     public val modalStorage: ModalStorage,
     public val componentStorage: ComponentStorage,
 ) : KommandoDI {
+
+    // TODO: implement handling for components
+
     @PublishedApi
     internal suspend fun setup(factories: List<CommandFactory<*>>) {
         registerComponents(factories)
