@@ -36,6 +36,8 @@ tasks {
 
     withType<KotlinJvmCompile>().all {
         compilerOptions {
+            freeCompilerArgs.add("-Xwarning-level=DSL_MARKER_APPLIED_TO_WRONG_TARGET:disabled")
+
             freeCompilerArgs.add("-opt-in=kotlin.contracts.ExperimentalContracts")
 
             freeCompilerArgs.add("-Xcontext-parameters")

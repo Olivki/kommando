@@ -16,6 +16,7 @@
 
 package net.ormr.kommando.command.argument
 
+import dev.kord.common.entity.Choice
 import dev.kord.common.entity.optional.Optional
 import dev.kord.rest.builder.interaction.BaseChoiceBuilder
 import net.ormr.kommando.findFullElementPath
@@ -23,9 +24,9 @@ import net.ormr.kommando.localization
 import net.ormr.kommando.localization.LocalizedMessage
 import net.ormr.kommando.localization.toMutableMap
 
-context(argument: ArgumentWithChoice<*, *, *>, ctx: ArgumentBuildContext, builder: BaseChoiceBuilder<Value>)
-internal fun <Value> addChoices(choices: List<ArgumentChoice<Value>>)
-        where Value : Any {
+context(argument: ArgumentWithChoice<*, *, *>, ctx: ArgumentBuildContext, builder: BaseChoiceBuilder<Value, C>)
+internal fun <Value, C> addChoices(choices: List<ArgumentChoice<Value>>)
+        where Value : Any, C : Choice {
     val bundle = ctx.parentCommand.localization
     val path = ctx.parentCommand.findFullElementPath() / "arguments" / argument.key / "choices"
     for ([name, value] in choices) {

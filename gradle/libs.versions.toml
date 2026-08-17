@@ -1,7 +1,7 @@
 [versions]
 kotlin = "2.4.10"
 kodein = "7.33.0"
-kord = "0.10.0"
+kord = "0.18.1"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

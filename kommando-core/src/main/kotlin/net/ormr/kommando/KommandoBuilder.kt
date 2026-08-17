@@ -20,6 +20,7 @@ import com.github.michaelbull.logging.InlineLogger
 import dev.kord.core.Kord
 import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
+import dev.kord.gateway.NON_PRIVILEGED
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.gateway.builder.PresenceBuilder
 import net.ormr.kommando.command.CommandsBuilder
@@ -103,14 +104,13 @@ public class KommandoBuilder @PublishedApi internal constructor(
 @KommandoDsl
 public suspend inline fun bot(
     token: String,
-    intents: Intents = Intents.nonPrivileged,
+    intents: Intents = Intents.NON_PRIVILEGED,
     presence: PresenceBuilder.() -> Unit = {},
     crossinline di: DI.MainBuilder.() -> Unit = {},
     builder: KommandoBuilder.() -> Unit,
 ) {
     contract {
         callsInPlace(presence, InvocationKind.EXACTLY_ONCE)
-        callsInPlace(di, InvocationKind.AT_LEAST_ONCE)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 
@@ -120,7 +120,7 @@ public suspend inline fun bot(
 @KommandoDsl
 public suspend inline fun bot(
     kord: Kord,
-    intents: Intents = Intents.nonPrivileged,
+    intents: Intents = Intents.NON_PRIVILEGED,
     presence: PresenceBuilder.() -> Unit = {},
     crossinline di: DI.MainBuilder.() -> Unit = {},
     builder: KommandoBuilder.() -> Unit,

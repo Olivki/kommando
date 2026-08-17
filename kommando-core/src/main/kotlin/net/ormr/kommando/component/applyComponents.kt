@@ -25,8 +25,7 @@ import dev.kord.core.entity.interaction.followup.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kord.rest.builder.component.MessageComponentBuilder
-import dev.kord.rest.builder.message.create.MessageCreateBuilder
-import dev.kord.rest.builder.message.modify.MessageModifyBuilder
+import dev.kord.rest.builder.message.MessageBuilder
 import kotlinx.coroutines.launch
 import net.ormr.kommando.KommandoContext
 import net.ormr.kommando.kommando
@@ -40,17 +39,7 @@ import net.ormr.kommando.kord.MessageEntity
  * Note that this will override any existing components on the message.
  */
 context(_: KommandoContext)
-public fun MessageCreateBuilder.applyComponents(group: ComponentGroup) {
-    useComponents(group)
-}
-
-/**
- * Applies the given [group] to this message.
- *
- * Note that this will override any existing components on the message.
- */
-context(_: KommandoContext)
-public fun MessageModifyBuilder.applyComponents(group: ComponentGroup) {
+public fun MessageBuilder.applyComponents(group: ComponentGroup) {
     useComponents(group)
 }
 
@@ -136,13 +125,7 @@ public suspend fun EphemeralMessageInteractionResponseBehavior.applyComponents(
 
 @PublishedApi
 context(_: KommandoContext)
-internal fun MessageCreateBuilder.useComponents(group: ComponentGroup) {
-    useComponents(group, components)
-}
-
-@PublishedApi
-context(_: KommandoContext)
-internal fun MessageModifyBuilder.useComponents(group: ComponentGroup) {
+internal fun MessageBuilder.useComponents(group: ComponentGroup) {
     val components = this.components ?: mutableListOf()
     useComponents(group, components)
     this.components = components
