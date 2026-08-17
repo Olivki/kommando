@@ -41,7 +41,7 @@ internal class ModalComponentRegistry(private val modal: Modal<*>) {
             null -> error(
                 """
                     Registry has not yet been populated.
-                    Property $property was most likely accessed outside of ${modal::execute}.
+                    Property $property was most likely accessed outside of Modal::execute.
                 """.trimIndent()
             )
             else -> when (key) {

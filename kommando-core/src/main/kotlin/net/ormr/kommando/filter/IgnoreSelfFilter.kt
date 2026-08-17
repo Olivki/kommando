@@ -18,6 +18,7 @@ package net.ormr.kommando.filter
 
 import dev.kord.gateway.Intent
 import net.ormr.kommando.KommandoBuilder
+import net.ormr.kommando.kommando
 
 private val IgnoreSelfFilter = MessageFilter { it.message.author?.id != kommando.kord.selfId }
 
@@ -26,6 +27,6 @@ private val IgnoreSelfFilter = MessageFilter { it.message.author?.id != kommando
  *
  * Enabled by default if [Intent.MessageContent] is enabled in [intents][KommandoBuilder.intents].
  */
-context(KommandoBuilder)
+context(_: KommandoBuilder)
 public val ignoreSelf: MessageFilter
     get() = IgnoreSelfFilter

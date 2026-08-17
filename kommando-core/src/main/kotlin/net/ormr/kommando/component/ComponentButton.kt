@@ -37,17 +37,17 @@ public data class ComponentButton(
     override val width: ComponentWidth
         get() = ComponentWidth.ONE
 
-    context(ButtonExecutionContext)
+    context(ctx: ButtonExecutionContext)
     override suspend fun execute() {
         onClick.execute()
     }
 
     override fun withDisabled(isDisabled: Boolean): ComponentButton = copy(isDisabled = isDisabled)
 
-    context(ActionRowBuilder)
+    context(builder: ActionRowBuilder)
     override fun buildComponent() {
         val self = this
-        interactionButton(style = style, customId = interactionId) {
+        builder.interactionButton(style = style, customId = interactionId) {
             label = self.label
             emoji = self.emoji
             disabled = self.isDisabled

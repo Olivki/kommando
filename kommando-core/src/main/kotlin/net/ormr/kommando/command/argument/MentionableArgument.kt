@@ -18,6 +18,7 @@ package net.ormr.kommando.command.argument
 
 import dev.kord.core.entity.Entity
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
+import dev.kord.rest.builder.interaction.mentionable
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.Message
 
@@ -33,9 +34,9 @@ public class MentionableArgument(
 
     override fun convertNullableArgumentValue(value: Entity?): Entity? = value
 
-    context(ArgumentBuildContext, BaseInputChatBuilder)
+    context(ctx: ArgumentBuildContext, builder: BaseInputChatBuilder)
     override fun buildArgument(isRequired: Boolean) {
-        mentionable(defaultName, defaultDescription) {
+        builder.mentionable(defaultName, defaultDescription) {
             registerLocalizations()
             this.required = isRequired
         }
@@ -45,7 +46,7 @@ public class MentionableArgument(
         "MentionableArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}')"
 }
 
-context(CustomizableCommand<*>)
+context(_: CustomizableCommand<*>)
 public fun mentionable(
     name: String? = null,
     description: String,

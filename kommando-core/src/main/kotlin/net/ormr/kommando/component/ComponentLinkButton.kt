@@ -32,10 +32,10 @@ public data class ComponentLinkButton(
 
     override fun withDisabled(isDisabled: Boolean): ComponentLinkButton = copy(isDisabled = isDisabled)
 
-    context(ActionRowBuilder)
+    context(builder: ActionRowBuilder)
     override fun buildComponent() {
         val self = this
-        linkButton(url = url) {
+        builder.linkButton(url = url) {
             label = self.label
             emoji = self.emoji
             disabled = self.isDisabled

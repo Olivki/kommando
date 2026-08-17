@@ -27,15 +27,15 @@ import kotlin.time.Duration
 
 internal typealias ModalResponseCallback = suspend (PopupInteractionResponseBehavior) -> Unit
 
-context(Element)
 @PublishedApi
+context(element: Element)
 internal suspend inline fun <Value> showModal0(
     modal: Modal<Value>,
     timeout: Duration?,
     onResponse: ModalResponseCallback,
     interaction: ModalParentInteractionBehavior,
 ): ModalResult<Value>? {
-    val storage = kommando.modalStorage
+    val storage = element.kommando.modalStorage
     val response = showModal1(storage, modal, interaction)
     onResponse(response)
     return modal.modalResponse.await(timeout ?: storage.timeout)
@@ -52,7 +52,7 @@ internal suspend fun showModal1(
     require(components.size <= 5) { "Modal (${modal::class.qualifiedName}) can only have up to 5 components" }
     storage.addModal(modal)
     return interaction.modal(modal.modalTitle, modal.modalId) {
-        for ((_, component) in components) {
+        for ([_, component] in components) {
             actionRow {
                 component.buildComponent()
             }

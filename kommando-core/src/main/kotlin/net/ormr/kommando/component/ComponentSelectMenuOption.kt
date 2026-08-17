@@ -28,10 +28,10 @@ public data class ComponentSelectMenuOption(
     val description: String?,
     val isDefault: Boolean,
 ) {
-    context(StringSelectBuilder)
+    context(builder: StringSelectBuilder)
     public fun buildOption() {
         val self = this
-        option(label = self.label, value = self.value) {
+        builder.option(label = self.label, value = self.value) {
             description = self.description
             emoji = self.emoji
             default = self.isDefault

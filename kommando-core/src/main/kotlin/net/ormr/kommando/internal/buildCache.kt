@@ -21,7 +21,7 @@ import kotlin.experimental.ExperimentalTypeInference
 
 @OptIn(ExperimentalTypeInference::class)
 internal inline fun <Key, Value> buildCache(
-    @BuilderInference builder: Cache.Builder<Key, Value>.() -> Unit,
+    builder: Cache.Builder<Key, Value>.() -> Unit,
 ): Cache<Key, Value>
         where Key : Any,
               Value : Any = Cache.Builder<Key, Value>().apply(builder).build()

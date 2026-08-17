@@ -27,7 +27,7 @@ public abstract class GlobalCommand(
     description: String,
 ) : AbstractRootCommand<GlobalCommandContext, GlobalCommandPermissions>(name, description), GlobalTopLevelCommand,
     GlobalTopLevelChatInputCommand, GlobalChatInputCommand, GlobalInheritableCommandElement {
-    context(GlobalCommandContext)
+    context(ctx: GlobalCommandContext)
     override suspend fun execute() {
         error("Command ${this::class.qualifiedName} should never be executed")
     }

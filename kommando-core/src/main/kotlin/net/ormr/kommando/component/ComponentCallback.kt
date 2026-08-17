@@ -24,6 +24,6 @@ public fun interface ComponentCallback<Context>
     /**
      * Called when a [ExecutableComponent] is interacted with.
      */
-    context(Context)
+    context(ctx: Context)
     public suspend fun execute()
 }

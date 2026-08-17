@@ -37,17 +37,17 @@ public fun Element.findFullElementPath(): ElementPath = when (this) {
     else -> elementPath
 }
 
-context(Element)
-public inline fun Localization.getMessage(key: String): Message = getMessage(findFullElementPath(), key)
+context(element: Element)
+public inline fun Localization.getMessage(key: String): Message = getMessage(element.findFullElementPath(), key)
 
-context(Element)
+context(element: Element)
 public inline fun Localization.getMessage(path: ElementPath, key: String): Message =
-    getMessage(this@Element, path, key)
+    getMessage(element, path, key)
 
-context(Element)
+context(element: Element)
 public inline fun Localization.getMessageOrNull(key: String): Message? =
-    getMessageOrNull(findFullElementPath(), key)
+    getMessageOrNull(element.findFullElementPath(), key)
 
-context(Element)
+context(element: Element)
 public inline fun Localization.getMessageOrNull(path: ElementPath, key: String): Message? =
-    getMessageOrNull(this@Element, path, key)
+    getMessageOrNull(element, path, key)

@@ -49,8 +49,8 @@ public inline fun GlobalCommandPermissions(
     return GlobalCommandPermissionsBuilder().apply(builder).build()
 }
 
-context(TopLevelCommand<*, GlobalCommandPermissions>)
 @KommandoDsl
+context(_: TopLevelCommand<*, GlobalCommandPermissions>)
 public inline fun permissions(
     builder: GlobalCommandPermissionsBuilder.() -> Unit,
 ): GlobalCommandPermissions {

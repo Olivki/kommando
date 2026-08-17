@@ -24,6 +24,6 @@ public data class ArgumentChoice<Value>(public val key: String, public val value
     override fun toString(): String = "'$key' = $value"
 }
 
-context(CustomizableCommand<*>)
+context(_: CustomizableCommand<*>)
 public inline infix fun <Value> String.returns(value: Value): ArgumentChoice<Value>
         where Value : Any = ArgumentChoice(this, value)

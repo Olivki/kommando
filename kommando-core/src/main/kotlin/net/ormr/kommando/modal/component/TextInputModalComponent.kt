@@ -37,10 +37,10 @@ public data class TextInputModalComponent(
 
     override fun convertNullableComponentValue(value: String?): String? = value
 
-    context(ActionRowBuilder)
+    context(builder: ActionRowBuilder)
     override fun buildComponent() {
         val self = this
-        textInput(style, customId, label) {
+        builder.textInput(style, customId, label) {
             allowedLength = self.allowedLength
             placeholder = self.placeholder
             value = self.defaultValue
@@ -64,7 +64,7 @@ public data class TextInputModalComponent(
  * @see [paragraphTextInput]
  * @see [textInput]
  */
-context(Modal<*>)
+context(_: Modal<*>)
 public fun shortTextInput(
     customId: String? = null,
     label: String,
@@ -98,7 +98,7 @@ public fun shortTextInput(
  * @see [shortTextInput]
  * @see [textInput]
  */
-context(Modal<*>)
+context(_: Modal<*>)
 public fun paragraphTextInput(
     customId: String? = null,
     label: String,
@@ -133,7 +133,7 @@ public fun paragraphTextInput(
  * @see [shortTextInput]
  * @see [paragraphTextInput]
  */
-context(Modal<*>)
+context(_: Modal<*>)
 public fun textInput(
     customId: String? = null,
     style: TextInputStyle,

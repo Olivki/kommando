@@ -28,7 +28,7 @@ public abstract class GuildCommand(
     description: String,
 ) : AbstractRootCommand<GuildCommandContext, GuildCommandPermissions>(name, description), GuildTopLevelCommand,
     GuildTopLevelChatInputCommand, GuildChatInputCommand, GuildInheritableCommandElement {
-    context(GuildCommandContext)
+    context(ctx: GuildCommandContext)
     override suspend fun execute() {
         error("Command ${this::class.qualifiedName} should never be executed")
     }

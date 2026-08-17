@@ -29,6 +29,7 @@ import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.builder.message.modify.MessageModifyBuilder
 import kotlinx.coroutines.launch
 import net.ormr.kommando.KommandoContext
+import net.ormr.kommando.kommando
 import net.ormr.kommando.kord.MessageEntity
 
 // MessageCreateBuilder
@@ -38,7 +39,7 @@ import net.ormr.kommando.kord.MessageEntity
  *
  * Note that this will override any existing components on the message.
  */
-context(KommandoContext)
+context(_: KommandoContext)
 public fun MessageCreateBuilder.applyComponents(group: ComponentGroup) {
     useComponents(group)
 }
@@ -48,7 +49,7 @@ public fun MessageCreateBuilder.applyComponents(group: ComponentGroup) {
  *
  * Note that this will override any existing components on the message.
  */
-context(KommandoContext)
+context(_: KommandoContext)
 public fun MessageModifyBuilder.applyComponents(group: ComponentGroup) {
     useComponents(group)
 }
@@ -60,7 +61,7 @@ public fun MessageModifyBuilder.applyComponents(group: ComponentGroup) {
  *
  * Note that this will override any existing components on the message.
  */
-context(KommandoContext)
+context(_: KommandoContext)
 public suspend fun MessageEntity.applyComponents(
     group: ComponentGroup,
 ): MessageEntity = apply {
@@ -76,7 +77,7 @@ public suspend fun MessageEntity.applyComponents(
  *
  * Note that this will override any existing components on the message.
  */
-context(KommandoContext)
+context(_: KommandoContext)
 public suspend fun PublicFollowupMessage.applyComponents(
     group: ComponentGroup,
 ): PublicFollowupMessage = apply {
@@ -92,7 +93,7 @@ public suspend fun PublicFollowupMessage.applyComponents(
  *
  * Note that this will override any existing components on the message.
  */
-context(KommandoContext)
+context(_: KommandoContext)
 public suspend fun EphemeralFollowupMessage.applyComponents(
     group: ComponentGroup,
 ): EphemeralFollowupMessage = apply {
@@ -108,7 +109,7 @@ public suspend fun EphemeralFollowupMessage.applyComponents(
  *
  * Note that this will override any existing components on the message.
  */
-context(KommandoContext)
+context(_: KommandoContext)
 public suspend fun PublicMessageInteractionResponseBehavior.applyComponents(
     group: ComponentGroup,
 ): PublicMessageInteractionResponseBehavior = apply {
@@ -124,7 +125,7 @@ public suspend fun PublicMessageInteractionResponseBehavior.applyComponents(
  *
  * Note that this will override any existing components on the message.
  */
-context(KommandoContext)
+context(_: KommandoContext)
 public suspend fun EphemeralMessageInteractionResponseBehavior.applyComponents(
     group: ComponentGroup,
 ): EphemeralMessageInteractionResponseBehavior = apply {
@@ -133,21 +134,21 @@ public suspend fun EphemeralMessageInteractionResponseBehavior.applyComponents(
     }
 }
 
-context(KommandoContext)
 @PublishedApi
+context(_: KommandoContext)
 internal fun MessageCreateBuilder.useComponents(group: ComponentGroup) {
     useComponents(group, components)
 }
 
-context(KommandoContext)
 @PublishedApi
+context(_: KommandoContext)
 internal fun MessageModifyBuilder.useComponents(group: ComponentGroup) {
     val components = this.components ?: mutableListOf()
     useComponents(group, components)
     this.components = components
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 internal fun useComponents(
     group: ComponentGroup,
     builders: MutableList<MessageComponentBuilder>,

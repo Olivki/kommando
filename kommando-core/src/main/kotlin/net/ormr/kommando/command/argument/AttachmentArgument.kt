@@ -18,6 +18,7 @@ package net.ormr.kommando.command.argument
 
 import dev.kord.core.entity.Attachment
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
+import dev.kord.rest.builder.interaction.attachment
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.Message
 
@@ -33,9 +34,9 @@ public class AttachmentArgument(
 
     override fun convertNullableArgumentValue(value: Attachment?): Attachment? = value
 
-    context(ArgumentBuildContext, BaseInputChatBuilder)
+    context(ctx: ArgumentBuildContext, builder: BaseInputChatBuilder)
     override fun buildArgument(isRequired: Boolean) {
-        attachment(defaultName, defaultDescription) {
+        builder.attachment(defaultName, defaultDescription) {
             registerLocalizations()
             this.required = isRequired
         }
@@ -45,7 +46,7 @@ public class AttachmentArgument(
         "AttachmentArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}')"
 }
 
-context(CustomizableCommand<*>)
+context(_: CustomizableCommand<*>)
 public fun attachment(
     name: String? = null,
     description: String,

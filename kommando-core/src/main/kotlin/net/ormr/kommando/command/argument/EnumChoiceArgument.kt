@@ -18,18 +18,20 @@ package net.ormr.kommando.command.argument
 
 import dev.kord.common.entity.optional.Optional
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
+import dev.kord.rest.builder.interaction.string
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.findFullElementPath
 import net.ormr.kommando.localization
 import net.ormr.kommando.localization.LocalizedMessage
 import net.ormr.kommando.localization.Message
 import net.ormr.kommando.localization.toMutableMap
+import kotlin.enums.enumEntries
 
 public class EnumChoiceArgument<Value>(
     override val key: String,
     override val name: Message,
     override val description: Message,
-    private val entries: List<Value>, // TODO: use EnumEntries once they have an intrinsic like 'enumValues' available
+    private val entries: List<Value>,
 ) : Argument<Value, String, ArgumentType.String>
         where Value : Enum<Value>,
               Value : EnumArgumentChoice {
@@ -47,15 +49,15 @@ public class EnumChoiceArgument<Value>(
 
     override fun convertNullableArgumentValue(value: String?): Value? = value?.let(nameToEntry::getValue)
 
-    context(ArgumentBuildContext, BaseInputChatBuilder)
+    context(ctx: ArgumentBuildContext, builder: BaseInputChatBuilder)
     override fun buildArgument(isRequired: Boolean) {
-        val bundle = parentCommand.localization
-        val path = parentCommand.findFullElementPath() / "arguments" / key / "choices"
-        string(defaultName, defaultDescription) {
+        val bundle = ctx.parentCommand.localization
+        val path = ctx.parentCommand.findFullElementPath() / "arguments" / key / "choices"
+        builder.string(defaultName, defaultDescription) {
             this.required = isRequired
             for (entry in entries) {
                 val name = entry.name
-                val strings = when (val message = bundle.getMessageOrNull(parentCommand, path, name)) {
+                val strings = when (val message = bundle.getMessageOrNull(ctx.parentCommand, path, name)) {
                     is LocalizedMessage -> message.strings.toMutableMap()
                     else -> null
                 }
@@ -69,7 +71,7 @@ public class EnumChoiceArgument<Value>(
 }
 
 // TODO: rename to 'enumChoice'?
-context(CustomizableCommand<*>)
+context(_: CustomizableCommand<*>)
 public inline fun <reified Value> enum(
     name: String? = null,
     description: String,
@@ -77,5 +79,5 @@ public inline fun <reified Value> enum(
         where Value : Enum<Value>,
               Value : EnumArgumentChoice =
     ArgumentHelper.newBuilder(name, description) { key, resolvedName, desc ->
-        EnumChoiceArgument(key, resolvedName, desc, enumValues<Value>().asList())
+        EnumChoiceArgument(key, resolvedName, desc, enumEntries<Value>())
     }

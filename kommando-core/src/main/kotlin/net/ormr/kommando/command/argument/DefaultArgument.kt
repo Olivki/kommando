@@ -46,7 +46,7 @@ public class DefaultArgument<Value, ArgValue, out ArgType>(
 
     override fun convertNullableArgumentValue(value: ArgValue?): Nothing = noNullableConversionSupport()
 
-    context(ArgumentBuildContext, BaseInputChatBuilder)
+    context(ctx: ArgumentBuildContext, builder: BaseInputChatBuilder)
     override fun buildArgument(isRequired: Boolean) {
         delegate.buildArgument(isRequired = false)
     }
@@ -55,14 +55,14 @@ public class DefaultArgument<Value, ArgValue, out ArgType>(
 }
 
 public fun interface DefaultArgumentSupplier<Value> {
-    context(ChatInputCommandInteractionCreateEvent)
+    context(event: ChatInputCommandInteractionCreateEvent)
     public suspend fun getValue(): Value
 }
 
 /**
  * Returns a new argument that will use the [supplier] to get the value if the user did not provide one.
  */
-context(CustomizableCommand<*>)
+context(_: CustomizableCommand<*>)
 public infix fun <Value, ArgValue, Arg> ArgumentBuilder<Value, Arg>.default(
     supplier: DefaultArgumentSupplier<Value>,
 ): ArgumentBuilder<Value, DefaultArgument<Value, ArgValue, *>>

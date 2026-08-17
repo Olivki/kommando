@@ -35,7 +35,7 @@ public class Commands internal constructor(
     internal val argumentCache: ArgumentCache = ArgumentCache()
     private val mutex = Mutex()
 
-    context(Kommando)
+    context(_: Kommando)
     internal suspend fun registerCommands(factories: List<CommandFactory<*>>) = mutex.withLock {
         logger.info { "Registering commands..." }
         // TODO: do we need to quit the application if we encounter problems with registering the commands?

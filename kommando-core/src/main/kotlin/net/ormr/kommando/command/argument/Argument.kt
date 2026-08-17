@@ -41,7 +41,7 @@ public interface Argument<Value, ArgValue, out ArgType>
 
     public fun convertNullableArgumentValue(value: ArgValue?): Value?
 
-    context(ArgumentBuildContext, BaseInputChatBuilder)
+    context(ctx: ArgumentBuildContext, builder: BaseInputChatBuilder)
     public fun buildArgument(isRequired: Boolean)
 }
 

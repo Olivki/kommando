@@ -40,7 +40,7 @@ public abstract class EventListener(public val id: String) : AbstractElement() {
     public abstract suspend fun register()
 }
 
-context(KommandoBuilder)
+context(builder: KommandoBuilder)
 public operator fun EventListener.unaryPlus() {
-    eventListeners += this
+    builder.eventListeners += this
 }

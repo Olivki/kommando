@@ -24,12 +24,12 @@ public class NoSuchArgumentWithTypeException(
     public val type: ArgumentType<*>,
 ) : RuntimeException("Could not find argument '$name' of type $type.name")
 
-context(Arg)
+context(_: Arg)
 internal inline fun <reified Arg> noConversionSupport(): Nothing
         where Arg : Argument<*, *, *> =
     throw UnsupportedOperationException("'convertArgumentValue' for ArgValue should never be called by ${typeOf<Arg>()}")
 
-context(Arg)
+context(_: Arg)
 internal inline fun <reified Arg> noNullableConversionSupport(): Nothing
         where Arg : Argument<*, *, *> =
     throw UnsupportedOperationException("'convertNullableArgumentValue' for ArgValue should never be called by ${typeOf<Arg>()}")

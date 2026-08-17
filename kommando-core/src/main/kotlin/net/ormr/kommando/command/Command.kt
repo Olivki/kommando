@@ -24,12 +24,12 @@ import net.ormr.kommando.localization.Message
 
 public sealed interface Command<Context> : CommandElement
         where Context : CommandContext<*> {
-    public val commandName: Message
+    public val commandName: Message // TODO: turn to function
 
     public val isNsfw: Boolean?
         get() = null
 
-    context(Context)
+    context(ctx: Context)
     public suspend fun execute()
 }
 

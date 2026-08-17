@@ -21,16 +21,17 @@ import dev.kord.core.behavior.interaction.response.PublicMessageInteractionRespo
 import dev.kord.core.entity.interaction.followup.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
 import net.ormr.kommando.KommandoContext
+import net.ormr.kommando.kommando
 import net.ormr.kommando.kord.MessageEntity
 import kotlin.time.Duration
 
-context(KommandoContext)
+context(_: KommandoContext)
 private inline val timeout: Duration
     get() = kommando.componentStorage.timeout
 
 // Message
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun MessageEntity.disableComponentsAfter(
     duration: Duration,
     group: ComponentGroup,
@@ -39,12 +40,12 @@ public fun MessageEntity.disableComponentsAfter(
     launchLifetimeManager(group, this, ComponentLifetimeManager.DisableAfter(duration, shouldUnregister))
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun MessageEntity.disableComponentsAfterTimeout(group: ComponentGroup): MessageEntity = apply {
     disableComponentsAfter(timeout, group, shouldUnregister = false)
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun MessageEntity.removeComponentsAfter(
     duration: Duration,
     group: ComponentGroup,
@@ -53,14 +54,14 @@ public fun MessageEntity.removeComponentsAfter(
     launchLifetimeManager(group, this, ComponentLifetimeManager.RemoveAfter(duration, shouldUnregister))
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun MessageEntity.removeComponentsAfterTimeout(group: ComponentGroup): MessageEntity = apply {
     removeComponentsAfter(timeout, group, shouldUnregister = false)
 }
 
 // PublicFollowupMessage
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun PublicFollowupMessage.disableComponentsAfter(
     duration: Duration,
     group: ComponentGroup,
@@ -69,12 +70,12 @@ public fun PublicFollowupMessage.disableComponentsAfter(
     launchLifetimeManager(group, this, ComponentLifetimeManager.DisableAfter(duration, shouldUnregister))
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun PublicFollowupMessage.disableComponentsAfterTimeout(group: ComponentGroup): PublicFollowupMessage = apply {
     disableComponentsAfter(timeout, group, shouldUnregister = false)
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun PublicFollowupMessage.removeComponentsAfter(
     duration: Duration,
     group: ComponentGroup,
@@ -83,7 +84,7 @@ public fun PublicFollowupMessage.removeComponentsAfter(
     launchLifetimeManager(group, this, ComponentLifetimeManager.RemoveAfter(duration, shouldUnregister))
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun PublicFollowupMessage.removeComponentsAfterTimeout(
     group: ComponentGroup,
 ): PublicFollowupMessage = apply {
@@ -92,7 +93,7 @@ public fun PublicFollowupMessage.removeComponentsAfterTimeout(
 
 // EphemeralFollowupMessage
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun EphemeralFollowupMessage.disableComponentsAfter(
     duration: Duration,
     group: ComponentGroup,
@@ -101,14 +102,14 @@ public fun EphemeralFollowupMessage.disableComponentsAfter(
     launchLifetimeManager(group, this, ComponentLifetimeManager.DisableAfter(duration, shouldUnregister))
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun EphemeralFollowupMessage.disableComponentsAfterTimeout(
     group: ComponentGroup,
 ): EphemeralFollowupMessage = apply {
     disableComponentsAfter(timeout, group, shouldUnregister = false)
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun EphemeralFollowupMessage.removeComponentsAfter(
     duration: Duration,
     group: ComponentGroup,
@@ -117,7 +118,7 @@ public fun EphemeralFollowupMessage.removeComponentsAfter(
     launchLifetimeManager(group, this, ComponentLifetimeManager.RemoveAfter(duration, shouldUnregister))
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun EphemeralFollowupMessage.removeComponentsAfterTimeout(
     group: ComponentGroup,
 ): EphemeralFollowupMessage = apply {
@@ -126,7 +127,7 @@ public fun EphemeralFollowupMessage.removeComponentsAfterTimeout(
 
 // PublicMessageInteractionResponseBehavior
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun PublicMessageInteractionResponseBehavior.disableComponentsAfter(
     duration: Duration,
     group: ComponentGroup,
@@ -135,14 +136,14 @@ public fun PublicMessageInteractionResponseBehavior.disableComponentsAfter(
     launchLifetimeManager(group, this, ComponentLifetimeManager.DisableAfter(duration, shouldUnregister))
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun PublicMessageInteractionResponseBehavior.disableComponentsAfterTimeout(
     group: ComponentGroup,
 ): PublicMessageInteractionResponseBehavior = apply {
     disableComponentsAfter(timeout, group, shouldUnregister = false)
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun PublicMessageInteractionResponseBehavior.removeComponentsAfter(
     duration: Duration,
     group: ComponentGroup,
@@ -151,7 +152,7 @@ public fun PublicMessageInteractionResponseBehavior.removeComponentsAfter(
     launchLifetimeManager(group, this, ComponentLifetimeManager.RemoveAfter(duration, shouldUnregister))
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun PublicMessageInteractionResponseBehavior.removeComponentsAfterTimeout(
     group: ComponentGroup,
 ): PublicMessageInteractionResponseBehavior = apply {
@@ -160,7 +161,7 @@ public fun PublicMessageInteractionResponseBehavior.removeComponentsAfterTimeout
 
 // EphemeralMessageInteractionResponseBehavior
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun EphemeralMessageInteractionResponseBehavior.disableComponentsAfter(
     duration: Duration,
     group: ComponentGroup,
@@ -169,14 +170,14 @@ public fun EphemeralMessageInteractionResponseBehavior.disableComponentsAfter(
     launchLifetimeManager(group, this, ComponentLifetimeManager.DisableAfter(duration, shouldUnregister))
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun EphemeralMessageInteractionResponseBehavior.disableComponentsAfterTimeout(
     group: ComponentGroup,
 ): EphemeralMessageInteractionResponseBehavior = apply {
     disableComponentsAfter(timeout, group, shouldUnregister = false)
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun EphemeralMessageInteractionResponseBehavior.removeComponentsAfter(
     duration: Duration,
     group: ComponentGroup,
@@ -185,7 +186,7 @@ public fun EphemeralMessageInteractionResponseBehavior.removeComponentsAfter(
     launchLifetimeManager(group, this, ComponentLifetimeManager.RemoveAfter(duration, shouldUnregister))
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 public fun EphemeralMessageInteractionResponseBehavior.removeComponentsAfterTimeout(
     group: ComponentGroup,
 ): EphemeralMessageInteractionResponseBehavior = apply {
@@ -194,7 +195,7 @@ public fun EphemeralMessageInteractionResponseBehavior.removeComponentsAfterTime
 
 // misc
 
-context(KommandoContext)
+context(_: KommandoContext)
 internal fun launchLifetimeManager(
     group: ComponentGroup,
     message: MessageEntity,
@@ -203,7 +204,7 @@ internal fun launchLifetimeManager(
     lifetime.launch(group, LifetimeMessage.Message(message))
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 internal fun launchLifetimeManager(
     group: ComponentGroup,
     message: PublicFollowupMessage,
@@ -212,7 +213,7 @@ internal fun launchLifetimeManager(
     lifetime.launch(group, LifetimeMessage.PublicFollowup(message))
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 internal fun launchLifetimeManager(
     group: ComponentGroup,
     message: EphemeralFollowupMessage,
@@ -221,7 +222,7 @@ internal fun launchLifetimeManager(
     lifetime.launch(group, LifetimeMessage.EphemeralFollowup(message))
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 internal fun launchLifetimeManager(
     group: ComponentGroup,
     message: PublicMessageInteractionResponseBehavior,
@@ -230,7 +231,7 @@ internal fun launchLifetimeManager(
     lifetime.launch(group, LifetimeMessage.PublicResponse(message))
 }
 
-context(KommandoContext)
+context(_: KommandoContext)
 internal fun launchLifetimeManager(
     group: ComponentGroup,
     message: EphemeralMessageInteractionResponseBehavior,

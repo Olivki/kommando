@@ -28,6 +28,6 @@ internal typealias CommandGroupProvider<Parent> = CommandComponentProvider<Comma
 
 public fun interface CommandComponentProvider<out Comp>
         where Comp : CommandElement {
-    context(DirectDI)
+    context(di: DirectDI)
     public fun get(): Comp
 }

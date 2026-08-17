@@ -34,7 +34,6 @@ public sealed class ComponentContainerBuilder<in E>
         entries.add(ComponentFactory.Executable(id, factory))
     }
 
-
     @PublishedApi
     internal fun addVisible(id: String, factory: () -> VisibleComponent<*>) {
         entries.add(ComponentFactory.Visible(id, factory))

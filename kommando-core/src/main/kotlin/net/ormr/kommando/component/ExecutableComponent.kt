@@ -32,6 +32,6 @@ public sealed interface ExecutableComponent<Self, Context> : VisibleComponent<Se
      *
      * How this is handled is implementation specific.
      */
-    context(Context)
+    context(ctx: Context)
     public suspend fun execute()
 }

@@ -45,17 +45,17 @@ public data class ComponentSelectMenu(
     override val width: ComponentWidth
         get() = ComponentWidth.FIVE
 
-    context(SelectMenuExecutionContext)
+    context(ctx: SelectMenuExecutionContext)
     override suspend fun execute() {
         onSelect.execute()
     }
 
     override fun withDisabled(isDisabled: Boolean): ComponentSelectMenu = copy(isDisabled = isDisabled)
 
-    context(ActionRowBuilder)
+    context(builder: ActionRowBuilder)
     override fun buildComponent() {
         val self = this
-        stringSelect(customId = interactionId) {
+        builder.stringSelect(customId = interactionId) {
             allowedValues = self.allowedValues
             placeholder = self.placeholder
             disabled = self.isDisabled
@@ -69,15 +69,17 @@ public interface SelectMenuExecutionContext : ComponentExecutionContext<SelectMe
 /**
  * A list of the values of all the selected menu options, will at minimum contain one entry.
  */
-public val SelectMenuExecutionContext.values: List<String>
-    get() = interaction.values
+context(ctx: SelectMenuExecutionContext)
+public inline val values: List<String>
+    get() = ctx.interaction.values
 
 /**
  * The first entry of [values].
  *
  * If the select menu one allows one option to be selected, this will be the only value.
  */
-public val SelectMenuExecutionContext.firstValue: String
+context(ctx: SelectMenuExecutionContext)
+public val firstValue: String
     get() = values.first()
 
 @KommandoDsl

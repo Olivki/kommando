@@ -32,8 +32,8 @@ internal class JacksonMessageBundleHelper(private val mapper: ObjectMapper, reso
     private val nodes = resource
         .asMap()
         .entries
-        .filter { (_, resource) -> resource.exists() }
-        .map { (locale, resource) ->
+        .filter { [_, resource] -> resource.exists() }
+        .map { [locale, resource] ->
             logger.debug { "Reading locale file (${locale.asString()}): ${resource.asString()}" }
             resource.inputStream().use { LocalizedNode(locale, mapper.readTree(it)) }
         }

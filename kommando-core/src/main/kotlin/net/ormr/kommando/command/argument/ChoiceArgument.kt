@@ -40,7 +40,7 @@ public class ChoiceArgument<Value, ArgValue, out ArgType>(
 
     override fun convertNullableArgumentValue(value: ArgValue?): Nothing = noNullableConversionSupport()
 
-    context(ArgumentBuildContext, BaseInputChatBuilder)
+    context(ctx: ArgumentBuildContext, builder: BaseInputChatBuilder)
     override fun buildArgument(isRequired: Boolean) {
         delegate.buildArgumentWithChoices(choices, isRequired)
     }
@@ -48,7 +48,7 @@ public class ChoiceArgument<Value, ArgValue, out ArgType>(
     override fun toString(): String = "WithChoices<$delegate, $choices>"
 }
 
-context(CustomizableCommand<*>)
+context(_: CustomizableCommand<*>)
 public fun <Value, ArgValue, ArgType, Arg> ArgumentBuilder<Value, Arg>.choices(
     first: ArgumentChoice<Value>,
     vararg rest: ArgumentChoice<Value>,

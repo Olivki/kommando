@@ -40,9 +40,9 @@ import dev.kord.core.entity.interaction.SubCommand as KordSubCommand
 
 private val logger = InlineLogger()
 
-context(Kommando)
+context(kommando: Kommando)
 internal suspend fun handleCommands() {
-    val direct = direct
+    val direct = kommando.direct
 
     kord.on<ApplicationCommandInteractionCreateEvent> {
         try {
@@ -99,9 +99,8 @@ internal suspend fun handleCommands() {
     }
 }
 
-context(AutoCompleteInteractionCreateEvent)
+context(event: AutoCompleteInteractionCreateEvent)
 private suspend inline fun Command<*>.autoComplete(name: String, commandId: Snowflake, commandName: String) {
-    val event = this@AutoCompleteInteractionCreateEvent
     val argument = findRegistry().findArgument(name)
 
     if (argument is AutoCompletableArgument<*, *, *>) {
@@ -121,15 +120,14 @@ private suspend inline fun Command<*>.autoComplete(name: String, commandId: Snow
     }
 }
 
-context(Kommando, ChatInputCommandInteractionCreateEvent)
+context(_: Kommando, event: ChatInputCommandInteractionCreateEvent)
 private suspend inline fun <reified Cmd> inputCommand(
     di: DirectDI,
 ) where  Cmd : TopLevelChatInputCommand<*, *> {
-    val interactionCommand = interaction.command
+    val interactionCommand = event.interaction.command
     val id = interactionCommand.rootId
     val rootName = interactionCommand.rootName
     val registeredCommand = getRegisteredCommand(id, rootName)
-    val event = this@ChatInputCommandInteractionCreateEvent
     val command = registeredCommand.builder.create(di)
     if (command is Cmd) {
         check(command is RootCommand<*, *>)
@@ -201,66 +199,57 @@ private suspend fun populateArguments(
     val fixedCommand = command.fixCommand()
     val arguments = fixedCommand
         .findDirectArguments()
-        .mapValuesTo(hashMapOf()) { (_, arg) -> arg.getValue(interactionCommand, event) }
+        .mapValuesTo(hashMapOf()) { [_, arg] -> arg.getValue(interactionCommand, event) }
     fixedCommand
         .registry
         .populate(arguments)
 }
 
-context(Kommando, MessageCommandInteractionCreateEvent)
+context(_: Kommando, event: MessageCommandInteractionCreateEvent)
 private suspend inline fun <reified Cmd> messageCommand(di: DirectDI)
         where Cmd : MessageCommand<*, *> =
     withCommand<Cmd>(di) { command ->
-        val value = interaction.getTarget()
+        val value = event.interaction.getTarget()
         command.value = value
-        executeCommand(command, interaction)
+        executeCommand(command, event.interaction)
     }
 
-context(Kommando, UserCommandInteractionCreateEvent)
+context(_: Kommando, event: UserCommandInteractionCreateEvent)
 private suspend inline fun <reified Cmd> userCommand(di: DirectDI)
         where Cmd : UserCommand<*, *> =
     withCommand<Cmd>(di) { command ->
-        val value = interaction.getTarget()
+        val value = event.interaction.getTarget()
         command.value = value
-        executeCommand(command, interaction)
+        executeCommand(command, event.interaction)
     }
 
-// Kotlin fails to smart cast here, but still complains about useless casts, lol
-@Suppress("USELESS_CAST")
 private suspend fun executeCommand(command: Command<*>, interaction: ApplicationCommandInteraction) {
-    @Suppress("REDUNDANT_ELSE_IN_WHEN")
     when (command) {
-        is GuildCommandType -> {
-            val context = GuildCommandContextImpl(interaction.unsafeCast())
-            with(context) { (command as GuildCommandType).execute() }
+        is GuildCommandType -> context(GuildCommandContextImpl(interaction.unsafeCast())) {
+            command.execute()
         }
-        is GlobalCommandType -> {
-            val context = GlobalCommandContextImpl(interaction.unsafeCast())
-            with(context) { (command as GlobalCommandType).execute() }
+        is GlobalCommandType -> context(GlobalCommandContextImpl(interaction.unsafeCast())) {
+            command.execute()
         }
-        // The Kotlin CLI compiler sometimes fails to infer that this is exhaustive,
-        // this problem seems to be fully fixed in 2.0
-        // TODO: remove this when Kotlin 2.0 is released
-        else -> error("Should never happen, but it did for: $command")
     }
 }
 
 private inline fun <reified Value> Any.unsafeCast(): Value = this as Value
 
-context(Kommando, ApplicationCommandInteractionCreateEvent)
+context(_: Kommando, event: ApplicationCommandInteractionCreateEvent)
 private inline fun <reified Cmd> withCommand(di: DirectDI, block: (command: Cmd) -> Unit)
         where Cmd : Command<*> {
-    val id = interaction.invokedCommandId
-    val registeredCommand = getRegisteredCommand(id, interaction.invokedCommandName)
+    val id = event.interaction.invokedCommandId
+    val registeredCommand = getRegisteredCommand(id, event.interaction.invokedCommandName)
     val command = registeredCommand.builder.create(di)
     if (command is Cmd) {
         block(command)
     } else {
-        invalidCommandType(Cmd::class, command::class, CommandRequestInfo(id, interaction.invokedCommandName))
+        invalidCommandType(Cmd::class, command::class, CommandRequestInfo(id, event.interaction.invokedCommandName))
     }
 }
 
-context(Kommando)
+context(_: Kommando)
 private fun getRegisteredCommand(id: Snowflake, name: String): RegisteredCommand =
     commands.registeredCommands[id] ?: noSuchCommand(id, name)
 

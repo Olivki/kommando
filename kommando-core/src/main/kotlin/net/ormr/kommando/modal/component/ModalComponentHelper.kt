@@ -19,7 +19,7 @@ package net.ormr.kommando.modal.component
 import net.ormr.kommando.modal.Modal
 
 public data object ModalComponentHelper {
-    context(Modal<*>)
+    context(_: Modal<*>)
     public fun <Value, Comp> newBuilder(
         customId: String?,
         componentFactory: ModalComponentFactory<Value, Comp>,

@@ -20,8 +20,6 @@ package net.ormr.kommando.internal
 
 import net.ormr.kommando.command.*
 import net.ormr.kommando.command.argument.Argument
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 
 // hacky type narrowing
 
@@ -43,9 +41,6 @@ internal inline fun Command<*>.fixCommand(): AbstractCommand<*> = fixType { "Com
 
 internal inline fun <reified From, reified To> From.fixType(name: () -> String): To
         where From : Any, To : From {
-    contract {
-        callsInPlace(name, InvocationKind.AT_MOST_ONCE)
-    }
     check(this is To) { "${name()} '${this::class}' is not an instance of '${To::class}'" }
     return this
 }

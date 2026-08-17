@@ -54,6 +54,6 @@ public interface ModalComponent<Value, CompValue, out CompType>
 
     public fun convertNullableComponentValue(value: CompValue?): Value?
 
-    context(ActionRowBuilder)
+    context(builder: ActionRowBuilder)
     public fun buildComponent()
 }

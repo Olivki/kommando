@@ -44,6 +44,8 @@ internal data object DefaultInteractionIdProvider : ComponentInteractionIdProvid
 //       we could maybe make 'components' return a builder of sorts, that can be used to create
 //       components with auto generated IDs, and then the user can use the builder to create 'ComponentGroup' instances
 
+// TODO: is the above still relevant?
+
 @KommandoDsl
 public inline fun components(
     id: String,

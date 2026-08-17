@@ -16,7 +16,7 @@
 
 package net.ormr.kommando.internal
 
-import java.util.*
+import kotlin.uuid.Uuid
 
 @PublishedApi
-internal fun createUuidString(): String = UUID.randomUUID().toString()
+internal fun createUuidString(): String = Uuid.random().toString()

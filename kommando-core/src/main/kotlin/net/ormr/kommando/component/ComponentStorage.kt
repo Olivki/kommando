@@ -26,13 +26,13 @@ public class ComponentStorage internal constructor(
     private val delegate: MutableStorage<String, ExecutableComponent<*, *>>,
 ) : MutableStorage<String, ExecutableComponent<*, *>> by delegate {
     public suspend fun addGroup(group: ComponentGroup) {
-        for ((key, component) in group.executableComponents) {
+        for ([key, component] in group.executableComponents) {
             put(key, component)
         }
     }
 
     public suspend fun removeGroup(group: ComponentGroup) {
-        for ((key, _) in group.executableComponents) {
+        for ([key, _] in group.executableComponents) {
             remove(key)
         }
     }

@@ -16,9 +16,6 @@
 
 package net.ormr.kommando.util
 
-import kotlin.experimental.ExperimentalTypeInference
-
-@OptIn(ExperimentalTypeInference::class)
 internal inline fun <Key, Value> buildHashMap(
-    @BuilderInference builder: MutableMap<Key, Value>.() -> Unit,
+    builder: MutableMap<Key, Value>.() -> Unit,
 ): MutableMap<Key, Value> = hashMapOf<Key, Value>().apply(builder)

@@ -25,8 +25,7 @@ public sealed interface ModalComponentType<Value>
         ?: throw IllegalArgumentException("No component with name '$id' of type '$this' was found") // TODO: custom error?
 
     public fun getValueOrNull(source: ModalSubmitInteraction, id: String): Value?
-
-
+    
     // discord only support text input at the moment
     public data object TextInput : ModalComponentType<String> {
         override fun getValueOrNull(source: ModalSubmitInteraction, id: String): String? = source.textInputs[id]?.value

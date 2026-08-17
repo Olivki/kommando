@@ -18,6 +18,7 @@ package net.ormr.kommando.command.argument
 
 import dev.kord.core.entity.Role
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
+import dev.kord.rest.builder.interaction.role
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.Message
 
@@ -33,9 +34,9 @@ public class RoleArgument(
 
     override fun convertNullableArgumentValue(value: Role?): Role? = value
 
-    context(ArgumentBuildContext, BaseInputChatBuilder)
+    context(ctx: ArgumentBuildContext, builder: BaseInputChatBuilder)
     override fun buildArgument(isRequired: Boolean) {
-        role(defaultName, defaultDescription) {
+        builder.role(defaultName, defaultDescription) {
             registerLocalizations()
             this.required = isRequired
         }
@@ -45,7 +46,7 @@ public class RoleArgument(
         "RoleArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}')"
 }
 
-context(CustomizableCommand<*>)
+context(_: CustomizableCommand<*>)
 public fun role(
     name: String? = null,
     description: String,

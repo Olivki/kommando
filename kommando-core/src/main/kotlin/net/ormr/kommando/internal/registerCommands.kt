@@ -34,7 +34,6 @@ import net.ormr.kommando.command.permission.DefaultCommandPermissions
 import net.ormr.kommando.defaultComponentDescription
 import net.ormr.kommando.localization.toMutableMapOrNull
 import org.kodein.di.DirectDI
-import org.kodein.di.direct
 import kotlin.reflect.KType
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder as KordBaseInputChatBuilder
 import dev.kord.rest.builder.interaction.SubCommandBuilder as KordSubCommandBuilder
@@ -49,7 +48,7 @@ import dev.kord.rest.builder.interaction.SubCommandBuilder as KordSubCommandBuil
 
 private val logger = InlineLogger()
 
-context(Kommando)
+context(_: Kommando)
 internal suspend fun registerCommands(
     factories: List<CommandFactory<*>>,
 ): Map<Snowflake, RegisteredCommand> {
@@ -78,7 +77,7 @@ internal suspend fun registerCommands(
                             RegisteredGroup(
                                 factory = it.factory,
                                 subCommands = (it.subCommands zip it.subCommandFactories)
-                                    .associateTo(hashMapOf()) { (command, factory) -> command.defaultCommandName to factory },
+                                    .associateTo(hashMapOf()) { [command, factory] -> command.defaultCommandName to factory },
                             )
                         },
                     )
@@ -126,8 +125,8 @@ internal suspend fun registerCommands(
             }
         }.collect(::collectCommands)
 
-        for ((guildId, commandData) in guildCommandWrappers) {
-            val (_, wrappers) = commandData
+        for ([guildId, commandData] in guildCommandWrappers) {
+            val [_, wrappers] = commandData
             kord.createGuildApplicationCommands(guildId) {
                 for (wrapper in wrappers) {
                     logger.info { "Registering guild command: ${wrapper.type} @$guildId" }
@@ -152,9 +151,9 @@ internal suspend fun registerCommands(
     }
 }
 
-context(ApplicationCommandCreateBuilder)
+context(builder: ApplicationCommandCreateBuilder)
 private fun applyNsfw(command: Command<*>) {
-    nsfw = command.isNsfw
+    builder.nsfw = command.isNsfw
 }
 
 private suspend fun <Cmd> GlobalApplicationCommandCreateBuilder.applyPermissions(
@@ -176,11 +175,10 @@ private suspend fun <Cmd> ApplicationCommandCreateBuilder.applyPermissions(
 
 private data class ArgumentBuildContextImpl(override val parentCommand: Command<*>) : ArgumentBuildContext
 
-context(RootInputChatBuilder)
+context(builder: RootInputChatBuilder)
 private fun buildCommand(wrapper: CommandWrapper) {
-    val (command) = wrapper
+    val [command] = wrapper
     val fixedCommand = command.fixCommand()
-    val builder = this@RootInputChatBuilder
     val buildContext = ArgumentBuildContextImpl(command)
     with(buildContext) {
         buildArguments(fixedCommand.findDirectArguments().values)
@@ -196,26 +194,28 @@ private fun buildCommand(wrapper: CommandWrapper) {
 
     if (wrapper is ParentCommandWrapper) {
         for (child in wrapper.children) {
-            when (child) {
-                is CommandGroupWrapper -> {
-                    val group = child.instance
-                    group(group.defaultGroupName, group.defaultComponentDescription) {
-                        nameLocalizations = group.groupName.toMutableMapOrNull()
-                        descriptionLocalizations = group.elementDescription.toMutableMapOrNull()
-                        for (subCommand in child.subCommands) {
-                            subCommand(subCommand.defaultCommandName, subCommand.defaultComponentDescription) {
-                                with(buildContext) {
-                                    buildSubCommand(subCommand)
+            with(builder) {
+                when (child) {
+                    is CommandGroupWrapper -> {
+                        val group = child.instance
+                        group(group.defaultGroupName, group.defaultComponentDescription) {
+                            nameLocalizations = group.groupName.toMutableMapOrNull()
+                            descriptionLocalizations = group.elementDescription.toMutableMapOrNull()
+                            for (subCommand in child.subCommands) {
+                                subCommand(subCommand.defaultCommandName, subCommand.defaultComponentDescription) {
+                                    with(buildContext) {
+                                        buildSubCommand(subCommand)
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                is SubCommandWrapper -> {
-                    val subCommand = child.instance
-                    subCommand(subCommand.defaultCommandName, subCommand.defaultComponentDescription) {
-                        with(buildContext) {
-                            buildSubCommand(subCommand)
+                    is SubCommandWrapper -> {
+                        val subCommand = child.instance
+                        subCommand(subCommand.defaultCommandName, subCommand.defaultComponentDescription) {
+                            with(buildContext) {
+                                buildSubCommand(subCommand)
+                            }
                         }
                     }
                 }
@@ -224,12 +224,12 @@ private fun buildCommand(wrapper: CommandWrapper) {
     }
 }
 
-context(ArgumentBuildContext, KordSubCommandBuilder)
+context(_: ArgumentBuildContext, _: KordSubCommandBuilder)
 private fun buildSubCommand(subCommand: SubCommand<*, *>) {
     buildArguments(subCommand.findDirectArguments().values)
 }
 
-context(ArgumentBuildContext, KordBaseInputChatBuilder)
+context(_: ArgumentBuildContext, _: KordBaseInputChatBuilder)
 private fun buildArguments(arguments: Iterable<Argument<*, *, *>>) {
     for (argument in arguments) {
         argument.buildArgument(isRequired = true)
@@ -246,7 +246,7 @@ private suspend fun List<CommandWrapper>.mergeGuildCommands(
             val guild = try {
                 kord.getGuild(id)
             } catch (e: EntityNotFoundException) {
-                logger.error {
+                logger.error(e) {
                     "Bot is not in guild with id $id, but it still attempted to register guild command ${command::class}"
                 }
                 continue
@@ -255,7 +255,7 @@ private suspend fun List<CommandWrapper>.mergeGuildCommands(
         }
     }
 
-context(Kommando)
+context(_: Kommando)
 private fun createWrappers(
     di: DirectDI,
     factories: List<CommandFactory<*>>,

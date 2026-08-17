@@ -17,18 +17,23 @@
 package net.ormr.kommando
 
 import dev.kord.common.Locale
+import dev.kord.core.behavior.interaction.InteractionBehavior
 import dev.kord.core.entity.interaction.Interaction
+
+context(ctx: InteractionContext<T>)
+public inline val <T : InteractionBehavior> interaction: T
+    get() = ctx.interaction
 
 /**
  * See [Interaction.locale].
  */
-context(InteractionContext<Interaction>)
+context(_: InteractionContext<Interaction>)
 public inline val locale: Locale?
     get() = interaction.locale
 
 /**
  * See [Interaction.guildLocale].
  */
-context(InteractionContext<Interaction>)
+context(_: InteractionContext<Interaction>)
 public inline val guildLocale: Locale?
     get() = interaction.guildLocale

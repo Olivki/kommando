@@ -39,9 +39,9 @@ public class LongArgument(
 
     override fun convertArgumentValue(value: Long): Long = value
 
-    context(ArgumentBuildContext, BaseInputChatBuilder)
+    context(ctx: ArgumentBuildContext, builder: BaseInputChatBuilder)
     override fun buildArgument(isRequired: Boolean) {
-        integer(defaultName, defaultDescription) {
+        builder.integer(defaultName, defaultDescription) {
             registerLocalizations()
             this.autocomplete = autoComplete != null
             this.required = isRequired
@@ -50,12 +50,12 @@ public class LongArgument(
         }
     }
 
-    context(ArgumentBuildContext, BaseInputChatBuilder)
+    context(ctx: ArgumentBuildContext, builder: BaseInputChatBuilder)
     override fun buildArgumentWithChoices(
         choices: List<ArgumentChoice<Long>>,
         isRequired: Boolean,
     ) {
-        integer(defaultName, defaultDescription) {
+        builder.integer(defaultName, defaultDescription) {
             registerLocalizations()
             this.required = isRequired
             // TODO: do we add min & max for choice ones?
@@ -69,7 +69,7 @@ public class LongArgument(
         "LongArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}', min=$min, max=$max)"
 }
 
-context(CustomizableCommand<*>)
+context(_: CustomizableCommand<*>)
 public fun long(
     name: String? = null,
     description: String,

@@ -32,6 +32,6 @@ public abstract class Modal<Value>(name: String, title: String) : AbstractElemen
     final override val elementPath: ElementPath
         get() = ElementPath("modals", modalName)
 
-    context(ModalContext)
+    context(ctx: ModalContext)
     public abstract suspend fun execute(): Value
 }

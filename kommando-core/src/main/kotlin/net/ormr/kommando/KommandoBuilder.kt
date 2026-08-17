@@ -71,7 +71,7 @@ public class KommandoBuilder @PublishedApi internal constructor(
     @PublishedApi
     internal suspend fun build(): Kommando {
         val localization = localization ?: LocalizationBuilder().build()
-        val (commands, commandFactories) = commandsBuilder?.build() ?: CommandsBuilder().build()
+        val [commands, commandFactories] = commandsBuilder?.build() ?: CommandsBuilder().build()
         val kommando = Kommando(
             kord = kord,
             intents = intents,
@@ -127,7 +127,6 @@ public suspend inline fun bot(
 ) {
     contract {
         callsInPlace(presence, InvocationKind.EXACTLY_ONCE)
-        callsInPlace(di, InvocationKind.EXACTLY_ONCE)
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }
 

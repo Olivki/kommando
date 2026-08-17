@@ -39,9 +39,9 @@ public class DoubleArgument(
 
     override fun convertArgumentValue(value: Double): Double = value
 
-    context(ArgumentBuildContext, BaseInputChatBuilder)
+    context(ctx: ArgumentBuildContext, builder: BaseInputChatBuilder)
     override fun buildArgument(isRequired: Boolean) {
-        number(defaultName, defaultDescription) {
+        builder.number(defaultName, defaultDescription) {
             registerLocalizations()
             this.autocomplete = autoComplete != null
             this.required = isRequired
@@ -50,12 +50,12 @@ public class DoubleArgument(
         }
     }
 
-    context(ArgumentBuildContext, BaseInputChatBuilder)
+    context(ctx: ArgumentBuildContext, builder: BaseInputChatBuilder)
     override fun buildArgumentWithChoices(
         choices: List<ArgumentChoice<Double>>,
         isRequired: Boolean,
     ) {
-        number(defaultName, defaultDescription) {
+        builder.number(defaultName, defaultDescription) {
             registerLocalizations()
             this.required = isRequired
             // TODO: do we add min & max for choice ones?
@@ -69,7 +69,7 @@ public class DoubleArgument(
         "DoubleArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}', min=$min, max=$max)"
 }
 
-context(CustomizableCommand<*>)
+context(_: CustomizableCommand<*>)
 public fun double(
     name: String? = null,
     description: String,

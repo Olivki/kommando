@@ -23,16 +23,16 @@ import net.ormr.kommando.localization
 import net.ormr.kommando.localization.LocalizedMessage
 import net.ormr.kommando.localization.toMutableMap
 
-context(ArgumentWithChoice<*, *, *>, ArgumentBuildContext, BaseChoiceBuilder<Value>)
+context(argument: ArgumentWithChoice<*, *, *>, ctx: ArgumentBuildContext, builder: BaseChoiceBuilder<Value>)
 internal fun <Value> addChoices(choices: List<ArgumentChoice<Value>>)
         where Value : Any {
-    val bundle = parentCommand.localization
-    val path = parentCommand.findFullElementPath() / "arguments" / key / "choices"
-    for ((name, value) in choices) {
-        val strings = when (val message = bundle.getMessageOrNull(parentCommand, path, name)) {
+    val bundle = ctx.parentCommand.localization
+    val path = ctx.parentCommand.findFullElementPath() / "arguments" / argument.key / "choices"
+    for ([name, value] in choices) {
+        val strings = when (val message = bundle.getMessageOrNull(ctx.parentCommand, path, name)) {
             is LocalizedMessage -> message.strings.toMutableMap()
             else -> null
         }
-        choice(name, value, Optional(strings))
+        builder.choice(name, value, Optional(strings))
     }
 }

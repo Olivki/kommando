@@ -58,7 +58,7 @@ public value class LocalizedStrings internal constructor(private val delegate: P
      */
     public fun asMap(): PersistentMap<Locale, String> = delegate
 
-    override fun toString(): String = delegate.entries.joinToString(prefix = "{", postfix = "}") { (locale, string) ->
+    override fun toString(): String = delegate.entries.joinToString(prefix = "{", postfix = "}") { [locale, string] ->
         "${locale.asString()} -> '$string'"
     }
 }

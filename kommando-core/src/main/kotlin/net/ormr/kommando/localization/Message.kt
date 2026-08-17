@@ -60,19 +60,19 @@ public inline fun Message.map(mapper: (Locale?, String) -> String): Message = wh
     is LocalizedMessage -> copy(
         strings = strings
             .asMap()
-            .mapValues { (locale, string) -> mapper(locale, string) }
+            .mapValues { [locale, string] -> mapper(locale, string) }
             .toLocalizedStrings()
     )
 }
 
 public inline fun Message.forEach(action: (Locale?, String) -> Unit): Unit = when (this) {
     is BasicMessage -> action(null, defaultString)
-    is LocalizedMessage -> strings.asMap().forEach { (locale, string) -> action(locale, string) }
+    is LocalizedMessage -> strings.asMap().forEach { [locale, string] -> action(locale, string) }
 }
 
 public inline fun Message.all(predicate: (Locale?, String) -> Boolean): Boolean = when (this) {
     is BasicMessage -> predicate(null, defaultString)
-    is LocalizedMessage -> strings.asMap().all { (locale, string) -> predicate(locale, string) }
+    is LocalizedMessage -> strings.asMap().all { [locale, string] -> predicate(locale, string) }
 }
 
 /**

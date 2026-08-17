@@ -42,7 +42,7 @@ internal class CommandArgumentRegistry(private val command: Command<*>) {
             null -> error(
                 """
                     Registry has not yet been populated.
-                    Property $property was most likely accessed outside of ${command::execute}.
+                    Property $property was most likely accessed outside of Command::execute.
                 """.trimIndent()
             )
             else -> when (key) {

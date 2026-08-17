@@ -26,6 +26,6 @@ private val IgnoreBotsFilter = MessageFilter { it.message.author?.isBot != true 
  *
  * Enabled by default if [Intent.MessageContent] is enabled in [intents][KommandoBuilder.intents].
  */
-context(KommandoBuilder)
+context(_: KommandoBuilder)
 public val ignoreBots: MessageFilter
     get() = IgnoreBotsFilter

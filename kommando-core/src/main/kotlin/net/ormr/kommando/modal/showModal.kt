@@ -35,7 +35,7 @@ import kotlin.time.Duration
  * @param [timeout] the timeout for the request, if `null` then the [default timeout][ModalStorage.timeout] will be
  * used
  */
-context(Element)
+context(_: Element)
 public suspend fun <Value> ModalParentInteractionBehavior.showModal(
     modal: Modal<Value>,
     timeout: Duration? = null,
@@ -53,7 +53,7 @@ public suspend fun <Value> ModalParentInteractionBehavior.showModal(
  * used
  * @param [onResponse] callback to allow one to use the [PopupInteractionResponseBehavior] returned by the request
  */
-context(Element)
+context(_: Element)
 public suspend inline fun <Value> ModalParentInteractionBehavior.showModal(
     modal: Modal<Value>,
     timeout: Duration? = null,

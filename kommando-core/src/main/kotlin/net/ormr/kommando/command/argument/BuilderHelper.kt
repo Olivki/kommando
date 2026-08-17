@@ -20,24 +20,24 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
 import net.ormr.kommando.localization.LocalizedMessage
 import net.ormr.kommando.localization.toMutableMap
 
-context(Argument<*, *, *>, OptionsBuilder)
+context(_: Argument<*, *, *>, _: OptionsBuilder)
 public fun registerLocalizations() {
     registerNameLocalization()
     registerDescriptionLocalization()
 }
 
-context(Argument<*, *, *>, OptionsBuilder)
+context(argument: Argument<*, *, *>, builder: OptionsBuilder)
 private fun registerNameLocalization() {
-    val name = this@Argument.name
+    val name = argument.name
     if (name is LocalizedMessage) {
-        nameLocalizations = name.strings.toMutableMap()
+        builder.nameLocalizations = name.strings.toMutableMap()
     }
 }
 
-context(Argument<*, *, *>, OptionsBuilder)
+context(argument: Argument<*, *, *>, builder: OptionsBuilder)
 private fun registerDescriptionLocalization() {
-    val description = this@Argument.description
+    val description = argument.description
     if (description is LocalizedMessage) {
-        descriptionLocalizations = description.strings.toMutableMap()
+        builder.descriptionLocalizations = description.strings.toMutableMap()
     }
 }

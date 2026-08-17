@@ -39,7 +39,6 @@ public class Kommando internal constructor(
     public val modalStorage: ModalStorage,
     public val componentStorage: ComponentStorage,
 ) : KommandoDI {
-
     // TODO: implement handling for components
 
     @PublishedApi

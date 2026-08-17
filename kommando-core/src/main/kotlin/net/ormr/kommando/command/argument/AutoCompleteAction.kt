@@ -20,7 +20,7 @@ import dev.kord.core.entity.interaction.AutoCompleteInteraction
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 
 public fun interface AutoCompleteAction {
-    // TODO: pass in the command that is being executed
-    context(AutoCompleteInteraction)
+    // TODO: pass in the command that is being executed?
+    context(interaction: AutoCompleteInteraction)
     public suspend fun provideSuggestion(event: AutoCompleteInteractionCreateEvent)
 }

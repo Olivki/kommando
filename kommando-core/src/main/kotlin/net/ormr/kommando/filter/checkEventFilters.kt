@@ -21,9 +21,9 @@ import net.ormr.kommando.kord.KordEvent
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-context(KommandoContext)
 @PublishedApi
 @Suppress("UNCHECKED_CAST")
+context(_: KommandoContext)
 internal suspend inline fun checkEventFilters(filters: List<EventFilter<*>>, event: KordEvent, action: () -> Unit) {
     contract {
         callsInPlace(action, InvocationKind.AT_MOST_ONCE)

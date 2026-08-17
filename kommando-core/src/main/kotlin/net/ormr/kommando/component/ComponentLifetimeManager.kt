@@ -20,13 +20,14 @@ import com.github.michaelbull.logging.InlineLogger
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.ormr.kommando.KommandoContext
+import net.ormr.kommando.kommando
 import kotlin.time.Duration
 
 public sealed class ComponentLifetimeManager {
     // TODO: do we want to expose the job to the user somehow?
 
-    context(KommandoContext)
     @PublishedApi
+    context(ctx: KommandoContext)
     internal abstract fun launch(group: ComponentGroup, message: LifetimeMessage)
 
     /**
@@ -36,11 +37,11 @@ public sealed class ComponentLifetimeManager {
         val duration: Duration,
         val shouldUnregister: Boolean,
     ) : ComponentLifetimeManager() {
-        context(KommandoContext)
+        context(ctx: KommandoContext)
         override fun launch(group: ComponentGroup, message: LifetimeMessage) {
             kommando.kord.launch {
                 delay(duration)
-                logger.debug { "Removing components for group: ${group.id}" }
+                logger.trace { "Removing components for group: ${group.id}" }
                 message.edit {
                     components = mutableListOf()
                 }
@@ -58,12 +59,12 @@ public sealed class ComponentLifetimeManager {
         val duration: Duration,
         val shouldUnregister: Boolean,
     ) : ComponentLifetimeManager() {
-        context(KommandoContext)
+        context(ctx: KommandoContext)
         override fun launch(group: ComponentGroup, message: LifetimeMessage) {
             kommando.kord.launch {
                 delay(duration)
                 val disabledGroup = group.copyWithAllDisabled()
-                logger.debug { "Disabling components for group: ${group.id}" }
+                logger.trace { "Disabling components for group: ${group.id}" }
                 message.edit {
                     useComponents(disabledGroup)
                 }

@@ -42,6 +42,6 @@ public sealed interface VisibleComponent<Self> : Component
      */
     public fun withDisabled(isDisabled: Boolean): Self
 
-    context(ActionRowBuilder)
+    context(builder: ActionRowBuilder)
     public fun buildComponent()
 }

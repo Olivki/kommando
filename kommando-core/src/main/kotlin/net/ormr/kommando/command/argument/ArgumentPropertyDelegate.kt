@@ -30,7 +30,7 @@ internal class ArgumentPropertyDelegate<Value>(
     private var value: Any? = NOT_SET
 
     @Suppress("ClassName")
-    private object NOT_SET
+    private data object NOT_SET
 
     @Suppress("UNCHECKED_CAST")
     override fun getValue(thisRef: CustomizableCommand<*>, property: KProperty<*>): Value {

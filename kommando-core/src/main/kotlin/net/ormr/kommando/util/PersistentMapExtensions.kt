@@ -20,19 +20,10 @@ import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.persistentHashMapOf
 import kotlinx.collections.immutable.putAll
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
-import kotlin.experimental.ExperimentalTypeInference
 
-@OptIn(ExperimentalTypeInference::class)
 public inline fun <K, V> buildPersistentHashMap(
-    @BuilderInference builder: MutableMap<K, V>.() -> Unit,
-): PersistentMap<K, V> {
-    contract {
-        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
-    }
-    return persistentHashMapOf<K, V>().mutate(builder)
-}
+    builder: MutableMap<K, V>.() -> Unit,
+): PersistentMap<K, V> = persistentHashMapOf<K, V>().mutate(builder)
 
 public fun <K, V> Array<out Pair<K, V>>.toPersistentHashMap(): PersistentMap<K, V> = when (size) {
     0 -> persistentHashMapOf()

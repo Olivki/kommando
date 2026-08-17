@@ -19,3 +19,7 @@ package net.ormr.kommando
 public interface KommandoContext {
     public val kommando: Kommando
 }
+
+context(ctx: KommandoContext)
+public inline val kommando: Kommando
+    get() = ctx.kommando

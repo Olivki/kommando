@@ -53,7 +53,7 @@ public class OptionalArgument<Value, ArgValue, out ArgType>(
 
     override fun convertNullableArgumentValue(value: ArgValue?): Nothing = noNullableConversionSupport()
 
-    context(ArgumentBuildContext, BaseInputChatBuilder)
+    context(ctx: ArgumentBuildContext, builder: BaseInputChatBuilder)
     override fun buildArgument(isRequired: Boolean) {
         delegate.buildArgument(isRequired = false)
     }
@@ -64,7 +64,7 @@ public class OptionalArgument<Value, ArgValue, out ArgType>(
 /**
  * Returns a new argument that will return `null` if the user did not provide a value.
  */
-context(CustomizableCommand<*>)
+context(_: CustomizableCommand<*>)
 public fun <Value, ArgValue, Arg> ArgumentBuilder<Value, Arg>.optional(): ArgumentBuilder<Value?, OptionalArgument<Value, ArgValue, *>>
         where Value : Any,
               ArgValue : Any,

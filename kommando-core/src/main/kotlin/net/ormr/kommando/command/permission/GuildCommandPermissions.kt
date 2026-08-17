@@ -45,8 +45,8 @@ public inline fun GuildCommandPermissions(
     return GuildCommandPermissionsBuilder().apply(builder).build()
 }
 
-context(TopLevelCommand<*, GuildCommandPermissions>)
 @KommandoDsl
+context(_: TopLevelCommand<*, GuildCommandPermissions>)
 public inline fun permissions(
     builder: GuildCommandPermissionsBuilder.() -> Unit,
 ): GuildCommandPermissions {

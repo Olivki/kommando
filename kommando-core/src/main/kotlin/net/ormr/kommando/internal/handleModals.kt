@@ -24,9 +24,9 @@ import net.ormr.kommando.modal.Modal
 import net.ormr.kommando.modal.ModalContext
 import net.ormr.kommando.modal.ModalResult
 
-context(Kommando)
 @Suppress("UNCHECKED_CAST")
-internal suspend fun handleModals() {
+context(_: Kommando)
+internal fun handleModals() {
     kord.on<ModalSubmitInteractionCreateEvent> {
         val id = interaction.modalId
         val modal = (modalStorage.get(id) ?: return@on) as Modal<Any>
@@ -46,7 +46,7 @@ private suspend fun populateModal(
     val registry = modal.modalRegistry
     val components = registry
         .asMap()
-        .mapValuesTo(hashMapOf()) { (_, component) -> component.getValue(interaction, event) }
+        .mapValuesTo(hashMapOf()) { [_, component] -> component.getValue(interaction, event) }
     registry.populate(components)
 }
 

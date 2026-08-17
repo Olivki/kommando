@@ -28,7 +28,7 @@ public sealed interface EventFilter<in Event>
      *
      * @param [event] the event to check
      */
-    context(KommandoContext)
+    context(ctx: KommandoContext)
     public suspend fun isOk(event: Event): Boolean
 }
 
@@ -54,21 +54,21 @@ public inline operator fun <reified Event> EventFilter<Event>.plus(
 public inline fun <reified Event : KordEvent> EventFilter(
     crossinline predicate: suspend context(KommandoContext) (event: Event) -> Boolean,
 ): EventFilter<Event> = object : AbstractEventFilter<KordEvent>() {
-    context(KommandoContext)
+    context(ctx: KommandoContext)
     override suspend fun isOk(event: KordEvent): Boolean {
         require(event is Event) { "Event ($event) is not type ${typeOf<Event>()}. Was 'isFilterFor' skipped?" }
-        return predicate(this@KommandoContext, event)
+        return predicate(ctx, event)
     }
 
     override fun isFilterFor(event: KordEvent): Boolean = event is Event
 }
 
-context(KommandoBuilder)
+context(builder: KommandoBuilder)
 public operator fun EventFilter<*>.unaryPlus() {
-    eventFilters += this
+    builder.eventFilters += this
 }
 
-context(KommandoBuilder)
+context(builder: KommandoBuilder)
 public operator fun EventFilter<*>.unaryMinus() {
-    eventFilters -= this
+    builder.eventFilters -= this
 }

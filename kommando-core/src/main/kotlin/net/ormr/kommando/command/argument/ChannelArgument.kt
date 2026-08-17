@@ -18,6 +18,7 @@ package net.ormr.kommando.command.argument
 
 import dev.kord.core.entity.channel.ResolvedChannel
 import dev.kord.rest.builder.interaction.BaseInputChatBuilder
+import dev.kord.rest.builder.interaction.channel
 import net.ormr.kommando.command.CustomizableCommand
 import net.ormr.kommando.localization.Message
 
@@ -33,9 +34,9 @@ public class ChannelArgument(
 
     override fun convertNullableArgumentValue(value: ResolvedChannel?): ResolvedChannel? = value
 
-    context(ArgumentBuildContext, BaseInputChatBuilder)
+    context(ctx: ArgumentBuildContext, builder: BaseInputChatBuilder)
     override fun buildArgument(isRequired: Boolean) {
-        channel(defaultName, defaultDescription) {
+        builder.channel(defaultName, defaultDescription) {
             registerLocalizations()
             this.required = isRequired
         }
@@ -45,7 +46,7 @@ public class ChannelArgument(
         "ChannelArgument(key='$key', name='${name.defaultString}', description='${description.defaultString}')"
 }
 
-context(CustomizableCommand<*>)
+context(_: CustomizableCommand<*>)
 public fun channel(
     name: String? = null,
     description: String,

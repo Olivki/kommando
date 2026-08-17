@@ -24,7 +24,7 @@ public interface ArgumentWithChoice<Value, ArgValue, out ArgType> : Argument<Val
               ArgType : ChoiceArgumentType<ArgValue> {
     public fun convertChoiceValue(value: Value): ArgValue
 
-    context(ArgumentBuildContext, BaseInputChatBuilder)
+    context(ctx: ArgumentBuildContext, builder: BaseInputChatBuilder)
     public fun buildArgumentWithChoices(
         choices: List<ArgumentChoice<ArgValue>>,
         isRequired: Boolean,
