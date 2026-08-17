@@ -16,15 +16,35 @@
 
 package net.ormr.kommando.command.permission
 
+import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
+import net.ormr.kommando.KommandoDsl
 
 public sealed interface CommandPermissions {
     public val defaultMemberPermissions: Permissions
 }
 
-public data class GlobalCommandPermissions(
-    override val defaultMemberPermissions: Permissions,
-    public val isAllowedInDms: Boolean,
-) : CommandPermissions
+@KommandoDsl
+public sealed class CommandPermissionsBuilder<Perms>
+        where Perms : CommandPermissions {
+    public var defaultPermissions: Permissions = Permissions()
 
-public data class GuildCommandPermissions(override val defaultMemberPermissions: Permissions) : CommandPermissions
+    public operator fun Permission.unaryMinus() {
+        defaultPermissions -= this
+    }
+
+    public operator fun Permission.unaryPlus() {
+        defaultPermissions += this
+    }
+
+    public operator fun Permissions.unaryMinus() {
+        defaultPermissions -= this
+    }
+
+    public operator fun Permissions.unaryPlus() {
+        defaultPermissions += this
+    }
+
+    @PublishedApi
+    internal abstract fun build(): Perms
+}

@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "net.ormr.kommando"
-version = "0.1.0-dev-1"
+version = "0.1.0-dev-2"
 
 mavenCentralPublish {
     useCentralS01()

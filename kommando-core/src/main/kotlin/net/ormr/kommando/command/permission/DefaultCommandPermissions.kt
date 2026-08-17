@@ -23,6 +23,9 @@ import net.ormr.kommando.command.GuildTopLevelCommand
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
+// TODO: no clue what I was thinking here, this system needs to be rebuilt to be more ergonomic
+//       probably closer to how old kommando did it
+
 internal typealias GuildCommandPermissionsFactory = suspend (GuildTopLevelCommand) -> GuildCommandPermissions
 internal typealias GlobalCommandPermissionsFactory = suspend (GlobalTopLevelCommand) -> GlobalCommandPermissions
 
