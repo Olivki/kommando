@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Oliver Berg
+ * Copyright 2023-2026 Oliver Berg
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ private val logger = InlineLogger()
 context(Kommando)
 internal suspend fun handleCommands() {
     val direct = direct
-    
+
     kord.on<ApplicationCommandInteractionCreateEvent> {
         try {
             when (this) {

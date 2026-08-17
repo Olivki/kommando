@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Oliver Berg
+ * Copyright 2023-2026 Oliver Berg
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import kotlin.contracts.contract
 @KommandoDsl
 public class MessageBundleBuilder @PublishedApi internal constructor(public val defaultLocale: Locale) {
     private val bundles = mutableListOf<MessageBundle>()
-    
+
     public operator fun MessageBundle.unaryPlus() {
         bundles += this
     }

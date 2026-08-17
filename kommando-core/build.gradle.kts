@@ -1,24 +1,15 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
-// TODO: convert this to a multiplatform project once there's support for context receivers for multiplatform projects
-
-@Suppress("DSL_SCOPE_VIOLATION")  // TODO: Remove once we upgrade to Gradle 8.x
 plugins {
-    alias(libs.plugins.mavenCentralPublish)
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.mavenDeployer)
 }
 
 group = "net.ormr.kommando"
 version = "0.1.0-dev-2"
 
-mavenCentralPublish {
-    useCentralS01()
-    singleDevGithubProject("Olivki", "kommando")
-    licenseApacheV2()
-}
-
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
     explicitApi()
 }
 
@@ -43,11 +34,50 @@ tasks {
         useJUnitPlatform()
     }
 
-    withType<KotlinCompile>().all {
-        kotlinOptions {
-            freeCompilerArgs += "-opt-in=kotlin.contracts.ExperimentalContracts"
-            freeCompilerArgs += "-Xcontext-receivers"
-            freeCompilerArgs += "-Xjvm-default=all"
+    withType<KotlinJvmCompile>().all {
+        compilerOptions {
+            freeCompilerArgs.add("-opt-in=kotlin.contracts.ExperimentalContracts")
+
+            freeCompilerArgs.add("-Xcontext-parameters")
+            freeCompilerArgs.add("-Xjvm-default=all")
+            freeCompilerArgs.add("-Xcontext-sensitive-resolution")
+            freeCompilerArgs.add("-Xconsistent-data-class-copy-visibility")
+            freeCompilerArgs.add("-Xcollection-literals")
+            freeCompilerArgs.add("-Xname-based-destructuring=complete")
+        }
+    }
+}
+
+deployer {
+    content {
+        kotlinComponents {
+            emptyDocs()
+        }
+    }
+
+    projectInfo {
+        url.set("https://github.com/Olivki/kommando")
+        license(apache2)
+        developer("Olivki", "oliver@berg.moe")
+
+        scm {
+            fromGithub("Olivki", "kommando")
+        }
+    }
+
+    localSpec()
+
+    centralPortalSpec {
+        allowMavenCentralSync = false
+
+        auth {
+            user.set(secret("CENTRAL_PORTAL_USER"))
+            password.set(secret("CENTRAL_PORTAL_PASSWORD"))
+        }
+
+        signing {
+            key.set(secret("OSSRH_GPG_SECRET_KEY"))
+            password.set(secret("OSSRH_GPG_SECRET_KEY_PASSWORD"))
         }
     }
 }
