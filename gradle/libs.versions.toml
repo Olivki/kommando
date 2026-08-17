@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.4.10"
-kodein = "7.20.2"
+kodein = "7.33.0"
 kord = "0.10.0"
 
 [plugins]
