@@ -17,7 +17,7 @@
 package net.ormr.kommando.modal.component
 
 import dev.kord.common.entity.TextInputStyle
-import dev.kord.rest.builder.component.ActionRowBuilder
+import dev.kord.rest.builder.component.LabelComponentBuilder
 import net.ormr.kommando.modal.Modal
 
 public data class TextInputModalComponent(
@@ -37,10 +37,10 @@ public data class TextInputModalComponent(
 
     override fun convertNullableComponentValue(value: String?): String? = value
 
-    context(builder: ActionRowBuilder)
+    context(builder: LabelComponentBuilder)
     override fun buildComponent() {
         val self = this
-        builder.textInput(style, customId, label) {
+        builder.textInput(style, customId) {
             allowedLength = self.allowedLength
             placeholder = self.placeholder
             value = self.defaultValue

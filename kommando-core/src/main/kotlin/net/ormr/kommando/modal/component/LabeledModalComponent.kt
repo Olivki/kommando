@@ -16,6 +16,8 @@
 
 package net.ormr.kommando.modal.component
 
+import dev.kord.rest.builder.component.LabelComponentBuilder
+
 public interface LabeledModalComponent<Value, CompValue, out CompType> : ModalComponent<Value, CompValue, CompType>
         where CompValue : Any,
               CompType : ModalComponentType<CompValue> {
@@ -23,4 +25,7 @@ public interface LabeledModalComponent<Value, CompValue, out CompType> : ModalCo
      * The label of the component.
      */
     public val label: String
+
+    context(builder: LabelComponentBuilder)
+    public fun buildComponent()
 }

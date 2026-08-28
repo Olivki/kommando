@@ -23,6 +23,7 @@ import net.ormr.kommando.Element
 import net.ormr.kommando.modal.Modal
 import net.ormr.kommando.modal.ModalResult
 import net.ormr.kommando.modal.ModalStorage
+import net.ormr.kommando.modal.component.LabeledModalComponent
 import kotlin.time.Duration
 
 internal typealias ModalResponseCallback = suspend (PopupInteractionResponseBehavior) -> Unit
@@ -53,8 +54,12 @@ internal suspend fun showModal1(
     storage.addModal(modal)
     return interaction.modal(modal.modalTitle, modal.modalId) {
         for ([_, component] in components) {
-            actionRow {
-                component.buildComponent()
+            when (component) {
+                is LabeledModalComponent -> {
+                    label(label = component.label) {
+                        component.buildComponent()
+                    }
+                }
             }
         }
     }

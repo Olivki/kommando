@@ -18,7 +18,6 @@ package net.ormr.kommando.modal.component
 
 import dev.kord.core.entity.interaction.ModalSubmitInteraction
 import dev.kord.core.event.interaction.ModalSubmitInteractionCreateEvent
-import dev.kord.rest.builder.component.ActionRowBuilder
 import net.ormr.kommando.modal.Modal
 
 public interface ModalComponent<Value, CompValue, out CompType>
@@ -53,7 +52,4 @@ public interface ModalComponent<Value, CompValue, out CompType>
     public fun convertComponentValue(value: CompValue): Value
 
     public fun convertNullableComponentValue(value: CompValue?): Value?
-
-    context(builder: ActionRowBuilder)
-    public fun buildComponent()
 }
